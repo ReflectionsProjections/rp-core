@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
-export type EventDocument = HydratedDocument<Event>;
+export type AttendeeDocument = HydratedDocument<Event>;
 
 
 @Schema()
@@ -13,6 +13,7 @@ export class Attendee {
 
   @Prop({
     required: true,
+    unique: true
   })
   email: string;
 
@@ -20,21 +21,21 @@ export class Attendee {
   current_student: boolean;
 
   @Prop()
-  uiuc: boolean;
-
-  @Prop()
   university: string;
 
   @Prop()
   occupation: string;
 
+  // next two fields have a default of null in case someone is NOT a student
   @Prop({
     required: true,
+    default: null
   })
   graduation: Date;
 
   @Prop({
     required: true,
+    default: null
   })
   major: string;
 
@@ -43,17 +44,11 @@ export class Attendee {
   })
   num_unique_events: number;
 
-  // concatenate all the dietary restrictions
+  // concatenate all the dietary restrictions including allergies etc
   @Prop({
     required: true,
   })
   dietary_restrictions: string[];
-
-  // condense allergies w/ dietary restrictions(?)/ask logistics
-  @Prop({
-    required: true,
-  })
-  allergies: string[];
 
   @Prop({
     required: true,
@@ -71,7 +66,7 @@ export class Attendee {
   race: string;
 
   @Prop({
-    required: true,
+    required: true, 
   })
   ethnicity: string;
 
@@ -104,17 +99,16 @@ export class Attendee {
   @Prop()
   full_time: boolean;
 
-  // Concatenate
   @Prop()
   areas_of_interest: string[];
 
   @Prop()
-  interest_mm: boolean;
+  interest_mech_mania: boolean;
 
   @Prop()
-  interest_pb: boolean;
+  interest_puzzle_bang: boolean;
 
 }
 
 
-export const EventSchema = SchemaFactory.createForClass(Event);
+export const AttendeeSchema = SchemaFactory.createForClass(Event);
