@@ -1,90 +1,76 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { Prop, Schema, SchemaFactory, raw } from '@nestjs/mongoose';
+import { HydratedDocument, Schema as MongooseSchema, Types, model } from 'mongoose';
+import { EventSchema } from 'src/events/event.schema';
 
-export type EventDocument = HydratedDocument<Event>;
+export type AttendeeDocument = HydratedDocument<Event>;
 
+const studentInfo = new MongooseSchema({
+  university: {type: String, required: true},
+  occupation: {type: String},
+  graduation: {type: Date || null, required: true},
+  major: {type: String || null, required: true},
+});
 
 @Schema()
 export class Attendee {
+  
+  Event = model('Event', EventSchema);
+
   @Prop({
-    required: true,
+    required: true
   })
   name: string;
 
   @Prop({
     required: true,
+    unique: true
   })
   email: string;
 
-  @Prop()
-  current_student: boolean;
-
-  @Prop()
-  uiuc: boolean;
-
-  @Prop()
-  university: string;
-
-  @Prop()
-  occupation: string;
+  @Prop(raw({
+    studentInfo, 
+    required: true
+  }))
+  collegeInfo: Record<string, any>
 
   @Prop({
-    required: true,
+    required: true
   })
-  graduation: Date;
+  events: [{type: MongooseSchema.Types.ObjectId, ref: 'Event'}];
 
   @Prop({
-    required: true,
+    required: true
   })
-  major: string;
+  dietary_restrictions: [{types: String}];
 
   @Prop({
-    required: true,
-  })
-  num_unique_events: number;
-
-  // concatenate all the dietary restrictions
-  @Prop({
-    required: true,
-  })
-  dietary_restrictions: string[];
-
-  // condense allergies w/ dietary restrictions(?)/ask logistics
-  @Prop({
-    required: true,
-  })
-  allergies: string[];
-
-  @Prop({
-    required: true,
+    required: true
   })
   age: number;
 
   @Prop({
-    required: true,
+    required: true
   })
   gender: string;
 
   @Prop({
-    required: true,
+    required: true
   })
   race: string;
 
   @Prop({
-    required: true,
+    required: true
   })
   ethnicity: string;
 
-  // Require first generation?
   @Prop()
   first_gen: boolean;
   
   @Prop({
-    required: true,
+    required: true
   })
-  hear_about_rp: string;
+  hear_about_rp: [{type: String}];
 
-  // Link to Resume
   @Prop()
   resume: string;
 
@@ -94,27 +80,21 @@ export class Attendee {
   @Prop()
   linkedin: string;
 
-  // Specify type of number
   @Prop()
   gpa: number;
 
   @Prop()
-  internship: boolean;
+  job_interest: [{type: String}];
 
   @Prop()
-  full_time: boolean;
-
-  // Concatenate
-  @Prop()
-  areas_of_interest: string[];
+  areas_of_interest: [{type: String}];
 
   @Prop()
-  interest_mm: boolean;
+  interest_mech_mania: boolean;
 
   @Prop()
-  interest_pb: boolean;
+  interest_puzzle_bang: boolean;
 
 }
 
-
-export const EventSchema = SchemaFactory.createForClass(Event);
+export const AttendeeSchema = SchemaFactory.createForClass(Attendee);
