@@ -33,7 +33,6 @@ export class Attendee {
   }))
   collegeInfo: Record<string, any>
 
-  // next two fields have a default of null in case someone is NOT a student
   @Prop({
     required: true
   })
