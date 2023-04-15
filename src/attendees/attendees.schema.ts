@@ -46,25 +46,27 @@ export class Attendee {
   @Prop({
     required: true
   })
-  age: number;
+  age: number | null;
 
   @Prop({
     required: true
   })
-  gender: string;
+  gender: string | null;
 
   @Prop({
     required: true
   })
-  race: string;
+  race: string | null;
 
   @Prop({
     required: true
   })
-  ethnicity: string;
+  ethnicity: string | null;
 
-  @Prop()
-  first_gen: boolean;
+  @Prop({
+    required: true
+  })
+  first_gen: boolean | null;
   
   @Prop({
     required: true
