@@ -92,9 +92,6 @@ export class Attendee {
   job_interest: [{type: String}];
 
   @Prop()
-  areas_of_interest: [{type: String}];
-
-  @Prop()
   interest_mech_mania: boolean;
 
   @Prop()
