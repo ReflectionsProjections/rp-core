@@ -1,10 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-<<<<<<< HEAD
 import { HydratedDocument, Schema as MongooseSchema, model} from 'mongoose';
 import { AttendeeSchema } from 'src/attendees/attendees.schema';
-=======
-import { HydratedDocument, Types } from 'mongoose';
->>>>>>> 407d6ac6c3468c24381461bf926a537356a319b0
 
 export type EventDocument = HydratedDocument<Event>;
 
@@ -32,11 +28,11 @@ export class Event {
   @Prop({
     required: true
   })
-<<<<<<< HEAD
   duration: Number;
 
   @Prop({
-    required: true
+    required: true,
+    default: []
   })
   attendees: [{type: MongooseSchema.Types.ObjectId, ref: 'Attendee'}];
 
@@ -49,14 +45,6 @@ export class Event {
     required: true
   })
   virtual: boolean;
-=======
-  end_time: Date;
-
-  @Prop({
-    required: true,
-  })
-  attendees: Types.ObjectId[];
->>>>>>> 407d6ac6c3468c24381461bf926a537356a319b0
 }
 
 export const EventSchema = SchemaFactory.createForClass(Event);

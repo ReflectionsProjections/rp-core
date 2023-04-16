@@ -6,7 +6,6 @@ export type AttendeeDocument = HydratedDocument<Event>;
 
 const studentInfo = new MongooseSchema({
   university: {type: String, required: true},
-  occupation: {type: String},
   graduation: {type: Date || null, required: true},
   major: {type: String || null, required: true},
 });
@@ -31,10 +30,11 @@ export class Attendee {
     studentInfo, 
     required: true
   }))
-  collegeInfo: Record<string, any>
+  collegeInfo: Record<string, any> | null;
 
   @Prop({
-    required: true
+    required: true,
+    default: []
   })
   events: [{type: MongooseSchema.Types.ObjectId, ref: 'Event'}];
 
@@ -84,6 +84,9 @@ export class Attendee {
 
   @Prop()
   gpa: number;
+
+  @Prop()
+  occupation: String;
 
   @Prop()
   job_interest: [{type: String}];
