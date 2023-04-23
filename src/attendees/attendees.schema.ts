@@ -27,8 +27,7 @@ export class Attendee {
   email: string;
 
   @Prop(raw({
-    studentInfo, 
-    required: true
+    studentInfo
   }))
   collegeInfo: Record<string, any> | null;
 
