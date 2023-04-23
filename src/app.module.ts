@@ -12,6 +12,7 @@ import { AttendeesModule } from './attendees/attendees.module';
       isGlobal: true,
     }),
     MongooseModule.forRoot(process.env.DATABASE_URL),
+    EventsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
