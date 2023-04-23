@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-// import { CreateEventDto } from './dto/create-event.dto';
+import { CreateAttendeeDto } from './dto/create-attendee.dto';
 // import { UpdateEventDto } from './dto/update-event.dto';
 import { Attendee, AttendeeDocument } from './attendees.schema';
 
@@ -11,10 +11,31 @@ export class AttendeeService {
     @InjectModel(Attendee.name) private attendeeModel: Model<AttendeeDocument>,
   ) {}
 
-  // create(createEventDto: CreateEventDto) {
-  //   const newEvent = new this.eventModel(createEventDto);
-  //   return newEvent.save();
-  // }
+  create(createEventDto: CreateAttendeeDto) {
+    const attendee = {
+      name: createEventDto.name,
+
+      email: 'sdf',
+
+      collegeInfo: null,
+
+      events: [],
+
+      dietary_restrictions: [],
+
+      age: 244,
+
+      gender: 'sad',
+
+      race: 'afsa',
+
+      ethnicity: false,
+
+      first_gen: false,
+    };
+    const newAttendee = new this.attendeeModel(attendee);
+    return newAttendee.save();
+  }
 
   findAll() {
     return this.attendeeModel.find();

@@ -8,6 +8,7 @@ import {
   Delete,
 } from '@nestjs/common';
 import { AttendeeService } from './attendees.service';
+import { CreateAttendeeDto } from './dto/create-attendee.dto';
 // import { EventsService } from './events.service';
 // import { CreateEventDto } from './dto/create-event.dto';
 // import { UpdateEventDto } from './dto/update-event.dto';
@@ -16,10 +17,10 @@ import { AttendeeService } from './attendees.service';
 export class AttendeeController {
   constructor(private readonly attendeesService: AttendeeService) {}
 
-  // @Post()
-  // create(@Body() createEventDto: CreateEventDto) {
-  //   return this.eventsService.create(createEventDto);
-  // }
+  @Post()
+  create(@Body() createEventDto: CreateAttendeeDto) {
+    return this.attendeesService.create(createEventDto);
+  }
 
   @Get()
   findAll() {
