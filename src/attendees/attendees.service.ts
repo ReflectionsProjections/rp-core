@@ -8,7 +8,7 @@ import { Attendee, AttendeeDocument } from './attendees.schema';
 @Injectable()
 export class AttendeeService {
   constructor(
-    @InjectModel(Attendee.name) private eventModel: Model<AttendeeDocument>,
+    @InjectModel(Attendee.name) private attendeeModel: Model<AttendeeDocument>,
   ) {}
 
   // create(createEventDto: CreateEventDto) {
@@ -17,7 +17,7 @@ export class AttendeeService {
   // }
 
   findAll() {
-    return this.eventModel.find();
+    return this.attendeeModel.find();
   }
 
   findOne(id: number) {
