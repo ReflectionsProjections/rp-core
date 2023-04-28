@@ -32,20 +32,6 @@ export class AttendeeService {
       ethnicity: false,
 
       first_gen: false,
-
-      resume: '',
-
-      portfolio: '',
-
-      job_interest: [],
-      
-      gpa: 1.0,
-      
-      interest_mech_mania: false,
-
-      interest_puzzle_bang: false,
-      
-      hear_about_rp: []
     };
     const newAttendee = new this.attendeeModel(attendee);
     return newAttendee.save();
