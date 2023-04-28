@@ -10,7 +10,7 @@ import { EventSchema } from 'src/events/event.schema';
 export type AttendeeDocument = HydratedDocument<Event>;
 
 const studentInfo = new MongooseSchema({
-  university: { type: String, required: true },
+  university: { type: String || null, required: true },
   graduation: { type: Date || null, required: true },
   major: { type: String || null, required: true },
 });
@@ -41,12 +41,12 @@ export class Attendee {
     required: true,
     default: [],
   })
-  events: [{ type: MongooseSchema.Types.ObjectId; ref: 'Event' }];
+  events: [{ type: MongooseSchema.Types.ObjectId; ref: 'Event' }] | null;
 
   @Prop({
     required: true,
   })
-  dietary_restrictions: [{ types: String }];
+  dietary_restrictions: [{ type: string }];
 
   @Prop({
     required: true,
@@ -61,7 +61,7 @@ export class Attendee {
   @Prop({
     required: true,
   })
-  race: string | null;
+  race: [{ type: string }] | null;
 
   @Prop({
     required: true,
@@ -76,7 +76,7 @@ export class Attendee {
   @Prop({
     required: true,
   })
-  hear_about_rp: [{ type: String }];
+  hear_about_rp: [{ type: string }];
 
   @Prop()
   resume: string;
@@ -85,16 +85,13 @@ export class Attendee {
   portfolio: string;
 
   @Prop()
-  linkedin: string;
-
-  @Prop()
   gpa: number;
 
   @Prop()
-  occupation: String;
+  occupation: string;
 
   @Prop()
-  job_interest: [{ type: String }];
+  job_interest: [{ type: string }];
 
   @Prop()
   interest_mech_mania: boolean;
