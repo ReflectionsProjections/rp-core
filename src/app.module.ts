@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { EventsModule } from './events/events.module';
+import { ScanEventsModule } from './scan-events/scan-events.module';
 import { AttendeesModule } from './attendees/attendees.module';
 
 @Module({
@@ -13,6 +14,7 @@ import { AttendeesModule } from './attendees/attendees.module';
     }),
     MongooseModule.forRoot(process.env.DATABASE_URL),
     EventsModule,
+    ScanEventsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
