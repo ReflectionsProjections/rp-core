@@ -9,6 +9,14 @@ export class ScanEvent {
     required: true,
   })
   userID: string;
+  @Prop({
+    required: true,
+  })
+  eventID: string;
+  @Prop({
+    required: true,
+  })
+  timeCode: number;
 }
 
 export const ScanEventSchema = SchemaFactory.createForClass(ScanEvent);
