@@ -8,18 +8,17 @@ import {
   Delete,
 } from '@nestjs/common';
 import { AttendeeService } from './attendees.service';
-import { CreateAttendeeDto } from './dto/create-attendee.dto';
 // import { EventsService } from './events.service';
-// import { CreateEventDto } from './dto/create-event.dto';
-// import { UpdateEventDto } from './dto/update-event.dto';
+import { CreateAttendeeDto } from './dto/create-attendee.dto';
+import { UpdateAttendeeDto } from './dto/update-attendee.dto';
 
 @Controller('attendee')
 export class AttendeeController {
   constructor(private readonly attendeesService: AttendeeService) {}
 
   @Post()
-  create(@Body() createEventDto: CreateAttendeeDto) {
-    return this.attendeesService.create(createEventDto);
+  create(@Body() createAttendeeDto: CreateAttendeeDto) {
+    return this.attendeesService.create(createAttendeeDto);
   }
 
   @Get()
@@ -32,10 +31,10 @@ export class AttendeeController {
     return this.attendeesService.findOne(+id);
   }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateEventDto: UpdateEventDto) {
-  //   return this.eventsService.update(+id, updateEventDto);
-  // }
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateAttendeeDto: UpdateAttendeeDto) {
+    return this.attendeesService.update(+id, updateAttendeeDto);
+  }
 
   @Delete(':id')
   remove(@Param('id') id: string) {

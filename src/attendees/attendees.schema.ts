@@ -8,7 +8,7 @@ import {
 import { EventSchema } from 'src/events/event.schema';
 
 export type AttendeeDocument = HydratedDocument<Event>;
-
+ 
 const studentInfo = new MongooseSchema({
   university: { type: String, required: true },
   graduation: { type: Date || null, required: true },
@@ -35,7 +35,10 @@ export class Attendee {
       studentInfo,
     }),
   )
-  collegeInfo: Record<string, any> | null;
+  // collegeInfo: Record<string, any> | null;
+
+  @Prop()
+  occupation: string;
 
   @Prop({
     required: true,
@@ -46,61 +49,39 @@ export class Attendee {
   @Prop({
     required: true,
   })
-  dietary_restrictions: [{ types: String }];
-
-  @Prop({
-    required: true,
-  })
-  age: number | null;
-
-  @Prop({
-    required: true,
-  })
-  gender: string | null;
-
-  @Prop({
-    required: true,
-  })
-  race: string | null;
-
-  @Prop({
-    required: true,
-  })
-  ethnicity: string | null;
-
-  @Prop({
-    required: true,
-  })
-  first_gen: boolean | null;
-
-  @Prop({
-    required: true,
-  })
-  hear_about_rp: [{ type: String }];
+  dietary_restrictions: string;
 
   @Prop()
-  resume: string;
+  age: number | null;
+
+  @Prop()
+  gender: string | null;
+
+  @Prop()
+  race: [{ type: string }] | null;
+
+  @Prop()
+  ethnicity: string | null;
+
+  @Prop()
+  first_gen: string | null;
+
+  @Prop({
+    required: true,
+  })
+  hear_about_rp: [{ type: string }];
+
+  // @Prop()
+  // resume: string;
 
   @Prop()
   portfolio: string;
 
   @Prop()
-  linkedin: string;
+  job_interest: [{ type: string }];
 
   @Prop()
-  gpa: number;
-
-  @Prop()
-  occupation: String;
-
-  @Prop()
-  job_interest: [{ type: String }];
-
-  @Prop()
-  interest_mech_mania: boolean;
-
-  @Prop()
-  interest_puzzle_bang: boolean;
+  interest_mech_puzzle: [{ type: string }];
 }
 
 export const AttendeeSchema = SchemaFactory.createForClass(Attendee);
