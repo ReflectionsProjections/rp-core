@@ -13,12 +13,14 @@ export class AttendeeService {
 
   create(createAttendeeDto: CreateAttendeeDto) {
 
+    const university = createAttendeeDto.isUIUCStudent === 'yes' ? 'University of Illinois Urbana-Champaign' : createAttendeeDto.collegeName;
+
     const attendee = {
       name: createAttendeeDto.name,
       email: createAttendeeDto.email,
       //need to initialize studentInfo
       studentInfo: {
-        university: createAttendeeDto.collegeName,
+        university,
         graduation: createAttendeeDto.expectedGradYear,
         major: createAttendeeDto.major
       }, 
