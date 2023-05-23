@@ -12,34 +12,18 @@ export class AttendeeService {
   ) {}
 
   create(createAttendeeDto: CreateAttendeeDto) {
-    // const attendee = {
-    //   name: createEventDto.name,
-
-    //   email: createEventDto.email,
-
-    //   collegeInfo: null,
-
-    //   events: [],
-
-    //   dietary_restrictions: [],
-
-    //   age: 244,
-
-    //   gender: 'sad',
-
-    //   race: 'afsa',
-
-    //   ethnicity: false,
-
-    //   first_gen: false,
-    // };
 
     const attendee = {
       name: createAttendeeDto.name,
       email: createAttendeeDto.email,
       //need to initialize studentInfo
+      studentInfo: {
+        university: createAttendeeDto.collegeName,
+        graduation: createAttendeeDto.expectedGradYear,
+        major: createAttendeeDto.major
+      }, 
       occupation: createAttendeeDto.occupation,
-      //need to initialize events
+      events: [],
       dietary_restrictions: createAttendeeDto.food,
       age: createAttendeeDto.age,
       gender: createAttendeeDto.gender,

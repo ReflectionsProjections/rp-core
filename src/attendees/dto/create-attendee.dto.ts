@@ -22,26 +22,10 @@ export class CreateAttendeeDto {
   raceOther: string;
   firstGen: string;
   food: string;
-  //foodOther: string;
   jobTypeInterest: [ {type: string} ];
   portfolioLink: string;
   mechPuzzle: [ {type: string} ];
   marketing: [ {type: string} ];
   marketingOther: string;
-
-  // events: [{ type: MongooseSchema.Types.ObjectId; ref: 'Event' }];
-  // dietary_restrictions: [{ type: string}];
-
-  // age: number | null;
-  // gender: string | null;
-  // race: [{ type: string}];
-  // ethnicity: string | null;
-  // first_gen: string | null;
-  // hear_about_rp: [{ type: string }];
   
-  // portfolio: string | null;
-  // job_interest: [ {type: string } ];
-  // interest_mech_puzzle: [ {type: string }];
-  
-
 }
