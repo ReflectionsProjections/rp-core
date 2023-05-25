@@ -28,7 +28,7 @@ export class EventsService {
     return this.eventModel.updateOne({ _id: id }, updateEventDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} event`;
+  remove(id: string) {
+    return this.eventModel.deleteOne({ _id: id });
   }
 }
