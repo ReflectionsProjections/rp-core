@@ -14,7 +14,7 @@ export class CreateAttendeeDto {
   major: string;
   collegeName: string;
   expectedGradYear: string;
-  occupation: string;
+  //occupation: string;
   age: number | null;
   gender: string | null;
   ethnicity: string | null;

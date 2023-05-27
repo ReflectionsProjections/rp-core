@@ -38,8 +38,8 @@ export class Attendee {
     major: string | null;
   };
 
-  @Prop()
-  occupation: string;
+  // @Prop()
+  // occupation: string;
 
   @Prop({
     required: true,

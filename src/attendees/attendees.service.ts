@@ -24,7 +24,7 @@ export class AttendeeService {
         graduation: createAttendeeDto.expectedGradYear,
         major: createAttendeeDto.major
       }, 
-      occupation: createAttendeeDto.occupation,
+      //occupation: createAttendeeDto.occupation,
       events: [],
       dietary_restrictions: createAttendeeDto.food,
       age: createAttendeeDto.age,
