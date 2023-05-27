@@ -4,8 +4,7 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { EventsModule } from './events/events.module';
-import { AttendeesModule } from './attendees/attendees.module';
-import { EmailService } from './email/email.service';
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
@@ -14,8 +13,9 @@ import { EmailService } from './email/email.service';
     }),
     MongooseModule.forRoot(process.env.DATABASE_URL),
     EventsModule,
+    EmailModule,
   ],
   controllers: [AppController],
-  providers: [AppService, EmailService],
+  providers: [AppService],
 })
 export class AppModule {}
