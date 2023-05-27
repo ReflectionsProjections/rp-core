@@ -25,7 +25,6 @@ export class EventsController {
 
   @Patch(':id')
   update(@Param('id', MongoIdPipe) id: string, @Body() updateEventDto: UpdateEventDto) {
-    console.log(updateEventDto);
     return this.eventsService.update(id, updateEventDto);
   }
 
