@@ -20,8 +20,8 @@ export class EventsService {
     return this.eventModel.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} event`;
+  findOne(id: string) {
+    return this.eventModel.findOne({ _id: id });
   }
 
   update(id: string, updateEventDto: UpdateEventDto) {

@@ -19,8 +19,8 @@ export class EventsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.eventsService.findOne(+id);
+  findOne(@Param('id', MongoIdPipe) id: string) {
+    return this.eventsService.findOne(id);
   }
 
   @Patch(':id')
