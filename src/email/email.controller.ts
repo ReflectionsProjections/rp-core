@@ -5,6 +5,7 @@ import { EmailService } from './email.service';
 export class EmailController {
   constructor(private readonly emailService: EmailService) {}
 
+  // TODO: Remove this endpoint before going to prod!
   @Get()
   sendVerificationCodeExample() {
     const code = '135315';
