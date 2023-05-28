@@ -6,6 +6,7 @@ import * as SendGrid from '@sendgrid/mail';
 export class EmailService {
   private readonly logger = new Logger(EmailService.name);
   private defaultFrom = 'noreply@reflectionsprojections.org';
+  private basicTemplateId = 'd-44805d25aa9f45edaea5c02e4544e6d2';
 
   constructor(private readonly configService: ConfigService) {
     SendGrid.setApiKey(this.configService.get('SENDGRID_API_KEY'));
@@ -15,8 +16,12 @@ export class EmailService {
     this.send({
       from: this.defaultFrom,
       to,
-      text,
       subject,
+      templateId: this.basicTemplateId,
+      dynamicTemplateData: {
+        subject,
+        text,
+      },
     });
   }
 
