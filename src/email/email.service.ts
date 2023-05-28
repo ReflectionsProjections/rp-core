@@ -5,10 +5,10 @@ import * as SendGrid from '@sendgrid/mail';
 @Injectable()
 export class EmailService {
   private readonly logger = new Logger(EmailService.name);
-  private defaultFrom = 'noreply@reflectionsprojections.com';
+  private defaultFrom = 'noreply@reflectionsprojections.org';
 
   constructor(private readonly configService: ConfigService) {
-    SendGrid.setApiKey(this.configService.get('SEND_GRID_KEY'));
+    SendGrid.setApiKey(this.configService.get('SENDGRID_API_KEY'));
   }
 
   async sendBasicEmail({ to, subject, text }) {
