@@ -27,14 +27,14 @@ export class Attendee {
   @Prop(
     raw({
       university: { type: String, required: true },
-      graduation: { type: Date, default: null, required: true },
+      graduation: { type: String, default: null, required: true },
       major: { type: String, default: null, required: true },
     }),
   )
 
   studentInfo: {
     university: string;
-    graduation: Date | null;
+    graduation: string | null;
     major: string | null;
   };
 

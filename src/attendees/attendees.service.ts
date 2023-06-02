@@ -21,7 +21,7 @@ export class AttendeeService {
       //need to initialize studentInfo
       studentInfo: {
         university,
-        graduation: createAttendeeDto.expectedGradYear,
+        graduation: createAttendeeDto.expectedGradTerm + " " + createAttendeeDto.expectedGradYear,
         major: createAttendeeDto.major
       }, 
       //occupation: createAttendeeDto.occupation,
