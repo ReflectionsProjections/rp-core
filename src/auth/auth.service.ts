@@ -5,12 +5,14 @@ import { EmailService } from 'src/email/email.service';
 import { Verification } from './verifications.schema';
 const crypto = require('crypto');
 const bcrypt = require('bcrypt');
+import dayjs from 'dayjs';
 
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
 
   SALT_ROUNDS = 10;
+  PASSCODE_LIFESPAN_MIN = 10;
 
   constructor(
     @InjectModel(Verification.name)
@@ -42,8 +44,8 @@ export class AuthService {
       const result = await this.verificationModel.create({
         email,
         passcodeHash: hash,
-        expiresAt: new Date().toISOString(),
-        createdAt: new Date().toISOString(),
+        expiresAt: dayjs().add(this.PASSCODE_LIFESPAN_MIN, 'm').toISOString(),
+        createdAt: dayjs().toISOString(),
       });
 
       if (result) {
