@@ -32,6 +32,11 @@ export class Verification {
   @Prop({
     required: true,
   })
+  remainingAttempts: number;
+
+  @Prop({
+    required: true,
+  })
   passcodeHash: string;
 }
 

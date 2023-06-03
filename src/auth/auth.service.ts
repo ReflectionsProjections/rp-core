@@ -5,7 +5,7 @@ import { EmailService } from 'src/email/email.service';
 import { Verification } from './verifications.schema';
 const crypto = require('crypto');
 const bcrypt = require('bcrypt');
-import dayjs from 'dayjs';
+const dayjs = require('dayjs');
 
 @Injectable()
 export class AuthService {
@@ -13,6 +13,7 @@ export class AuthService {
 
   SALT_ROUNDS = 10;
   PASSCODE_LIFESPAN_MIN = 10;
+  ATTEMPTS_ALLOWED = 5;
 
   constructor(
     @InjectModel(Verification.name)
@@ -46,6 +47,7 @@ export class AuthService {
         passcodeHash: hash,
         expiresAt: dayjs().add(this.PASSCODE_LIFESPAN_MIN, 'm').toISOString(),
         createdAt: dayjs().toISOString(),
+        remainingAttempts: this.ATTEMPTS_ALLOWED,
       });
 
       if (result) {
@@ -71,16 +73,25 @@ export class AuthService {
     if (!result) {
       return {
         status: HttpStatus.NOT_FOUND,
-        reason: 'We did not send a one-time code to this address',
+        reason: 'No valid one-time codes exist for this email address',
       };
     }
 
     const match = await bcrypt.compare(passcode, result.passcodeHash);
 
     if (!match) {
+      if (result.remainingAttempts == 1) {
+        await this.verificationModel.deleteOne({ email });
+      } else {
+        await this.verificationModel.updateOne(
+          { email },
+          { remainingAttempts: result.remainingAttempts - 1 },
+        );
+      }
+
       return {
         status: HttpStatus.UNAUTHORIZED,
-        reason: 'This passcode is not correct',
+        reason: 'This passcode is incorrect',
       };
     } else {
       const response = await this.verificationModel.deleteOne({ email });
