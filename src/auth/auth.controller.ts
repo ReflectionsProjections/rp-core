@@ -5,6 +5,7 @@ import {
   HttpException,
   HttpStatus,
   Post,
+  Res,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { GeneratePasscodeDto } from './dto/generate-passcode.dto';
@@ -20,7 +21,10 @@ export class AuthController {
   }
 
   @Post('/verify')
-  async verifyPasscode(@Body() body: VerifyPasscodeDto) {
+  async verifyPasscode(
+    @Body() body: VerifyPasscodeDto,
+    @Res({ passthrough: true }) res,
+  ) {
     const { status, reason } = await this.authService.verifyPasscode(
       body.email,
       body.passcode,
@@ -29,6 +33,8 @@ export class AuthController {
     if (status != HttpStatus.OK) {
       throw new HttpException({ reason }, status);
     }
+
+    // Set cookie upon verification
   }
 
   @Post('/retry')
