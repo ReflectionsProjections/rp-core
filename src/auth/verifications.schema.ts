@@ -21,9 +21,8 @@ export class Verification {
 
   @Prop({
     required: true,
-    length: 6,
   })
-  passcode: string;
+  passcodeHash: string;
 }
 
 export const VerificationSchema = SchemaFactory.createForClass(Verification);
