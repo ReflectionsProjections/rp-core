@@ -16,8 +16,8 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('/generate')
-  generateVerificationPasscode(@Body() body: GeneratePasscodeDto) {
-    this.authService.generateVerificationPasscode(body.email);
+  async generateVerificationPasscode(@Body() body: GeneratePasscodeDto) {
+    await this.authService.generateVerificationPasscode(body.email);
   }
 
   @Post('/verify')
@@ -25,16 +25,17 @@ export class AuthController {
     @Body() body: VerifyPasscodeDto,
     @Res({ passthrough: true }) res,
   ) {
-    const { status, reason } = await this.authService.verifyPasscode(
+    const { status, message } = await this.authService.verifyPasscode(
       body.email,
       body.passcode,
     );
 
     if (status != HttpStatus.OK) {
-      throw new HttpException({ reason }, status);
+      throw new HttpException(message, status);
     }
 
     // Set cookie upon verification
+    return message;
   }
 
   @Post('/retry')

@@ -67,13 +67,13 @@ export class AuthService {
   async verifyPasscode(
     email: string,
     passcode: string,
-  ): Promise<{ status: number; reason: string }> {
+  ): Promise<{ status: number; message: string }> {
     const verifyInstance = await this.verificationModel.findOne({ email });
 
     if (!verifyInstance) {
       return {
         status: HttpStatus.NOT_FOUND,
-        reason: 'No valid one-time codes exist for this email address',
+        message: 'No valid one-time codes exist for this email address',
       };
     }
 
@@ -91,12 +91,12 @@ export class AuthService {
 
       return {
         status: HttpStatus.UNAUTHORIZED,
-        reason: 'This passcode is incorrect',
+        message: 'This passcode is incorrect',
       };
     } else {
       const response = await this.verificationModel.deleteOne({ email });
       if (response.deletedCount == 1) {
-        return { status: HttpStatus.OK, reason: 'Success' };
+        return { status: HttpStatus.OK, message: 'Success' };
       }
     }
   }
