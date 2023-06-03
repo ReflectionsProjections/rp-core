@@ -31,7 +31,7 @@ export class AuthService {
     // Create a secure six digit passcode
     const passcode = crypto.randomInt(100000, 999999).toString();
 
-    bcrypt.hash(passcode, this.SALT_ROUNDS, async (err, hash) => {
+    bcrypt.hash(passcode, this.SALT_ROUNDS, async (err, hash: string) => {
       if (err) {
         console.error('BCrypt hash failed!');
       }
@@ -45,17 +45,22 @@ export class AuthService {
       });
 
       if (result) {
-        console.log('Successfully created DB Verification entry');
-        this.emailService.sendBasicEmail({
-          to: email,
-          subject: `${passcode} is your R|P code`,
-          text: `Your one-time code is ${passcode}. This is valid for the next 10 minutes.`,
-        });
+        this.emailService
+          .sendBasicEmail({
+            to: email,
+            subject: `${passcode} is your R|P code`,
+            text: `Your one-time code is ${passcode}. This is valid for the next 10 minutes.`,
+          })
+          .then(() => {
+            console.log('Successfully sent verification email');
+          });
       }
     });
   }
 
-  verifyPasscode(email: string, passcode: string) {}
+  async verifyPasscode(email: string, passcode: string) {
+    const result = await this.verificationModel.findOne({ email });
+  }
 
   regenerateVerificationPasscode(email: string) {}
 
