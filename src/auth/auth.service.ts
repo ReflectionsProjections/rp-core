@@ -16,10 +16,13 @@ export class AuthService {
     private emailService: EmailService,
   ) {}
 
+  /**
+   * Generates a secure 6 digit one time passcode, stores an encrypted copy in DB, and sends it to the provided email.
+   *
+   * Rejects if a code has already been sent in the last 30 seconds.
+   * Does NOT Reject if email does not belong to registered user.
+   */
   async generateVerificationPasscode(email: string) {
-    // At this point there may or may not be an attendee object associated with this email
-    // We simply care about sending an email with the code.
-
     // TODO Reject if code has been generated within the last 30 seconds
 
     // Delete any old verification instances for this email
