@@ -8,7 +8,6 @@ export class AuthController {
 
   @Post('/generate')
   generateVerificationPasscode(@Body() body: GeneratePasscodeDto) {
-    // TODO: generateVerificationPasscode
     this.authService.generateVerificationPasscode(body.email);
   }
 
