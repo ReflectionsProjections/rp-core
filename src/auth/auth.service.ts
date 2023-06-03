@@ -1,13 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Verification } from './verifications.schema';
 import { Model } from 'mongoose';
 import { EmailService } from 'src/email/email.service';
+import { Verification } from './verifications.schema';
 const crypto = require('crypto');
 const bcrypt = require('bcrypt');
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   SALT_ROUNDS = 10;
 
   constructor(
@@ -33,7 +35,7 @@ export class AuthService {
 
     bcrypt.hash(passcode, this.SALT_ROUNDS, async (err, hash: string) => {
       if (err) {
-        console.error('BCrypt hash failed!');
+        this.logger.error('BCrypt hash failed!');
       }
 
       // TODO: Update expiredAt
@@ -52,14 +54,38 @@ export class AuthService {
             text: `Your one-time code is ${passcode}. This is valid for the next 10 minutes.`,
           })
           .then(() => {
-            console.log('Successfully sent verification email');
+            this.logger.log('Successfully sent verification email');
           });
       }
     });
   }
 
-  async verifyPasscode(email: string, passcode: string) {
+  async verifyPasscode(
+    email: string,
+    passcode: string,
+  ): Promise<{ status: number; reason: string }> {
+    // TODO Add limited number of attempts
     const result = await this.verificationModel.findOne({ email });
+    if (!result) {
+      return {
+        status: HttpStatus.NOT_FOUND,
+        reason: 'We did not send a one-time code to this address',
+      };
+    }
+
+    const match = await bcrypt.compare(passcode, result.passcodeHash);
+
+    if (!match) {
+      return {
+        status: HttpStatus.UNAUTHORIZED,
+        reason: 'This passcode is not correct',
+      };
+    } else {
+      const response = await this.verificationModel.deleteOne({ email });
+      if (response.deletedCount == 1) {
+        return { status: HttpStatus.OK, reason: 'Success' };
+      }
+    }
   }
 
   regenerateVerificationPasscode(email: string) {}

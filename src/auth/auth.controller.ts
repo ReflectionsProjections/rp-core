@@ -1,6 +1,14 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
-import { GeneratePasscodeDto } from './dto/generate-passcode.dto';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  Post,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { GeneratePasscodeDto } from './dto/generate-passcode.dto';
+import { VerifyPasscodeDto } from './dto/verify-passcode.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -12,8 +20,15 @@ export class AuthController {
   }
 
   @Post('/verify')
-  verifyPasscode() {
-    // TODO: verifyPasscode
+  async verifyPasscode(@Body() body: VerifyPasscodeDto) {
+    const { status, reason } = await this.authService.verifyPasscode(
+      body.email,
+      body.passcode,
+    );
+
+    if (status != HttpStatus.OK) {
+      throw new HttpException({ reason }, status);
+    }
   }
 
   @Post('/retry')
