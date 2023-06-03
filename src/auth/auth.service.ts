@@ -28,6 +28,8 @@ export class AuthService {
    *
    * Rejects if a code has already been sent in the last 30 seconds.
    * Does NOT Reject if email does not belong to registered user.
+   * @param email A valid email address
+   * @returns ServiceResponse object containing HTTP status code and message
    */
   async generateVerificationPasscode(email: string): Promise<ServiceResponse> {
     // Reject if passcode has been generated within the last 60 seconds
@@ -80,6 +82,14 @@ export class AuthService {
     return { status: HttpStatus.OK, message: 'Success' };
   }
 
+  /**
+   * Given an email and passcode, verifies if the passcode is correct.
+   * Decrements the number of tries left for each unsuccessful attempt
+   *
+   * @param email A valid email address
+   * @param passcode A 6 digit number string
+   * @returns ServiceResponse object containing HTTP status code and message
+   */
   async verifyPasscode(
     email: string,
     passcode: string,
