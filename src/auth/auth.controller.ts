@@ -24,7 +24,6 @@ export class AuthController {
       throw new HttpException(message, status);
     }
 
-    // Set cookie upon verification
     return message;
   }
 
@@ -42,7 +41,7 @@ export class AuthController {
       throw new HttpException(message, status);
     }
 
-    // Set cookie upon verification
+    // TODO Set cookie upon verification
     return message;
   }
 
