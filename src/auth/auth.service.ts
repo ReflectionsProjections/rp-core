@@ -17,7 +17,7 @@ export class AuthService {
   ) {}
 
   async generateVerificationPasscode(email: string) {
-    // At this point there may or may not be an attendee object.
+    // At this point there may or may not be an attendee object associated with this email
     // We simply care about sending an email with the code.
 
     // TODO Reject if code has been generated within the last 30 seconds
