@@ -46,11 +46,6 @@ export class AuthController {
     return message;
   }
 
-  @Post('/retry')
-  regenerateVerificationPasscode() {
-    // TODO: regenerateVerificationPasscode
-  }
-
   @Get('/me')
   getLoggedInUser() {
     // TODO: getLoggedInUser

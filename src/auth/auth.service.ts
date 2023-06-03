@@ -55,7 +55,6 @@ export class AuthService {
 
     const hash = await bcrypt.hash(passcode, this.SALT_ROUNDS);
 
-    // TODO: Update expiredAt
     const result = await this.verificationModel.create({
       email,
       passcodeHash: hash,
@@ -117,8 +116,6 @@ export class AuthService {
       }
     }
   }
-
-  regenerateVerificationPasscode(email: string) {}
 
   getLoggedInUser() {}
 }
