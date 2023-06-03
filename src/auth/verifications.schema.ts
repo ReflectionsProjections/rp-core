@@ -4,7 +4,7 @@ import { Schema as MongooseSchema } from 'mongoose';
 @Schema()
 export class Verification {
   @Prop({
-    required: true,
+    required: false,
   })
   user: { type: MongooseSchema.Types.ObjectId; ref: 'Attendee' };
 
