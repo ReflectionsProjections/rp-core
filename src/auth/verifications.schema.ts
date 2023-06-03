@@ -13,6 +13,7 @@ export class Verification {
 
   @Prop({
     required: true,
+    unique: true,
   })
   email: string;
 
