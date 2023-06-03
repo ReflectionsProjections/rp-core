@@ -17,7 +17,15 @@ export class AuthController {
 
   @Post('/generate')
   async generateVerificationPasscode(@Body() body: GeneratePasscodeDto) {
-    await this.authService.generateVerificationPasscode(body.email);
+    const { status, message } =
+      await this.authService.generateVerificationPasscode(body.email);
+
+    if (status != HttpStatus.OK) {
+      throw new HttpException(message, status);
+    }
+
+    // Set cookie upon verification
+    return message;
   }
 
   @Post('/verify')
