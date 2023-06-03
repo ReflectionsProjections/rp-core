@@ -68,24 +68,24 @@ export class AuthService {
     email: string,
     passcode: string,
   ): Promise<{ status: number; reason: string }> {
-    // TODO Add limited number of attempts
-    const result = await this.verificationModel.findOne({ email });
-    if (!result) {
+    const verifyInstance = await this.verificationModel.findOne({ email });
+
+    if (!verifyInstance) {
       return {
         status: HttpStatus.NOT_FOUND,
         reason: 'No valid one-time codes exist for this email address',
       };
     }
 
-    const match = await bcrypt.compare(passcode, result.passcodeHash);
+    const match = await bcrypt.compare(passcode, verifyInstance.passcodeHash);
 
     if (!match) {
-      if (result.remainingAttempts == 1) {
+      if (verifyInstance.remainingAttempts == 1) {
         await this.verificationModel.deleteOne({ email });
       } else {
         await this.verificationModel.updateOne(
           { email },
-          { remainingAttempts: result.remainingAttempts - 1 },
+          { remainingAttempts: verifyInstance.remainingAttempts - 1 },
         );
       }
 
