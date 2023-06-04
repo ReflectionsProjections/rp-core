@@ -11,10 +11,14 @@ import { AuthService } from './auth.service';
 import { GeneratePasscodeDto } from './dto/generate-passcode.dto';
 import { VerifyPasscodeDto } from './dto/verify-passcode.dto';
 import { Response } from 'express';
+import { JwtService } from '@nestjs/jwt';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private jwtService: JwtService,
+  ) {}
 
   @Post('/generate')
   async generateVerificationPasscode(@Body() body: GeneratePasscodeDto) {
@@ -44,8 +48,12 @@ export class AuthController {
 
     const development = process.env.ENV?.startsWith('dev');
 
-    // TODO Set cookie upon verification
-    res.cookie('token', 'blablabla', {
+    // TODO Add staff status to payload
+    const payload = { email: body.email };
+    const access_token = await this.jwtService.signAsync(payload);
+
+    // Set cookie upon verification
+    res.cookie('token', access_token, {
       httpOnly: true,
       secure: !development,
       sameSite: !development,
