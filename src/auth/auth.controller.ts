@@ -10,6 +10,7 @@ import {
 import { AuthService } from './auth.service';
 import { GeneratePasscodeDto } from './dto/generate-passcode.dto';
 import { VerifyPasscodeDto } from './dto/verify-passcode.dto';
+import { Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -30,7 +31,7 @@ export class AuthController {
   @Post('/verify')
   async verifyPasscode(
     @Body() body: VerifyPasscodeDto,
-    @Res({ passthrough: true }) res,
+    @Res({ passthrough: true }) res: Response,
   ) {
     const { status, message } = await this.authService.verifyPasscode(
       body.email,
@@ -41,12 +42,23 @@ export class AuthController {
       throw new HttpException(message, status);
     }
 
+    const development = process.env.ENV?.startsWith('dev');
+
     // TODO Set cookie upon verification
+    res.cookie('token', 'blablabla', {
+      httpOnly: true,
+      secure: !development,
+      sameSite: !development,
+    });
     return message;
   }
 
   @Get('/me')
-  getLoggedInUser() {
+  getLoggedInUser(@Res({ passthrough: true }) res: Response) {
     // TODO: getLoggedInUser
+
+    const development = process.env.ENV?.startsWith('dev');
+
+    return `uhh: development: ${process.env.ENV}`;
   }
 }
