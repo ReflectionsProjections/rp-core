@@ -5,13 +5,16 @@ import {
   HttpException,
   HttpStatus,
   Post,
+  Req,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { GeneratePasscodeDto } from './dto/generate-passcode.dto';
 import { VerifyPasscodeDto } from './dto/verify-passcode.dto';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
+import { AuthGuard } from './auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -62,11 +65,10 @@ export class AuthController {
   }
 
   @Get('/me')
-  getLoggedInUser(@Res({ passthrough: true }) res: Response) {
-    // TODO: getLoggedInUser
-
-    const development = process.env.ENV?.startsWith('dev');
-
-    return `uhh: development: ${process.env.ENV}`;
+  @UseGuards(AuthGuard)
+  getLoggedInUser(@Req() req: Request) {
+    // Attach additional user information as needed
+    // Lookup attendee based on their (unique) email
+    return req['user'];
   }
 }
