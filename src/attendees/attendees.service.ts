@@ -31,4 +31,8 @@ export class AttendeeService {
   remove(id: number) {
     return `This action removes a #${id} event`;
   }
+
+  addEvent(id: string, eventId: string) {
+    return this.eventModel.updateOne({ _id: id }, { $push: { events: eventId } });
+  }
 }
