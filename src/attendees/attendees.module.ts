@@ -13,6 +13,7 @@ import { AttendeeService } from './attendees.service';
   providers: [AttendeeService],
   exports: [
     MongooseModule.forFeature([{ name: Event.name, schema: AttendeeSchema }]),
+    AttendeeService,
   ],
 })
 export class AttendeesModule {}
