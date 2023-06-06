@@ -44,13 +44,11 @@ export class EventsService {
 
     try {
       await session.withTransaction(async () => {
-        await this.addAttendee(id, attendeeId);
-        await this.attendeeService.addEvent(attendeeId, id);
+        await this.addAttendee(id, attendeeId).session(session);
+        await this.attendeeService.addEvent(attendeeId, id).session(session);
       });
-
-      session.endSession();
     } finally {
-        session.endSession();
+      session.endSession();
     }
   }
 }
