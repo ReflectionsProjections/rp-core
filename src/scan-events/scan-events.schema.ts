@@ -16,7 +16,7 @@ export class ScanEvent {
   @Prop({
     required: true,
   })
-  timeCode: number;
+  scannedAt: number;
 }
 
 export const ScanEventSchema = SchemaFactory.createForClass(ScanEvent);

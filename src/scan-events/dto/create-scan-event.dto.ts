@@ -1,5 +1,5 @@
 export class CreateScanEventDto {
   userID: string;
   eventID: string;
-  timeCode: number;
+  scannedAt: number;
 }
