@@ -111,7 +111,7 @@ export class AuthService {
     if (!match) {
       await this.verificationModel.updateOne(
         { email },
-        { remainingAttempts: verifyInstance.remainingAttempts - 1 },
+        { $inc: { remainingAttempts: -1 } },
       );
 
       return {
