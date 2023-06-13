@@ -12,6 +12,7 @@ export class CreateAttendeeDto {
   isCollegeStudent: string;
   isUIUCStudent: string;
   major: string;
+  majorOther: string;
   collegeName: string;
   expectedGradTerm: string;
   expectedGradYear: string;
