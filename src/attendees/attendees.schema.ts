@@ -1,76 +1,74 @@
 import { Prop, Schema, SchemaFactory, raw } from '@nestjs/mongoose';
-import { HydratedDocument, Schema as MongooseSchema, Types, model } from 'mongoose';
-import { EventSchema } from 'src/events/event.schema';
+import { HydratedDocument, Schema as MongooseSchema } from 'mongoose';
 
-export type AttendeeDocument = HydratedDocument<Event>;
+export type AttendeeDocument = HydratedDocument<Attendee>;
 
 const studentInfo = new MongooseSchema({
-  university: {type: String, required: true},
-  graduation: {type: Date || null, required: true},
-  major: {type: String || null, required: true},
+  university: { type: String, required: true },
+  graduation: { type: Date || null, required: true },
+  major: { type: String || null, required: true },
 });
 
 @Schema()
 export class Attendee {
-  
-  Event = model('Event', EventSchema);
-
   @Prop({
-    required: true
+    required: true,
   })
   name: string;
 
   @Prop({
     required: true,
-    unique: true
+    unique: true,
   })
   email: string;
 
-  @Prop(raw({
-    studentInfo
-  }))
+  @Prop(
+    raw({
+      studentInfo,
+    }),
+  )
   collegeInfo: Record<string, any> | null;
 
   @Prop({
     required: true,
-    default: []
+    default: [],
   })
-  events: [{type: MongooseSchema.Types.ObjectId, ref: 'Event'}];
+  events: [{ type: MongooseSchema.Types.ObjectId; ref: 'Event' }];
 
   @Prop({
-    required: true
+    required: true,
   })
-  dietary_restrictions: [{types: String}];
+  dietary_restrictions: [{ types: String }];
 
   @Prop({
-    required: true
+    required: true,
   })
   age: number | null;
 
   @Prop({
-    required: true
+    required: true,
   })
   gender: string | null;
 
   @Prop({
-    required: true
+    required: true,
   })
   race: string | null;
 
   @Prop({
-    required: true
+    required: true,
   })
   ethnicity: string | null;
 
   @Prop({
-    required: true
+    required: true,
   })
   first_gen: boolean | null;
-  
+
   @Prop({
-    required: true
+    required: true,
   })
-  hear_about_rp: [{type: String}];
+  hear_about_rp: [{ type: String }];
 
   @Prop()
   resume: string;
@@ -88,14 +86,13 @@ export class Attendee {
   occupation: String;
 
   @Prop()
-  job_interest: [{type: String}];
+  job_interest: [{ type: String }];
 
   @Prop()
   interest_mech_mania: boolean;
 
   @Prop()
   interest_puzzle_bang: boolean;
-
 }
 
 export const AttendeeSchema = SchemaFactory.createForClass(Attendee);
