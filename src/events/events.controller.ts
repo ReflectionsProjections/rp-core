@@ -36,9 +36,6 @@ export class EventsController {
 
   @Post(':id/attendee')
   registerAttendee(@Param('id', MongoIdPipe) id: string, @Body() registerAttendeeDto: RegisterAttendeeDto) {
-    // console.log(id, registerAttendeeDto);
-    this.eventsService.register(id, registerAttendeeDto.id);
-    return {};
-    // return this.eventsService.register(id, registerAttendeeDto.id);
+    return this.eventsService.register(id, registerAttendeeDto.id);
   }
 }
