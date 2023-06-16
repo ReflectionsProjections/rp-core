@@ -34,13 +34,15 @@ export class AuthService {
   async generateVerificationPasscode(email: string): Promise<ServiceResponse> {
     // Reject if passcode has been generated within the last 60 seconds
     const existing = await this.verificationModel.findOne({ email });
+    let emailsSent = 0;
 
     if (existing) {
       const createdAt = dayjs(existing.createdAt);
       const now = dayjs();
       const ageInSeconds = now.diff(createdAt, 's');
+      emailsSent = existing.emailsSent;
 
-      if (ageInSeconds < this.COOLDOWN_SECONDS) {
+      if (ageInSeconds < 2 ** (emailsSent - 1) * this.COOLDOWN_SECONDS) {
         return {
           status: HttpStatus.TOO_MANY_REQUESTS,
           message:
@@ -63,6 +65,7 @@ export class AuthService {
       expiresAt: dayjs().add(this.PASSCODE_LIFESPAN_MIN, 'm').toISOString(),
       createdAt: dayjs().toISOString(),
       remainingAttempts: this.ATTEMPTS_ALLOWED,
+      emailsSent: ++emailsSent,
     });
 
     if (!result) {
@@ -96,7 +99,7 @@ export class AuthService {
   ): Promise<ServiceResponse> {
     const verifyInstance = await this.verificationModel.findOne({ email });
 
-    if (!verifyInstance) {
+    if (!verifyInstance || verifyInstance.remainingAttempts == 0) {
       return {
         status: HttpStatus.NOT_FOUND,
         message: 'No valid one-time codes exist for this email address',
@@ -106,14 +109,10 @@ export class AuthService {
     const match = await bcrypt.compare(passcode, verifyInstance.passcodeHash);
 
     if (!match) {
-      if (verifyInstance.remainingAttempts == 1) {
-        await this.verificationModel.deleteOne({ email });
-      } else {
-        await this.verificationModel.updateOne(
-          { email },
-          { remainingAttempts: verifyInstance.remainingAttempts - 1 },
-        );
-      }
+      await this.verificationModel.updateOne(
+        { email },
+        { $inc: { remainingAttempts: -1 } },
+      );
 
       return {
         status: HttpStatus.UNAUTHORIZED,
