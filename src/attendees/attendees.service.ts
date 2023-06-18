@@ -8,13 +8,18 @@ import { Attendee, AttendeeDocument } from './attendees.schema';
 @Injectable()
 export class AttendeeService {
   constructor(
-    @InjectModel(Attendee.name) private attendeeModel: Model<AttendeeDocument>,
+    @InjectModel(Attendee.name) private attendeeModel: Model<Attendee>,
   ) {}
 
   // create(createEventDto: CreateEventDto) {
   //   const newEvent = new this.eventModel(createEventDto);
   //   return newEvent.save();
   // }
+
+  async userEmailExists(email: string): Promise<boolean> {
+    const users = await this.attendeeModel.find({ email });
+    return users.length > 0;
+  }
 
   findAll() {
     return this.attendeeModel.find();

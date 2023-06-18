@@ -7,6 +7,7 @@ import { EventsModule } from './events/events.module';
 import { EmailModule } from './email/email.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
+import { AttendeesModule } from './attendees/attendees.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { JwtModule } from '@nestjs/jwt';
     EventsModule,
     EmailModule,
     AuthModule,
+    AttendeesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
