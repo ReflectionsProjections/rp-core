@@ -11,11 +11,6 @@ export class AttendeeService {
     @InjectModel(Attendee.name) private attendeeModel: Model<Attendee>,
   ) {}
 
-  // create(createEventDto: CreateEventDto) {
-  //   const newEvent = new this.eventModel(createEventDto);
-  //   return newEvent.save();
-  // }
-
   async userEmailExists(email: string): Promise<boolean> {
     const users = await this.attendeeModel.find({ email });
     return users.length > 0;
@@ -28,10 +23,6 @@ export class AttendeeService {
   findOne(id: number) {
     return this.attendeeModel.find({ id });
   }
-
-  // update(id: number, updateEventDto: UpdateEventDto) {
-  //   return `This action updates a #${id} event`;
-  // }
 
   remove(id: number) {
     return `This action removes a #${id} event`;
