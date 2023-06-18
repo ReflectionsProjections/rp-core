@@ -20,19 +20,19 @@ export class AttendeeService {
     return this.attendeeModel.find();
   }
 
-  findOne(id: number) {
-    return this.attendeeModel.find({ id });
+  findOne(id: string) {
+    return this.attendeeModel.find({ _id: id });
   }
 
   // update(id: number, updateEventDto: UpdateEventDto) {
   //   return `This action updates a #${id} event`;
   // }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} event`;
   }
 
   addEvent(id: string, eventId: string) {
-    return this.eventModel.updateOne({ _id: id }, { $push: { events: eventId } });
+    return this.attendeeModel.updateOne({ _id: id }, { $push: { events: eventId } });
   }
 }

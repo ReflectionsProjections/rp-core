@@ -28,7 +28,7 @@ export class AttendeeController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.attendeeService.findOne(+id);
+    return this.attendeeService.findOne(id);
   }
 
   // @Patch(':id')
@@ -38,6 +38,6 @@ export class AttendeeController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.attendeeService.remove(+id);
+    return this.attendeeService.remove(id);
   }
 }
