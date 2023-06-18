@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, HttpException } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
@@ -35,7 +35,13 @@ export class EventsController {
   }
 
   @Post(':id/attendee')
-  registerAttendee(@Param('id', MongoIdPipe) id: string, @Body() registerAttendeeDto: RegisterAttendeeDto) {
-    return this.eventsService.register(id, registerAttendeeDto.id);
+  async registerAttendee(@Param('id', MongoIdPipe) id: string, @Body() registerAttendeeDto: RegisterAttendeeDto) {
+    const { status, message } = await this.eventsService.register(id, registerAttendeeDto.id);
+
+    if (status != HttpStatus.ACCEPTED) {
+      throw new HttpException(message, status);
+    }
+
+    return { status, message };
   }
 }

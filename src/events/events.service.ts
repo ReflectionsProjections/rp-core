@@ -1,4 +1,4 @@
-import { HttpException, Injectable, Inject } from '@nestjs/common';
+import { HttpException, Injectable, Inject, HttpStatus } from '@nestjs/common';
 import { InjectModel, InjectConnection } from '@nestjs/mongoose';
 import { Model, Connection } from 'mongoose';
 import { CreateEventDto } from './dto/create-event.dto';
@@ -44,15 +44,15 @@ export class EventsService {
 
     try {
       await session.withTransaction(async () => {
-         if (!(await this.eventModel.findOne({ _id: id }))) throw new HttpException("Event id does not exist", 400);
-        if (!(await this.attendeeService.findOne({ _id: id }))) throw new HttpException("Attendee id does not exist", 400);
+        if (!(await this.eventModel.findOne({ _id: id }))) return { status: HttpStatus.BAD_REQUEST, message: "event id does not exist" };
+        if (!(await this.attendeeService.findOne(attendeeId))) return { status: HttpStatus.BAD_REQUEST, message: "attendee id does not exist" };
         await this.addAttendee(id, attendeeId).session(session);
         await this.attendeeService.addEvent(attendeeId, id).session(session);
       });
     } finally {
-      session.endSession();
+        session.endSession();
     }
 
-    return { message: "Success" };
+    return { status: HttpStatus.ACCEPTED, message: "attendee registered for event" };
   }
 }
