@@ -8,6 +8,7 @@ import { EmailModule } from './email/email.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
 import { AttendeesModule } from './attendees/attendees.module';
+import { S3ModuleModule } from './s3-module/s3-module.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { AttendeesModule } from './attendees/attendees.module';
     }),
     EmailModule,
     AuthModule,
+    S3ModuleModule,
   ],
   controllers: [AppController],
   providers: [AppService],
