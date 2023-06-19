@@ -72,12 +72,15 @@ export class AuthController {
     const access_token = await this.jwtService.signAsync(payload);
 
     // Set cookie upon verification
-    res.cookie('token', access_token, {
-      httpOnly: true,
-      secure: !development,
-      sameSite: !development,
-    });
-    return message;
+    res
+      .status(200)
+      .cookie('token', access_token, {
+        httpOnly: true,
+        secure: !development,
+        sameSite: development ? 'lax' : 'strict',
+        path: '/',
+      })
+      .send(message);
   }
 
   @Get('/me')
