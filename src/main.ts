@@ -13,7 +13,7 @@ async function bootstrap() {
     origin: 'http://localhost:5173',
     allowedHeaders: ['Content-Type', 'Set-Cookie'],
   });
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   await app.listen(3000);
 }
 bootstrap();
