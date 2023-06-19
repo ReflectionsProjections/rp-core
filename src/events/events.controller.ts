@@ -32,4 +32,9 @@ export class EventsController {
   remove(@Param('id', MongoIdPipe) id: string) {
     return this.eventsService.remove(id);
   }
+
+  @Get('/schedule/days') 
+  schedule() {
+    return this.eventsService.schedule();
+  }
 }
