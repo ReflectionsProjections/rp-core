@@ -1,4 +1,5 @@
 .env
+/documentation
 
 # compiled output
 /dist

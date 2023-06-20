@@ -20,15 +20,15 @@ export class EventsService {
     return this.eventModel.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} event`;
+  findOne(id: string) {
+    return this.eventModel.findOne({ _id: id });
   }
 
-  update(id: number, updateEventDto: UpdateEventDto) {
-    return `This action updates a #${id} event`;
+  update(id: string, updateEventDto: UpdateEventDto) {
+    return this.eventModel.updateOne({ _id: id }, updateEventDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} event`;
+  remove(id: string) {
+    return this.eventModel.deleteOne({ _id: id });
   }
 }

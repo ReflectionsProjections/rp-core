@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  NotFoundException,
 } from '@nestjs/common';
 import { AttendeeService } from './attendees.service';
 // import { EventsService } from './events.service';
@@ -19,6 +20,20 @@ export class AttendeeController {
   @Post()
   create(@Body() createAttendeeDto: CreateAttendeeDto) {
     return this.attendeesService.create(createAttendeeDto);
+  }
+
+  @Get('/email/:email')
+  /**
+   * This function checks if a user with a given email exists.
+   * Throws NotFoundException if they do not.
+   *
+   * @param {string} email - Represents the email address of a user
+   */
+  async checkUserExists(@Param('email') email: string) {
+    const userExists = await this.attendeesService.userEmailExists(email);
+    if (!userExists) {
+      throw new NotFoundException('User with that email does not exist.');
+    }
   }
 
   @Get()

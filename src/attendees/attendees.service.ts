@@ -40,6 +40,11 @@ export class AttendeeService {
     };
     const newAttendee = new this.attendeeModel(attendee);
     return newAttendee.save();
+   }
+
+  async userEmailExists(email: string): Promise<boolean> {
+    const users = await this.attendeeModel.find({ email });
+    return users.length > 0;
   }
 
   findAll() {
@@ -47,7 +52,7 @@ export class AttendeeService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} event`;
+    return this.attendeeModel.find({ id });
   }
 
   update(id: number, updateAttendeeDto: UpdateAttendeeDto) {
