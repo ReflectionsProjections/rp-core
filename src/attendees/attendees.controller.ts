@@ -9,35 +9,35 @@ import {
 } from '@nestjs/common';
 import { AttendeeService } from './attendees.service';
 // import { EventsService } from './events.service';
-// import { CreateEventDto } from './dto/create-event.dto';
-// import { UpdateEventDto } from './dto/update-event.dto';
+import { CreateAttendeeDto } from './dto/create-attendee.dto';
+import { UpdateAttendeeDto } from './dto/update-attendee.dto';
 
 @Controller('attendee')
 export class AttendeeController {
-  constructor(private readonly attendeeService: AttendeeService) {}
+  constructor(private readonly attendeesService: AttendeeService) {}
 
-  // @Post()
-  // create(@Body() createEventDto: CreateEventDto) {
-  //   return this.eventsService.create(createEventDto);
-  // }
+  @Post()
+  create(@Body() createAttendeeDto: CreateAttendeeDto) {
+    return this.attendeesService.create(createAttendeeDto);
+  }
 
   @Get()
   findAll() {
-    return this.attendeeService.findAll();
+    return this.attendeesService.findAll();
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.attendeeService.findOne(+id);
+    return this.attendeesService.findOne(+id);
   }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateEventDto: UpdateEventDto) {
-  //   return this.eventsService.update(+id, updateEventDto);
-  // }
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateAttendeeDto: UpdateAttendeeDto) {
+    return this.attendeesService.update(+id, updateAttendeeDto);
+  }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.attendeeService.remove(+id);
+    return this.attendeesService.remove(+id);
   }
 }
