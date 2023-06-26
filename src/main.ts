@@ -9,7 +9,7 @@ async function bootstrap() {
   app.use(helmet());
   app.use(cookieParser());
   app.enableCors();
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+  //app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   await app.listen(3000);
 }
 bootstrap();

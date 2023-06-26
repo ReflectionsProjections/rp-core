@@ -38,6 +38,11 @@ export class Verification {
     required: true,
   })
   passcodeHash: string;
+
+  @Prop({
+    required: true,
+  })
+  emailsSent: number;
 }
 
 export const VerificationSchema = SchemaFactory.createForClass(Verification);
