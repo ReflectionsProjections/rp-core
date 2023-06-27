@@ -34,7 +34,7 @@ export class EventsController {
     return this.eventsService.remove(id);
   }
 
-  @Post(':id/attendee')
+  @Put(':id/attendee')
   async registerAttendee(@Param('id', MongoIdPipe) id: string, @Body() registerAttendeeDto: RegisterAttendeeDto) {
     const { status, message } = await this.eventsService.register(id, registerAttendeeDto.id);
 

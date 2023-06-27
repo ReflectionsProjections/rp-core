@@ -32,7 +32,7 @@ export class AttendeeService {
     return `This action removes a #${id} event`;
   }
 
-  addEvent(id: string, eventId: string) {
-    return this.attendeeModel.updateOne({ _id: id }, { $push: { events: eventId } });
+  addEventAttendance(id: string, eventId: string) {
+    return this.attendeeModel.updateOne({ _id: id }, { $addToSet: { events: eventId } });
   }
 }

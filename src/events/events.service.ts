@@ -36,10 +36,10 @@ export class EventsService {
   }
 
   addAttendee(id: string, attendeeId: string) {
-    return this.eventModel.updateOne({ _id: id }, { $push: { attendees: attendeeId } });
+    return this.eventModel.updateOne({ _id: id }, { $addToSet: { attendees: attendeeId } });
   }
 
-  async register(id: string, attendeeId: string) {
+  async registerAttendance(id: string, attendeeId: string) {
     const session = await this.connection.startSession();
 
     try {
@@ -47,7 +47,7 @@ export class EventsService {
         if (!(await this.eventModel.findOne({ _id: id }))) return { status: HttpStatus.BAD_REQUEST, message: "event id does not exist" };
         if (!(await this.attendeeService.findOne(attendeeId))) return { status: HttpStatus.BAD_REQUEST, message: "attendee id does not exist" };
         await this.addAttendee(id, attendeeId).session(session);
-        await this.attendeeService.addEvent(attendeeId, id).session(session);
+        await this.attendeeService.addEventAttendance(attendeeId, id).session(session);
       });
     } finally {
         session.endSession();
