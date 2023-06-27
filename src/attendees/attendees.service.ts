@@ -8,12 +8,19 @@ import { Attendee, AttendeeDocument } from './attendees.schema';
 @Injectable()
 export class AttendeeService {
   constructor(
-    @InjectModel(Attendee.name) private attendeeModel: Model<AttendeeDocument>,
+    @InjectModel(Attendee.name) private attendeeModel: Model<Attendee>,
   ) {}
 
-  create(createAttendeeDto: CreateAttendeeDto) {
+  async userEmailExists(email: string): Promise<boolean> {
+    const users = await this.attendeeModel.find({ email });
+    return users.length > 0;
+  }
 
-    const university = createAttendeeDto.isUIUCStudent === 'yes' ? 'University of Illinois Urbana-Champaign' : createAttendeeDto.collegeName;
+  create(createAttendeeDto: CreateAttendeeDto) {
+    const university =
+      createAttendeeDto.isUIUCStudent === 'yes'
+        ? 'University of Illinois Urbana-Champaign'
+        : createAttendeeDto.collegeName;
 
     const attendee = {
       name: createAttendeeDto.name,
@@ -21,9 +28,12 @@ export class AttendeeService {
       //need to initialize studentInfo
       studentInfo: {
         university,
-        graduation: createAttendeeDto.expectedGradTerm + " " + createAttendeeDto.expectedGradYear,
-        major: createAttendeeDto.major
-      }, 
+        graduation:
+          createAttendeeDto.expectedGradTerm +
+          ' ' +
+          createAttendeeDto.expectedGradYear,
+        major: createAttendeeDto.major,
+      },
       //occupation: createAttendeeDto.occupation,
       events: [],
       dietary_restrictions: createAttendeeDto.food,
@@ -32,11 +42,13 @@ export class AttendeeService {
       race: [createAttendeeDto.race, createAttendeeDto.raceOther], //Not sure if this is the right syntax
       ethnicity: createAttendeeDto.ethnicity,
       first_gen: createAttendeeDto.firstGen,
-      hear_about_rp: [createAttendeeDto.marketing, createAttendeeDto.marketingOther], //again, not sure if this is the right syntax
+      hear_about_rp: [
+        createAttendeeDto.marketing,
+        createAttendeeDto.marketingOther,
+      ], //again, not sure if this is the right syntax
       portfolio: createAttendeeDto.portfolioLink,
       job_interest: createAttendeeDto.jobTypeInterest,
-      interest_mech_puzzle: createAttendeeDto.mechPuzzle
-
+      interest_mech_puzzle: createAttendeeDto.mechPuzzle,
     };
     const newAttendee = new this.attendeeModel(attendee);
     return newAttendee.save();
@@ -59,6 +71,9 @@ export class AttendeeService {
   }
 
   addEventAttendance(id: string, eventId: string) {
-    return this.attendeeModel.updateOne({ _id: id }, { $addToSet: { events: eventId } });
+    return this.attendeeModel.updateOne(
+      { _id: id },
+      { $addToSet: { events: eventId } },
+    );
   }
 }

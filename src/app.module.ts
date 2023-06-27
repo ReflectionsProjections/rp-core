@@ -26,17 +26,19 @@ import { AttendeesModule } from './attendees/attendees.module';
     }),
     EmailModule,
     AuthModule,
+    AttendeesModule,
     ThrottlerModule.forRoot({
       ttl: 60,
       limit: 10,
-    })
+    }),
   ],
   controllers: [AppController],
-  providers: [AppService,
+  providers: [
+    AppService,
     {
       provide: APP_GUARD,
-      useClass: ThrottlerGuard
-    }
+      useClass: ThrottlerGuard,
+    },
   ],
 })
 export class AppModule {}
