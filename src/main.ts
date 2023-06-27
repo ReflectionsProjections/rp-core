@@ -10,10 +10,11 @@ async function bootstrap() {
   app.use(cookieParser());
   app.enableCors({
     credentials: true,
-    origin: 'http://localhost:5173',
+    origin: ['http://localhost:5173', 'http://dev.reflectionsprojections.org'],
     allowedHeaders: ['Content-Type', 'Set-Cookie'],
   });
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+  // TODO: Look into interference with dto validation
+  // app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   await app.listen(3000);
 }
 bootstrap();
