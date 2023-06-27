@@ -1,8 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { MongoIdPipe } from '../mongo-id/mongo-id.pipe';
+import { RoleLevel } from '../roles/role.enum';
+import { Roles } from '../roles/role.decorator';
+import { RolesGuard } from '../roles/role.guard';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('events')
 export class EventsController {
@@ -24,6 +28,8 @@ export class EventsController {
   }
 
   @Patch(':id')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(RoleLevel.Admin)
   update(@Param('id', MongoIdPipe) id: string, @Body() updateEventDto: UpdateEventDto) {
     return this.eventsService.update(id, updateEventDto);
   }
