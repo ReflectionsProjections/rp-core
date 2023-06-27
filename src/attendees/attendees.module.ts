@@ -16,6 +16,7 @@ import { AttendeeService } from './attendees.service';
     MongooseModule.forFeature([
       { name: Attendee.name, schema: AttendeeSchema },
     ]),
+    AttendeeService,
   ],
 })
 export class AttendeesModule {}

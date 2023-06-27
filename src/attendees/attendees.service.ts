@@ -46,15 +46,19 @@ export class AttendeeService {
     return this.attendeeModel.find();
   }
 
-  findOne(id: number) {
-    return this.attendeeModel.find({ id });
+  findOne(id: string) {
+    return this.attendeeModel.find({ _id: id });
   }
 
   update(id: number, updateAttendeeDto: UpdateAttendeeDto) {
     return `This action updates a #${id} event`;
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} event`;
+  }
+
+  addEventAttendance(id: string, eventId: string) {
+    return this.attendeeModel.updateOne({ _id: id }, { $addToSet: { events: eventId } });
   }
 }
