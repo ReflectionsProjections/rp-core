@@ -1,19 +1,18 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
-import { RoleLevel } from './role.enum';
+import { RoleLevel } from './roles.enum';
 
 export type RoleDocument = HydratedDocument<Role>;
-
 
 @Schema()
 export class Role {
   @Prop({
-    required: true
+    required: true,
   })
   email: string;
 
   @Prop({
-    required: true
+    required: true,
   })
   role: RoleLevel;
 }
