@@ -3,7 +3,7 @@ import { EventsService } from './events.service';
 import { EventsController } from './events.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Event, EventSchema } from './event.schema';
-import { RolesModule } from 'src/roles/roles.module';
+import { RolesModule } from '../roles/roles.module';
 import { AttendeesModule } from '../attendees/attendees.module';
 
 @Module({

@@ -5,7 +5,7 @@ import {
   Types,
   model,
 } from 'mongoose';
-import { EventSchema } from 'src/events/event.schema';
+import { EventSchema } from '../events/event.schema';
 
 export type AttendeeDocument = HydratedDocument<Event>;
 
