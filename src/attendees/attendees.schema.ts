@@ -8,7 +8,7 @@ import {
 import { EventSchema } from 'src/events/event.schema';
 
 export type AttendeeDocument = HydratedDocument<Event>;
- 
+
 @Schema()
 export class Attendee {
   Event = model('Event', EventSchema);
@@ -31,7 +31,6 @@ export class Attendee {
       major: { type: String, default: null, required: true },
     }),
   )
-
   studentInfo: {
     university: string;
     graduation: string | null;

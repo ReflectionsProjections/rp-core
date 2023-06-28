@@ -6,7 +6,6 @@ import {
 } from 'mongoose';
 
 export class CreateAttendeeDto {
-
   name: string;
   email: string;
   isCollegeStudent: string;
@@ -24,10 +23,9 @@ export class CreateAttendeeDto {
   raceOther: string;
   firstGen: string;
   food: string;
-  jobTypeInterest: [ {type: string} ];
+  jobTypeInterest: [{ type: string }];
   portfolioLink: string;
-  mechPuzzle: [ {type: string} ];
-  marketing: [ {type: string} ];
+  mechPuzzle: [{ type: string }];
+  marketing: [{ type: string }];
   marketingOther: string;
-  
 }

@@ -1,5 +1,4 @@
 export enum RoleLevel {
-  Admin = "Admin",
-  Corporate = "Corporate",
-};
-
+  Admin = 'Admin',
+  Corporate = 'Corporate',
+}

@@ -36,7 +36,10 @@ export class EventsService {
   }
 
   addAttendee(id: string, attendeeId: string) {
-    return this.eventModel.updateOne({ _id: id }, { $addToSet: { attendees: attendeeId } });
+    return this.eventModel.updateOne(
+      { _id: id },
+      { $addToSet: { attendees: attendeeId } },
+    );
   }
 
   async registerAttendance(id: string, attendeeId: string) {
@@ -44,15 +47,28 @@ export class EventsService {
 
     try {
       await session.withTransaction(async () => {
-        if (!(await this.eventModel.findOne({ _id: id }))) return { status: HttpStatus.BAD_REQUEST, message: "event id does not exist" };
-        if (!(await this.attendeeService.findOne(attendeeId))) return { status: HttpStatus.BAD_REQUEST, message: "attendee id does not exist" };
+        if (!(await this.eventModel.findOne({ _id: id })))
+          return {
+            status: HttpStatus.BAD_REQUEST,
+            message: 'event id does not exist',
+          };
+        if (!(await this.attendeeService.findOne(attendeeId)))
+          return {
+            status: HttpStatus.BAD_REQUEST,
+            message: 'attendee id does not exist',
+          };
         await this.addAttendee(id, attendeeId).session(session);
-        await this.attendeeService.addEventAttendance(attendeeId, id).session(session);
+        await this.attendeeService
+          .addEventAttendance(attendeeId, id)
+          .session(session);
       });
     } finally {
-        session.endSession();
+      session.endSession();
     }
 
-    return { status: HttpStatus.ACCEPTED, message: "attendee registered for event" };
+    return {
+      status: HttpStatus.ACCEPTED,
+      message: 'attendee registered for event',
+    };
   }
 }
