@@ -1,12 +1,17 @@
 import { Module } from '@nestjs/common';
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
+import { S3ModuleService } from './s3-module.service';
+import { S3ModuleController } from './s3-module.controller';
 import * as AWS from "aws-sdk";
 
 const client = new S3Client({})
 
 
-@Module({})
+@Module({
+  controllers: [S3ModuleController],
+  providers: [S3ModuleService]
+})
 export class S3ModuleModule {
   AWS_S3_BUCKET = process.env.AWS_S3_BUCKET;
   s3 = new AWS.S3
