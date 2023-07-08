@@ -29,7 +29,7 @@ import { S3ModuleModule } from './s3-module/s3-module.module';
     }),
     EmailModule,
     AuthModule,
-    S3ModuleModule,
+    S3ModuleModule
   ],
   controllers: [AppController],
   providers: [AppService],
