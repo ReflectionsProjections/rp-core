@@ -1,8 +1,9 @@
-name: Build test for Node.js
+name: CI Test Suite for RP Core 
 
 on:
   push:
-    branches: [main]
+    branches: 
+      - '*'
   pull_request:
     branches: [main]
 
@@ -16,6 +17,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '16.x'
-      - run: yarn
-      - run: yarn build
-      # - run: yarn test # Pending playwright test suite
+      - run: yarn install --frozen-lockfile
+      - name: Run Jest tests with coverage report
+        uses: ArtiomTr/jest-coverage-report-action@v2
