@@ -18,7 +18,7 @@ jobs:
         with:
           node-version: '16.x'
       - name: Install dependencies
-        run: yarn  
+        run: yarn --frozen-lockfile
       - name: Create env file
         run: |
           touch .env
