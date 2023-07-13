@@ -106,6 +106,21 @@ export class AuthService {
       };
     }
 
+    const expiresAt = dayjs(verifyInstance.expiresAt);
+    const isValid = dayjs().isBefore(expiresAt);
+
+    if (!isValid) {
+      const response = await this.verificationModel.deleteOne({ email });
+      if (response.deletedCount == 1) {
+        return {
+          status: HttpStatus.GONE,
+          message: 'This passcode has expired. Try generating a new code.',
+        };
+      } else {
+        throw new Error('Database delete failed on /auth/verify');
+      }
+    }
+
     const match = await bcrypt.compare(passcode, verifyInstance.passcodeHash);
 
     if (!match) {
@@ -121,7 +136,7 @@ export class AuthService {
     } else {
       const response = await this.verificationModel.deleteOne({ email });
       if (response.deletedCount == 1) {
-        return { status: HttpStatus.OK, message: 'Success' };
+        return { status: HttpStatus.OK, message: 'Successfully verified!' };
       }
     }
   }
