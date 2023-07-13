@@ -3,7 +3,8 @@ name: CI Test Suite for RP Core
 on:
   push:
     branches: 
-      - '*'
+      - 'main'
+      - 'test**'
   pull_request:
     branches: [main]
 
@@ -24,3 +25,7 @@ jobs:
           echo JWT_SECRET='${{ vars.JWT_SECRET }}' >> .env
       - name: Run Jest tests with coverage report
         uses: ArtiomTr/jest-coverage-report-action@v2
+        with:
+          package-manager: yarn
+          test-script: yarn jest --ci --json --coverage --testLocationInResults --outputFile=report.json --forceExit
+          annotations: failed-tests
