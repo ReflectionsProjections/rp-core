@@ -20,7 +20,7 @@ jobs:
       - name: Create env file
         run: |
           touch .env
-          echo DATABASE_URL=${{ vars.DATABASE_URL }} >> .env
-          echo JWT_SECRET=${{ vars.JWT_SECRET }} >> .env
+          echo DATABASE_URL='${{ vars.DATABASE_URL }}' >> .env
+          echo JWT_SECRET='${{ vars.JWT_SECRET }}' >> .env
       - name: Run Jest tests with coverage report
         uses: ArtiomTr/jest-coverage-report-action@v2
