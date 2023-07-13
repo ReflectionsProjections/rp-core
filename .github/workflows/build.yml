@@ -17,8 +17,6 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '16.x'
-      - name: Install dependencies
-        run: yarn --frozen-lockfile
       - name: Create env file
         run: |
           touch .env
@@ -27,6 +25,5 @@ jobs:
       - name: Run Jest tests with Coverage Report
         uses: ArtiomTr/jest-coverage-report-action@v2
         with:
-          skip-step: install
           annotations: failed-tests
           test-script: npx jest --ci --json --coverage --testLocationInResults --outputFile=report.json --forceExit
