@@ -1,48 +1,46 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Schema as MongooseSchema, model} from 'mongoose';
+import { HydratedDocument, Schema as MongooseSchema, model } from 'mongoose';
 import { AttendeeSchema } from 'src/attendees/attendees.schema';
 
 export type EventDocument = HydratedDocument<Event>;
 
-
 @Schema()
 export class Event {
-
   Attendee = model('Attendee', AttendeeSchema);
 
   @Prop({
-    required: true
+    required: true,
   })
   name: string;
 
   @Prop({
-    required: true
+    required: true,
   })
   description: string;
 
   @Prop({
-    required: true
+    required: true,
   })
   start_time: Date;
 
   @Prop({
-    required: true
+    required: true,
   })
   duration: Number;
 
   @Prop({
     required: true,
-    default: []
+    default: [],
   })
-  attendees: [{type: MongooseSchema.Types.ObjectId, ref: 'Attendee'}];
+  attendees: [{ type: MongooseSchema.Types.ObjectId; ref: 'Attendee' }];
 
   @Prop({
-    required: true
+    required: true,
   })
   location: string;
 
   @Prop({
-    required: true
+    required: true,
   })
   virtual: boolean;
 }

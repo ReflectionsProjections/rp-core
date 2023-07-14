@@ -10,6 +10,8 @@ import { EmailModule } from './email/email.module';
 import { EventsModule } from './events/events.module';
 import { AttendeesModule } from './attendees/attendees.module';
 import { S3ModuleModule } from './s3-module/s3-module.module';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -17,8 +19,8 @@ import { S3ModuleModule } from './s3-module/s3-module.module';
       isGlobal: true,
     }),
     MongooseModule.forRoot(process.env.DATABASE_URL),
-    MulterModule.register({ // Add MulterModule configuration
-      dest: './uploads', // Specify the destination directory for uploaded files
+    MulterModule.register({
+      dest: './uploads',
     }),
     EventsModule,
     AttendeesModule,
@@ -29,9 +31,19 @@ import { S3ModuleModule } from './s3-module/s3-module.module';
     }),
     EmailModule,
     AuthModule,
-    S3ModuleModule
+    S3ModuleModule,
+    ThrottlerModule.forRoot({
+      ttl: 60,
+      limit: 10,
+    }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {}
