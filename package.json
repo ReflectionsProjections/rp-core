@@ -42,7 +42,8 @@
     "luxon": "^3.3.0",
     "mongoose": "^7.3.4",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "^7.2.0"
+    "rxjs": "^7.2.0",
+    "throttler": "^0.0.1"
   },
   "devDependencies": {
     "@compodoc/compodoc": "^1.1.21",

@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateAttendeeDto } from './dto/create-attendee.dto';
 import { UpdateAttendeeDto } from './dto/update-attendee.dto';
-import { Attendee, AttendeeDocument } from './attendees.schema';
+import { Attendee } from './attendees.schema';
 
 @Injectable()
 export class AttendeeService {
@@ -51,7 +51,11 @@ export class AttendeeService {
       interest_mech_puzzle: createAttendeeDto.mechPuzzle,
     };
     const newAttendee = new this.attendeeModel(attendee);
-    return newAttendee.save();
+    return newAttendee.save()
+    .then((createdAttendee) => {
+      console.log(createdAttendee._id); // Print the ID to the console
+      return createdAttendee;
+    });
   }
 
   findAll() {
