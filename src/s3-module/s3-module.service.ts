@@ -11,10 +11,6 @@ export class S3ModuleService {
     this.bucket = process.env.AWS_S3_BUCKET;
     this.accessKeyId = process.env.AWS_ACCESS_KEY_ID;
     this.secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
-
-    console.log('BUCKET: ' + this.bucket);
-    console.log('ACCESS: ' + this.accessKeyId);
-    console.log('SECRET: ' + this.secretAccessKey);
   }
 
   async uploadFile(file: Express.Multer.File, bucket: string, attendeeID: string) {
@@ -33,10 +29,8 @@ export class S3ModuleService {
 
     try {
       const s3Response = await this.s3Client.send(new PutObjectCommand(params));
-      console.log(s3Response);
       return { success: true, message: 'File uploaded successfully', key };
     } catch (error) {
-      console.log(error);
       throw new Error('Failed to upload file to S3');
     }
   }
