@@ -10,7 +10,7 @@ export class S3ModuleService {
     this.bucket = process.env.AWS_S3_BUCKET;
   }
 
-  async getPresignedURL(file: Express.Multer.File, attendeeID: string, attendeeName: string): Promise<string> {
+  async getPresignedURL(attendeeID: string, attendeeName: string): Promise<string> {
     const key = `${attendeeID}_${attendeeName}`;
 
     const params = {

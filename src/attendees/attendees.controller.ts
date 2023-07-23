@@ -47,40 +47,14 @@ export class AttendeeController {
 
   @Post()
   // @UseGuards(AuthGuard)
-  async create(@Body() createAttendeeDto: CreateAttendeeDto) {
+  async create(@Body() createAttendeeDto: CreateAttendeeDto): Promise<string> {
     const createdAttendee = await this.attendeeService.create(createAttendeeDto);
     const attendeeId = createdAttendee._id.toString();
+    const attendeeName = createdAttendee.name;
 
-    return createdAttendee;
-  }
-  
-  @Post('upload')
-  @UseInterceptors(FileInterceptor('file'))
-  async uploadFile(
-    @UploadedFile() file: Express.Multer.File,
-    @Body('attendeeName') attendeeName: string,
-    @Body('attendeeId') attendeeId: string,
-    @Res() res: Response,
-    @Req() request: Request, 
-  ) {
-    try {
-      const presignedUrl = await this.s3ModuleService.getPresignedURL(file, attendeeId, attendeeName);
+    const presignedUrl = await this.s3ModuleService.getPresignedURL(attendeeId, attendeeName);
 
-      const blob = new Blob([file.buffer]);
-
-      const response = await fetch(presignedUrl, {
-        method: 'PUT',
-        body: blob,
-        headers: {
-          'Content-Type': file.mimetype,
-        },
-      });
-
-      res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
-      return { success: true, message: 'File uploaded successfully' };
-    } catch (error) {
-      throw new HttpException('Failed to upload file', HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return presignedUrl;
   }
 
   @Get()
