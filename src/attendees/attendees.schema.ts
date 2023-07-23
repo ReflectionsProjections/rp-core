@@ -7,7 +7,7 @@ import {
 } from 'mongoose';
 import { EventSchema } from '../events/event.schema';
 
-export type AttendeeDocument = HydratedDocument<Event>;
+export type AttendeeDocument = HydratedDocument<Attendee>;
 
 @Schema()
 export class Attendee {
