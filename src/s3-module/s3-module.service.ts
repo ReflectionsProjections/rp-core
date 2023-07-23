@@ -5,8 +5,6 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 @Injectable()
 export class S3ModuleService {
   private readonly bucket: string;
-  private readonly accessKeyId: string;
-  private readonly secretAccessKey: string;
 
   constructor(@Inject('S3Client') private readonly s3Client: S3Client) {
     this.bucket = process.env.AWS_S3_BUCKET;
