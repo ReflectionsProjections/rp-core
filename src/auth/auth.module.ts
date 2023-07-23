@@ -7,8 +7,8 @@ import { EmailModule } from 'src/email/email.module';
 import { EmailService } from 'src/email/email.service';
 import { AttendeeService } from 'src/attendees/attendees.service';
 import { AttendeesModule } from 'src/attendees/attendees.module';
-import { S3ModuleModule } from 'src/s3-module/s3-module.module';
-import { S3ModuleService } from 'src/s3-module/s3-module.service';
+import { S3ModuleModule } from 'src/s3/s3.module';
+import { S3ModuleService } from 'src/s3/s3.service';
 import { S3Client } from '@aws-sdk/client-s3';
 
 @Module({

@@ -15,7 +15,8 @@ export class S3ModuleService {
 
     const params = {
       Bucket: this.bucket,
-      Key: key
+      Key: key,
+      ContentType: 'application/pdf'
     };
 
     try {

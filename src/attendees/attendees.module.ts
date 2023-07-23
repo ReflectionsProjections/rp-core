@@ -3,8 +3,8 @@ import { AttendeeController } from './attendees.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Attendee, AttendeeSchema } from './attendees.schema';
 import { AttendeeService } from './attendees.service';
-import { S3ModuleModule } from 'src/s3-module/s3-module.module';
-import { S3ModuleService } from 'src/s3-module/s3-module.service';
+import { S3ModuleModule } from 'src/s3/s3.module';
+import { S3ModuleService } from 'src/s3/s3.service';
 import { S3Client } from '@aws-sdk/client-s3';
 
 @Module({

@@ -19,7 +19,7 @@ import { AuthGuard } from 'src/auth/auth.guard';
 import { UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Express } from 'express';
-import { S3ModuleService } from 'src/s3-module/s3-module.service';
+import { S3ModuleService } from 'src/s3/s3.service';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { Response } from 'express';
 
