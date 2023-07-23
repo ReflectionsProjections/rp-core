@@ -12,7 +12,6 @@ import {
   Req,
 } from '@nestjs/common';
 import { AttendeeService } from './attendees.service';
-// import { EventsService } from './events.service';
 import { CreateAttendeeDto } from './dto/create-attendee.dto';
 import { UpdateAttendeeDto } from './dto/update-attendee.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
@@ -52,25 +51,33 @@ export class AttendeeController {
     const createdAttendee = await this.attendeeService.create(createAttendeeDto);
     const attendeeId = createdAttendee._id.toString();
 
-    console.log("New attendeeID: ", attendeeId);
-
     return createdAttendee;
   }
-
+  
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
-  async uploadFile(@UploadedFile() file: Express.Multer.File, 
+  async uploadFile(
+    @UploadedFile() file: Express.Multer.File,
+    @Body('attendeeName') attendeeName: string,
     @Body('attendeeId') attendeeId: string,
     @Res() res: Response,
     @Req() request: Request, 
   ) {
-    const bucketName: string = process.env.AWS_S3_BUCKET;
-
     try {
-      const uploadResult = await this.s3ModuleService.uploadFile(file, bucketName, attendeeId);
+      const presignedUrl = await this.s3ModuleService.getPresignedURL(file, attendeeId, attendeeName);
+
+      const blob = new Blob([file.buffer]);
+
+      const response = await fetch(presignedUrl, {
+        method: 'PUT',
+        body: blob,
+        headers: {
+          'Content-Type': file.mimetype,
+        },
+      });
+
       res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
-      console.log("File uploaded successfully");
-      return { success: true, message: 'File uploaded successfully', key: uploadResult.key };
+      return { success: true, message: 'File uploaded successfully' };
     } catch (error) {
       throw new HttpException('Failed to upload file', HttpStatus.INTERNAL_SERVER_ERROR);
     }
