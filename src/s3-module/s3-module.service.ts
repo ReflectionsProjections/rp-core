@@ -22,7 +22,7 @@ export class S3ModuleService {
 
     try {
       const command = new PutObjectCommand(params);
-      const url = await getSignedUrl(this.s3Client, command, { expiresIn: 3600 });
+      const url = await getSignedUrl(this.s3Client, command, { expiresIn: 300 });
       return url;
     } catch (error) {
       throw new Error('Failed to generate pre-signed URL');
