@@ -90,18 +90,4 @@ export class AuthController {
     // Lookup attendee based on their (unique) email
     return req['user'];
   }
-
-  @UseGuards(AuthGuard)
-  @Post('/wallet-auth')
-  async generatePass(
-    @Req() req: Request,
-    @Res({ passthrough: true }) res: Response,
-  ) {
-    const attendeeEmail = req["user"].email
-    //Use email to fetch attendee email
-    const attendeeName = (await this.attendeeService.findAttendeeByEmail(attendeeEmail)).name
-    // console.log(attendeeEmail + " EMAIL")
-    // console.log(attendeeName + " NAME")
-    return((await this.authService.getGooglePass(attendeeEmail, attendeeName)))
-  }
 }
