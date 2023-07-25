@@ -1,11 +1,11 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { AttendeeController } from './attendees.controller';
-import { AttendeeService } from './attendees.service';
-import { AttendeesModule } from './attendees.module';
 import { getModelToken } from '@nestjs/mongoose';
-import { Attendee } from './attendees.schema';
+import { Test, TestingModule } from '@nestjs/testing';
 import { Model } from 'mongoose';
+import { AuthGuard } from '../auth/auth.guard';
 import { EmailService } from '../email/email.service';
+import { AttendeeController } from './attendees.controller';
+import { Attendee } from './attendees.schema';
+import { AttendeeService } from './attendees.service';
 
 describe('AttendeeService', () => {
   let controller: AttendeeController;
@@ -26,7 +26,12 @@ describe('AttendeeService', () => {
           },
         },
       ],
-    }).compile();
+    })
+      .overrideGuard(AuthGuard)
+      .useValue({
+        canActivate: (_context) => true,
+      })
+      .compile();
 
     controller = module.get<AttendeeController>(AttendeeController);
   });

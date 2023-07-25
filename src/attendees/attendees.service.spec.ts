@@ -1,13 +1,9 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { AttendeeService } from './attendees.service';
-import { AttendeesModule } from './attendees.module';
-import { EventsModule } from '../events/events.module';
-import { AuthModule } from '../auth/auth.module';
-import { AuthService } from '../auth/auth.service';
-import { EmailService } from '../email/email.service';
-import { Attendee, AttendeeDocument, AttendeeSchema } from './attendees.schema';
-import { Model } from 'mongoose';
 import { getModelToken } from '@nestjs/mongoose';
+import { Test, TestingModule } from '@nestjs/testing';
+import { Model } from 'mongoose';
+import { EmailService } from '../email/email.service';
+import { Attendee, AttendeeDocument } from './attendees.schema';
+import { AttendeeService } from './attendees.service';
 import { CreateAttendeeDto } from './dto/create-attendee.dto';
 
 describe('AttendeeService', () => {
