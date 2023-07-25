@@ -63,7 +63,7 @@ export class AttendeeService {
   }
 
   findAttendeeByEmail(email: string) {
-    return this.attendeeModel.findOne({ email })
+    return this.attendeeModel.findOne({ email });
   }
 
   update(id: number, updateAttendeeDto: UpdateAttendeeDto) {
