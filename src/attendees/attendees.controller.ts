@@ -20,7 +20,7 @@ import { AuthGuard } from 'src/auth/auth.guard';
 import { UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Express } from 'express';
-import { S3ModuleService } from 'src/s3-module/s3-module.service';
+import { S3Service } from 'src/s3/s3.service';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { Response } from 'express';
 
@@ -29,7 +29,7 @@ export class AttendeeController {
 
   constructor(
     private readonly attendeeService: AttendeeService,
-    private readonly s3ModuleService: S3ModuleService,
+    private readonly s3ModuleService: S3Service,
     ) {}
 
   /**
@@ -47,10 +47,14 @@ export class AttendeeController {
   }
 
   @Post()
-  // @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   async create(@Body() createAttendeeDto: CreateAttendeeDto) {
     const createdAttendee = await this.attendeeService.create(createAttendeeDto);
     const attendeeId = createdAttendee._id.toString();
+
+    // call upload using email
+
+    // or maybe, dont return anything???
 
     console.log("New attendeeID: ", attendeeId);
 
@@ -60,11 +64,17 @@ export class AttendeeController {
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(@UploadedFile() file: Express.Multer.File, 
-    @Body('attendeeId') attendeeId: string,
+    // @Body('attendeeId') attendeeId: string, // not needed
+    // @Body('attendeeEmail') attendeeEmail: string,
     @Res() res: Response,
-    @Req() request: Request, 
+    @Req() req: Request, 
   ) {
     const bucketName: string = process.env.AWS_S3_BUCKET;
+    // const attendeeId = this.attendeeService.findAttendeeByEmail(attendeeEmail);
+
+    const attendeeId = (await this.attendeeService.findAttendeeByEmail(req['user'].email))._id.toString();
+
+    // get attendeeID by lookup rather than by direct param
 
     try {
       const uploadResult = await this.s3ModuleService.uploadFile(file, bucketName, attendeeId);
@@ -84,6 +94,11 @@ export class AttendeeController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.attendeeService.findOne(id);
+  }
+
+  @Get(':email')
+  findAttendeeByEmail(@Param('email') email: string) {
+    return this.attendeeService.findAttendeeByEmail(email);
   }
 
   @Patch(':id')
