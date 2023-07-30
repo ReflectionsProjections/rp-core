@@ -16,7 +16,7 @@ export class AttendeeService {
     return users.length > 0;
   }
 
-  create(createAttendeeDto: CreateAttendeeDto) {
+  async create(createAttendeeDto: CreateAttendeeDto) {
     const university =
       createAttendeeDto.isUIUCStudent === 'yes'
         ? 'University of Illinois Urbana-Champaign'
@@ -63,7 +63,7 @@ export class AttendeeService {
   }
 
   findOne(id: string) {
-    return this.attendeeModel.find({ _id: id });
+    return this.attendeeModel.findById(id);
   }
 
   findAttendeeByEmail(email: string) {

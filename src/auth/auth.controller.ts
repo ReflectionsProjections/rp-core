@@ -17,7 +17,7 @@ import { VerifyPasscodeDto } from './dto/verify-passcode.dto';
 import { Response, Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from './auth.guard';
-import { AttendeeService } from 'src/attendees/attendees.service';
+import { AttendeeService } from '../attendees/attendees.service';
 
 @Controller('auth')
 export class AuthController {

@@ -19,7 +19,7 @@ import { MongoIdPipe } from '../mongo-id/mongo-id.pipe';
 import { RoleLevel } from '../roles/roles.enum';
 import { Roles } from '../roles/roles.decorator';
 import { RolesGuard } from '../roles/roles.guard';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('events')
 export class EventsController {
