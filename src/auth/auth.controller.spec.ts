@@ -10,6 +10,7 @@ import { Model } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
 import { ExecutionContext } from '@nestjs/common';
 import { AttendeeService } from '../attendees/attendees.service';
+import { RolesService } from '../roles/roles.service';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -19,6 +20,12 @@ describe('AuthController', () => {
       providers: [
         {
           provide: EmailService,
+          useValue: {
+            get: jest.fn((key: string) => {}),
+          },
+        },
+        {
+          provide: RolesService,
           useValue: {
             get: jest.fn((key: string) => {}),
           },
