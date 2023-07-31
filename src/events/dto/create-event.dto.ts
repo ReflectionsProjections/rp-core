@@ -18,4 +18,10 @@ export class CreateEventDto {
 
   @IsBoolean()
   virtual: boolean;
+
+  @IsBoolean()
+  upgrade: boolean;
+
+  @IsBoolean()
+  visible: boolean;
 }

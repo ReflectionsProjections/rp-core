@@ -43,6 +43,16 @@ export class Event {
     required: true,
   })
   virtual: boolean;
+
+  @Prop({
+    default: false,
+  })
+  upgrade: boolean;
+
+  @Prop({
+    default: false,
+  })
+  visible: boolean;
 }
 
 export const EventSchema = SchemaFactory.createForClass(Event);
