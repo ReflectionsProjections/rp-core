@@ -12,7 +12,6 @@ import {
   Req,
 } from '@nestjs/common';
 import { AttendeeService } from './attendees.service';
-// import { EventsService } from './events.service';
 import { CreateAttendeeDto } from './dto/create-attendee.dto';
 import { UpdateAttendeeDto } from './dto/update-attendee.dto';
 import { AuthGuard } from '../auth/auth.guard';
@@ -49,35 +48,23 @@ export class AttendeeController {
   @UseGuards(AuthGuard)
   async create(@Body() createAttendeeDto: CreateAttendeeDto) {
     const createdAttendee = await this.attendeeService.create(createAttendeeDto);
-    const attendeeId = createdAttendee._id.toString();
-
-    // call upload using email
-
-    // or maybe, dont return anything???
-
-    console.log("New attendeeID: ", attendeeId);
-
     return createdAttendee;
   }
 
   @Post('upload')
+  @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(@UploadedFile() file: Express.Multer.File, 
-    // @Body('attendeeId') attendeeId: string, // not needed
-    // @Body('attendeeEmail') attendeeEmail: string,
     @Res() res: Response,
     @Req() req: Request, 
   ) {
     const bucketName: string = process.env.AWS_S3_BUCKET;
-    // const attendeeId = this.attendeeService.findAttendeeByEmail(attendeeEmail);
 
-    const attendeeId = (await this.attendeeService.findAttendeeByEmail(req['user'].email))._id.toString();
-
-    // get attendeeID by lookup rather than by direct param
+    const attendee = await this.attendeeService.findAttendeeByEmail(req['user'].email);
+    const attendeeId = attendee._id.toString();
 
     try {
       const uploadResult = await this.s3ModuleService.uploadFile(file, bucketName, attendeeId);
-      res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
       console.log("File uploaded successfully");
       return { success: true, message: 'File uploaded successfully', key: uploadResult.key };
     } catch (error) {
