@@ -62,9 +62,10 @@ export class AttendeeController {
 
     const attendee = await this.attendeeService.findAttendeeByEmail(req['user'].email);
     const attendeeId = attendee._id.toString();
+    const attendeeName = attendee.name;
 
     try {
-      const uploadResult = await this.s3ModuleService.uploadFile(file, bucketName, attendeeId);
+      const uploadResult = await this.s3ModuleService.uploadFile(file, bucketName, attendeeId, attendeeName);
       console.log("File uploaded successfully");
       return { success: true, message: 'File uploaded successfully', key: uploadResult.key };
     } catch (error) {

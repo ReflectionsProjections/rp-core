@@ -51,7 +51,6 @@ export class AttendeeService {
     const newAttendee = new this.attendeeModel(attendee);
     return newAttendee.save()
     .then((createdAttendee) => {
-      console.log(createdAttendee._id); // Print the ID to the console
       return createdAttendee;
     });
   }

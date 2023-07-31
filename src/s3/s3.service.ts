@@ -31,6 +31,7 @@
 
 import { Injectable, Inject } from '@nestjs/common';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import path from 'path';
 
 @Injectable()
 export class S3Service {
@@ -42,16 +43,17 @@ export class S3Service {
     this.bucket = process.env.AWS_S3_BUCKET;
     this.accessKeyId = process.env.AWS_ACCESS_KEY_ID;
     this.secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
-
-    console.log('BUCKET: ' + this.bucket);
-    console.log('ACCESS: ' + this.accessKeyId);
-    console.log('SECRET: ' + this.secretAccessKey);
   }
 
-  async uploadFile(file: Express.Multer.File, bucket: string, attendeeID: string) {
+  async uploadFile(file: Express.Multer.File, bucket: string, attendeeID: string, attendeeName: string) {
     const { originalname, buffer, mimetype } = file;
 
-    const key = `${attendeeID}_${originalname}`;
+    const extension = await this.getExtensionFromFilename(originalname);
+
+    // add checks for extension names
+    // console.log(extension);
+
+    const key = `${attendeeID}_${attendeeName}${extension}`;
 
     const params = {
       Bucket: bucket,
@@ -64,13 +66,21 @@ export class S3Service {
 
     try {
       const s3Response = await this.s3Client.send(new PutObjectCommand(params));
-      console.log(s3Response);
       return { success: true, message: 'File uploaded successfully', key };
     } catch (error) {
       console.log(error);
       throw new Error('Failed to upload file to S3');
     }
   }
+
+  async getExtensionFromFilename(filename: string): Promise<string> {
+    const lastDotIndex = filename.lastIndexOf('.');
+    if (lastDotIndex === -1) {
+      return '';
+    }
+    return filename.substring(lastDotIndex);
+  }
+  
 }
 
 
