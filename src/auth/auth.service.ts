@@ -1,9 +1,9 @@
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { EmailService } from 'src/email/email.service';
+import { EmailService } from '../email/email.service';
+import { ServiceResponse } from '../misc-types';
 import { Verification } from './verifications.schema';
-import { ServiceResponse } from 'src/misc-types';
 const crypto = require('crypto');
 const bcrypt = require('bcrypt');
 const dayjs = require('dayjs');
