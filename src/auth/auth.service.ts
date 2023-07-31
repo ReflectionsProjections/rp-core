@@ -74,9 +74,8 @@ export class AuthService {
         message: 'Could not create Verification Instance',
       };
     }
-
+    
     await this.emailService.sendVerificationEmail(email, passcode);
-
     this.logger.log('Successfully sent verification email');
     return { status: HttpStatus.OK, message: 'Success' };
   }

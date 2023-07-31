@@ -14,7 +14,10 @@ async function bootstrap() {
     allowedHeaders: ['Content-Type', 'Set-Cookie'],
   });
   // TODO: Look into interference with dto validation
-  // app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+  app.useGlobalPipes(new ValidationPipe({ 
+    whitelist: true,
+    transform: true,
+   }));
   await app.listen(3000);
 }
 bootstrap();

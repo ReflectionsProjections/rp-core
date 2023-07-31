@@ -26,6 +26,8 @@ export class EventsController {
   constructor(private readonly eventsService: EventsService) {}
 
   @Post()
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(RoleLevel.Admin)
   create(@Body() createEventDto: CreateEventDto) {
     return this.eventsService.create(createEventDto);
   }
@@ -51,11 +53,15 @@ export class EventsController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(RoleLevel.Admin)
   remove(@Param('id', MongoIdPipe) id: string) {
     return this.eventsService.remove(id);
   }
 
   @Put(':id/attendee')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(RoleLevel.Admin)
   async registerAttendee(
     @Param('id', MongoIdPipe) id: string,
     @Body() registerAttendeeDto: RegisterAttendeeDto,
