@@ -80,6 +80,7 @@ export class AuthService {
       subject: `${passcode} is your R|P code`,
       text: `Your one-time code is ${passcode}. This is valid for the next 10 minutes.`,
     });
+    // console.log(passcode);
 
     this.logger.log('Successfully sent verification email');
     return { status: HttpStatus.OK, message: 'Success' };
