@@ -24,18 +24,19 @@ import {
   
     constructor(
       private readonly s3ModuleService: S3Service,
-      private readonly carpService: CarpService
-      ) {}
+      private readonly carpService: CarpService,
+    ) {}
 
     /**
-     * This functions returns a link to the user's resume.
+     * This function returns a link to the user's resume.
      * 
      * @param {string} email - Represents the email address of an attendee.
      */
   
     @Get('/email/:email')
+    @UseGuards(AuthGuard)
     async getResume(@Param('email') email:string) {
-        return this.carpService.getResume(email)
+        return this.carpService.getResume(email);
     }
 
   }
