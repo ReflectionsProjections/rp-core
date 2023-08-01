@@ -50,9 +50,6 @@ export class S3Service {
 
     const extension = await this.getExtensionFromFilename(originalname);
 
-    // add checks for extension names
-    // console.log(extension);
-
     const key = `${attendeeID}_${attendeeName}${extension}`;
 
     const params = {
