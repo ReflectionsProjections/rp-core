@@ -10,6 +10,8 @@ import { AttendeesModule } from 'src/attendees/attendees.module';
 import { S3ModuleModule } from 'src/s3/s3.module';
 import { S3Service } from 'src/s3/s3.service';
 import { S3Client } from '@aws-sdk/client-s3';
+import { RolesService } from '../roles/roles.service';
+import { RolesModule } from '../roles/roles.module';
 
 @Module({
   imports: [
@@ -19,11 +21,13 @@ import { S3Client } from '@aws-sdk/client-s3';
     EmailModule,
     AttendeesModule,
     S3ModuleModule,
+    RolesModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, 
     EmailService, 
-    AttendeeService, 
+    AttendeeService,
+    RolesService,
     S3Service,
     {
       provide: 'S3Client',
