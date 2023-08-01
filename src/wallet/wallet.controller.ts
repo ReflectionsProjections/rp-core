@@ -16,7 +16,6 @@ import { Response, Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { AttendeeService } from 'src/attendees/attendees.service';
-// import { AttendeeService } from 'src/attendees/attendees.service';
 
 @Controller('wallet')
 export class WalletController {
@@ -36,8 +35,6 @@ export class WalletController {
     const attendeeName = (
       await this.attendeeService.findAttendeeByEmail(attendeeEmail)
     ).name;
-    // console.log(attendeeEmail + " EMAIL")
-    // console.log(attendeeName + " NAME")
     return await this.walletService.getGooglePass(attendeeEmail, attendeeName);
   }
 }
