@@ -178,7 +178,7 @@ export class WalletService {
    * @param email A valid email address
    * @returns Google Wallet Event Pass URL to be added to the frontend
    */
-  async createPassObject(email, name) {
+  async createPassObject(email, name, scanToken) {
     // Creates a new Generic pass for the user-specifically
     let objectSuffix = `${email.replace(/[^\w.-]/g, '_')}`;
     let objectId = `${this.issuerId}.${objectSuffix}`;
@@ -211,10 +211,10 @@ export class WalletService {
           value: `${name}`,
         },
       },
+      //Embed the user's scan token into the pass QR code
       barcode: {
         type: 'QR_CODE',
-        //TODO: LINK value parameter with User encoding function
-        value: `${name}`,
+        value: `${scanToken}`,
       },
       heroImage: {
         sourceUri: {
@@ -249,9 +249,9 @@ export class WalletService {
     return saveUrl;
   }
 
-  async getGooglePass(email: string, name: string) {
+  async getGooglePass(email: string, name: string, scanToken: string) {
     await this.createPassClass();
-    return await this.createPassObject(email, name);
+    return await this.createPassObject(email, name, scanToken);
   }
 
   getLoggedInUser() {}
