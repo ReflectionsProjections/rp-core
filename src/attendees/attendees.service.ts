@@ -59,6 +59,10 @@ export class AttendeeService {
     return this.attendeeModel.findById(id);
   }
 
+  findAttendeeByEmail(email: string) {
+    return this.attendeeModel.findOne({ email });
+  }
+
   update(id: number, updateAttendeeDto: UpdateAttendeeDto) {
     return `This action updates a #${id} event`;
   }

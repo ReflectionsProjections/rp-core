@@ -35,9 +35,11 @@
     "class-validator": "^0.14.0",
     "cookie-parser": "^1.4.6",
     "dayjs": "^1.11.8",
+    "google-auth-library": "^9.0.0",
     "helmet": "^7.0.0",
     "luxon": "^3.3.0",
     "mongoose": "^7.0.0",
+    "node-jsonwebtoken": "^0.0.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0"
   },

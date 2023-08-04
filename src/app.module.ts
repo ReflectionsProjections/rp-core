@@ -6,6 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { EventsModule } from './events/events.module';
 import { EmailModule } from './email/email.module';
 import { AuthModule } from './auth/auth.module';
+import { WalletModule } from './wallet/wallet.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
@@ -26,6 +27,7 @@ import { AttendeesModule } from './attendees/attendees.module';
     }),
     EmailModule,
     AuthModule,
+    WalletModule,
     AttendeesModule,
     ThrottlerModule.forRoot({
       ttl: 60,
