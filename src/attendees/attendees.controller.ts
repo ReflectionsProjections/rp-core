@@ -7,11 +7,13 @@ import {
   Param,
   Delete,
   NotFoundException,
+  UseGuards,
 } from '@nestjs/common';
 import { AttendeeService } from './attendees.service';
 // import { EventsService } from './events.service';
 import { CreateAttendeeDto } from './dto/create-attendee.dto';
 import { UpdateAttendeeDto } from './dto/update-attendee.dto';
+import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('attendee')
 export class AttendeeController {
@@ -32,6 +34,7 @@ export class AttendeeController {
   }
 
   @Post()
+  @UseGuards(AuthGuard)
   create(@Body() createAttendeeDto: CreateAttendeeDto) {
     return this.attendeeService.create(createAttendeeDto);
   }

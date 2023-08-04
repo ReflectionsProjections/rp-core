@@ -8,7 +8,7 @@ import { Attendee, AttendeeDocument } from './attendees.schema';
 @Injectable()
 export class AttendeeService {
   constructor(
-    @InjectModel(Attendee.name) private attendeeModel: Model<Attendee>,
+    @InjectModel(Attendee.name) private attendeeModel: Model<AttendeeDocument>,
   ) {}
 
   async userEmailExists(email: string): Promise<boolean> {
@@ -16,7 +16,7 @@ export class AttendeeService {
     return users.length > 0;
   }
 
-  create(createAttendeeDto: CreateAttendeeDto) {
+  async create(createAttendeeDto: CreateAttendeeDto) {
     const university =
       createAttendeeDto.isUIUCStudent === 'yes'
         ? 'University of Illinois Urbana-Champaign'
@@ -26,14 +26,12 @@ export class AttendeeService {
       name: createAttendeeDto.name,
       email: createAttendeeDto.email,
       //need to initialize studentInfo
+      
       studentInfo: {
         university,
-        graduation:
-          createAttendeeDto.expectedGradTerm +
-          ' ' +
-          createAttendeeDto.expectedGradYear,
-        major: createAttendeeDto.major,
-      },
+        graduation: createAttendeeDto.expectedGradTerm + ' ' + createAttendeeDto.expectedGradYear,
+        major: createAttendeeDto.major
+      } ,
       //occupation: createAttendeeDto.occupation,
       events: [],
       dietary_restrictions: createAttendeeDto.food,
@@ -50,8 +48,7 @@ export class AttendeeService {
       job_interest: createAttendeeDto.jobTypeInterest,
       interest_mech_puzzle: createAttendeeDto.mechPuzzle,
     };
-    const newAttendee = new this.attendeeModel(attendee);
-    return newAttendee.save();
+    return await this.attendeeModel.create(attendee);
   }
 
   findAll() {
@@ -59,7 +56,7 @@ export class AttendeeService {
   }
 
   findOne(id: string) {
-    return this.attendeeModel.find({ _id: id });
+    return this.attendeeModel.findById(id);
   }
 
   findAttendeeByEmail(email: string) {

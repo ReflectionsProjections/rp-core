@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Schema as MongooseSchema } from 'mongoose';
-import { Attendee } from 'src/attendees/attendees.schema';
+import { Attendee } from '../attendees/attendees.schema';
 
 @Schema()
 export class Verification {

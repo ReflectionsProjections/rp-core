@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Schema as MongooseSchema, model } from 'mongoose';
-import { AttendeeSchema } from 'src/attendees/attendees.schema';
+import { AttendeeSchema } from '../attendees/attendees.schema';
 
 export type EventDocument = HydratedDocument<Event>;
 
@@ -43,6 +43,16 @@ export class Event {
     required: true,
   })
   virtual: boolean;
+
+  @Prop({
+    default: false,
+  })
+  upgrade: boolean;
+
+  @Prop({
+    default: false,
+  })
+  visible: boolean;
 }
 
 export const EventSchema = SchemaFactory.createForClass(Event);

@@ -5,9 +5,9 @@ import {
   Types,
   model,
 } from 'mongoose';
-import { EventSchema } from 'src/events/event.schema';
+import { EventSchema } from '../events/event.schema';
 
-export type AttendeeDocument = HydratedDocument<Event>;
+export type AttendeeDocument = HydratedDocument<Attendee>;
 
 @Schema()
 export class Attendee {
@@ -37,8 +37,6 @@ export class Attendee {
     major: string | null;
   };
 
-  // @Prop()
-  // occupation: string;
 
   @Prop({
     required: true,
@@ -66,9 +64,7 @@ export class Attendee {
   @Prop()
   first_gen: string | null;
 
-  @Prop({
-    required: true,
-  })
+  @Prop()
   hear_about_rp: [{ type: string }];
 
   @Prop()

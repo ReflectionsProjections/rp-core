@@ -17,7 +17,10 @@ import { VerifyPasscodeDto } from './dto/verify-passcode.dto';
 import { Response, Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from './auth.guard';
-import { AttendeeService } from 'src/attendees/attendees.service';
+import { AttendeeService } from '../attendees/attendees.service';
+import { RolesGuard } from '../roles/roles.guard';
+import { Roles } from '../roles/roles.decorator';
+import { RoleLevel } from '../roles/roles.enum';
 
 @Controller('auth')
 export class AuthController {
@@ -89,5 +92,21 @@ export class AuthController {
     // Attach additional user information as needed
     // Lookup attendee based on their (unique) email
     return req['user'];
+  }
+
+  @Get('/access/admin')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(RoleLevel.Admin)
+  staffAccessCheck(@Req() req: Request) {
+    return 'Success';
+  }
+
+  @Get('/access/corporate')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(RoleLevel.Corporate)
+  corporateAccessCheck(@Req() req: Request) {
+    // Attach additional user information as needed
+    // Lookup attendee based on their (unique) email
+    return 'Success';
   }
 }
