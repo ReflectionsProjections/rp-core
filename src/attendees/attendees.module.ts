@@ -3,8 +3,8 @@ import { AttendeeController } from './attendees.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Attendee, AttendeeSchema } from './attendees.schema';
 import { AttendeeService } from './attendees.service';
+import { WalletService } from '../wallet/wallet.service';
 //TODO: import EmailModule, EmailService
-
 
 @Module({
   imports: [
@@ -13,7 +13,7 @@ import { AttendeeService } from './attendees.service';
     ]),
   ],
   controllers: [AttendeeController],
-  providers: [AttendeeService],
+  providers: [AttendeeService, WalletService],
   exports: [
     MongooseModule.forFeature([
       { name: Attendee.name, schema: AttendeeSchema },

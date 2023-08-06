@@ -14,8 +14,8 @@ import {
 import { WalletService } from './wallet.service';
 import { Response, Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
-import { AuthGuard } from 'src/auth/auth.guard';
-import { AttendeeService } from 'src/attendees/attendees.service';
+import { AuthGuard } from '../auth/auth.guard';
+import { AttendeeService } from '../attendees/attendees.service';
 
 @Controller('wallet')
 export class WalletController {
@@ -32,13 +32,6 @@ export class WalletController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const attendeeEmail = req['user'].email;
-    //encode attendee email into JWT
-    const payload = { email: attendeeEmail };
-    const userAuthToken = await this.jwtService.signAsync(payload);
-    //Use email to fetch attendee email
-    const attendeeName = (
-      await this.attendeeService.findAttendeeByEmail(attendeeEmail)
-    ).name;
-    return await this.walletService.getGooglePass(attendeeEmail, attendeeName, userAuthToken);
+    return await this.walletService.generateEventPass(attendeeEmail);
   }
 }

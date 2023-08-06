@@ -1,10 +1,19 @@
 import { Injectable, Logger } from '@nestjs/common';
 const { GoogleAuth } = require('google-auth-library');
 const jwt = require('jsonwebtoken');
+import { Response, Request } from 'express';
+import { JwtService } from '@nestjs/jwt';
+import { Observable } from 'rxjs';
+import { AttendeeService } from '../attendees/attendees.service';
 const baseUrl = 'https://walletobjects.googleapis.com/walletobjects/v1';
 
 @Injectable()
 export class WalletService {
+  constructor(
+    private readonly attendeeService: AttendeeService,
+    private jwtService: JwtService,
+  ) {}
+
   private readonly logger = new Logger(WalletService.name);
   private readonly issuerId = process.env.GOOGLE_ISSUER_ID;
   private readonly classId = `${this.issuerId}.codelab_class`;
@@ -254,5 +263,14 @@ export class WalletService {
     return await this.createPassObject(email, name, scanToken);
   }
 
-  getLoggedInUser() {}
+  async generateEventPass(attendeeEmail: string) {
+    //encode attendee email into JWT
+    const payload = { email: attendeeEmail };
+    const userAuthToken = await this.jwtService.signAsync(payload);
+    //Use email to fetch attendee email
+    const attendeeName = (
+      await this.attendeeService.findAttendeeByEmail(attendeeEmail)
+    ).name;
+    return await this.getGooglePass(attendeeEmail, attendeeName, userAuthToken);
+  }
 }
