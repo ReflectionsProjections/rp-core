@@ -75,9 +75,9 @@ export class S3Service {
     }
   }
 
-  async getFileUrl(attendeeId: string) {
+  async getFileUrl(attendeeId: string, attendeeName: string) {
     // TODO change key according to file naming
-    const key = attendeeId + '.pdf';
+    const key = `${attendeeId}_${attendeeName}.pdf`;
     try{
       const command = new GetObjectCommand({ Bucket: this.bucket, Key: key});
       // Expires in 12 hours
