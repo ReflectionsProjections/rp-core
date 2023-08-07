@@ -30,7 +30,10 @@
 // }
 
 import { Injectable, Inject } from '@nestjs/common';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
+import {
+  getSignedUrl,
+} from "@aws-sdk/s3-request-presigner";
 
 @Injectable()
 export class S3Service {
@@ -69,6 +72,20 @@ export class S3Service {
     } catch (error) {
       console.log(error);
       throw new Error('Failed to upload file to S3');
+    }
+  }
+
+  async getFileUrl(attendeeId: string) {
+    // TODO change key according to file naming
+    const key = attendeeId + '.pdf';
+    try{
+      const command = new GetObjectCommand({ Bucket: this.bucket, Key: key});
+      // Expires in 12 hours
+      const url = getSignedUrl(this.s3Client, command, {expiresIn: 43200});
+      return { id: attendeeId, url: url };
+    } catch (error) {
+      console.log(error);
+      throw new Error('Failed to get url');
     }
   }
 }

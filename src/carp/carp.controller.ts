@@ -33,10 +33,10 @@ import {
      * @param {string} email - Represents the email address of an attendee.
      */
   
-    @Get('/email/:email')
+    @Get('/resume/:email')
     @UseGuards(AuthGuard)
     async getResume(@Param('email') email:string) {
         return this.carpService.getResume(email);
     }
 
-  }
+  } 

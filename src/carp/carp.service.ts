@@ -11,7 +11,7 @@ export class CarpService {
 
     /**
      * Gets the attendee corresponding to the email, and calls the s3 service
-     * to get the resume link.
+     * to get the resume url.
      * 
      * @param email Email address of the user
      */
@@ -21,7 +21,7 @@ export class CarpService {
 
         // TODO other args depending on filename structure
         // TODO implement this in s3 service
-        return this.s3Service.getFileLink(attendee)
+        return this.s3Service.getFileUrl(attendeeId)
 
     }
 }
