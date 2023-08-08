@@ -8,21 +8,15 @@ import {
   Req,
   Res,
   UseGuards,
-  Query,
-  NotFoundException,
 } from '@nestjs/common';
 import { WalletService } from './wallet.service';
 import { Response, Request } from 'express';
-import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '../auth/auth.guard';
-import { AttendeeService } from '../attendees/attendees.service';
 
 @Controller('wallet')
 export class WalletController {
   constructor(
     private readonly walletService: WalletService,
-    private readonly attendeeService: AttendeeService,
-    private jwtService: JwtService,
   ) {}
 
   @UseGuards(AuthGuard)

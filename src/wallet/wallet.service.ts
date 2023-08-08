@@ -3,7 +3,6 @@ const { GoogleAuth } = require('google-auth-library');
 const jwt = require('jsonwebtoken');
 import { Response, Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
-import { Observable } from 'rxjs';
 import { AttendeeService } from '../attendees/attendees.service';
 const baseUrl = 'https://walletobjects.googleapis.com/walletobjects/v1';
 
