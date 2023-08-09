@@ -12,6 +12,7 @@ import { AttendeesModule } from './attendees/attendees.module';
 import { S3ModuleModule } from './s3/s3.module';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { CarpModule } from './carp/carp.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { APP_GUARD } from '@nestjs/core';
       ttl: 60,
       limit: 10,
     }),
+    CarpModule,
   ],
   controllers: [AppController],
   providers: [
