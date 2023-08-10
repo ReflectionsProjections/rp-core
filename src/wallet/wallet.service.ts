@@ -15,11 +15,11 @@ export class WalletService {
 
   private readonly logger = new Logger(WalletService.name);
   private readonly issuerId = process.env.GOOGLE_ISSUER_ID;
-  private readonly classId = `${this.issuerId}.codelab_class`;
+  private readonly classId = `${this.issuerId}.rp_2023`;
   //Defining the credentials JSON used to validate the Google Pass Provider
   private readonly credentials = {
     type: 'service_account',
-    project_id: 'qrp-test',
+    project_id: 'reflections-projections-23',
     private_key_id: `${process.env.GOOGLE_PRIV_KEY_ID}`,
     private_key: `${process.env.GOOGLE_PRIV_KEY}`,
     client_email: `${process.env.GOOGLE_CLIENT_EMAIL}`,
