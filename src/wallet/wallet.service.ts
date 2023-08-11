@@ -115,7 +115,7 @@ export class WalletService {
         {
           mainImage: {
             sourceUri: {
-              uri: 'https://images.squarespace-cdn.com/content/v1/5fa8e94ebfb041130bad0746/1605238318651-YMVY4FRLR6YGI5XRCY2M/RPanimation_00017.png?format=2500w',
+              uri: 'https://i.imgur.com/ISUExwl.png',
             },
             contentDescription: {
               defaultValue: {
@@ -198,7 +198,7 @@ export class WalletService {
       hexBackgroundColor: '#f44285',
       logo: {
         sourceUri: {
-          uri: 'https://media.licdn.com/dms/image/C560BAQFNRv6thlDIzA/company-logo_200_200/0/1651164180042?e=2147483647&v=beta&t=guziuskz3q2ZGqGl8QXfP7-1IHr6m1-FK_aq4p23skg',
+          uri: 'https://i.imgur.com/R4rCWTw.png',
         },
       },
       cardTitle: {
@@ -210,7 +210,7 @@ export class WalletService {
       subheader: {
         defaultValue: {
           language: 'en',
-          value: 'Attendee',
+          value: `${email}`,
         },
       },
       header: {
@@ -226,13 +226,13 @@ export class WalletService {
       },
       heroImage: {
         sourceUri: {
-          uri: 'https://images.squarespace-cdn.com/content/v1/5fa8e94ebfb041130bad0746/1605238318651-YMVY4FRLR6YGI5XRCY2M/RPanimation_00017.png?format=2500w',
+          uri: 'https://i.imgur.com/noyESjM.png',
         },
       },
       textModulesData: [
         {
           header: 'PASS TYPE',
-          body: 'attendee',
+          body: 'Attendee',
           id: 'contacts',
         },
       ],
