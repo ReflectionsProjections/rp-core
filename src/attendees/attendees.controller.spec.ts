@@ -6,6 +6,7 @@ import { EmailService } from '../email/email.service';
 import { AttendeeController } from './attendees.controller';
 import { Attendee } from './attendees.schema';
 import { AttendeeService } from './attendees.service';
+import { WalletService } from '../wallet/wallet.service';
 
 describe('AttendeeService', () => {
   let controller: AttendeeController;
@@ -21,6 +22,12 @@ describe('AttendeeService', () => {
         },
         {
           provide: EmailService,
+          useValue: {
+            get: jest.fn((key: string) => {}),
+          },
+        },
+        {
+          provide: WalletService,
           useValue: {
             get: jest.fn((key: string) => {}),
           },

@@ -14,10 +14,14 @@ import { AttendeeService } from './attendees.service';
 import { CreateAttendeeDto } from './dto/create-attendee.dto';
 import { UpdateAttendeeDto } from './dto/update-attendee.dto';
 import { AuthGuard } from '../auth/auth.guard';
+import { WalletService } from '../wallet/wallet.service';
 
 @Controller('attendee')
 export class AttendeeController {
-  constructor(private readonly attendeeService: AttendeeService) {}
+  constructor(
+    private readonly attendeeService: AttendeeService,
+    private walletService: WalletService,
+  ) {}
 
   /**
    * This function checks if a user with a given email exists.
@@ -35,8 +39,14 @@ export class AttendeeController {
 
   @Post()
   @UseGuards(AuthGuard)
-  create(@Body() createAttendeeDto: CreateAttendeeDto) {
-    return this.attendeeService.create(createAttendeeDto);
+  async create(@Body() createAttendeeDto: CreateAttendeeDto) {
+    const attendee = this.attendeeService.create(createAttendeeDto);
+    const passURL = await this.walletService.generateEventPass(
+      (
+        await attendee
+      ).email,
+    );
+    return { attendee, passURL };
   }
 
   @Get()

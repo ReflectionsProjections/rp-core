@@ -9,6 +9,7 @@ import { AttendeeService } from '../attendees/attendees.service';
 import { AttendeesModule } from '../attendees/attendees.module';
 import { RolesService } from '../roles/roles.service';
 import { RolesModule } from '../roles/roles.module';
+import { WalletService } from '../wallet/wallet.service';
 
 @Module({
   imports: [
@@ -20,7 +21,13 @@ import { RolesModule } from '../roles/roles.module';
     RolesModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, EmailService, AttendeeService, RolesService],
+  providers: [
+    AuthService,
+    EmailService,
+    AttendeeService,
+    RolesService,
+    WalletService,
+  ],
   exports: [
     MongooseModule.forFeature([
       { name: Verification.name, schema: VerificationSchema },

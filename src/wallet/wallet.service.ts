@@ -1,17 +1,25 @@
 import { Injectable, Logger } from '@nestjs/common';
 const { GoogleAuth } = require('google-auth-library');
 const jwt = require('jsonwebtoken');
+import { Response, Request } from 'express';
+import { JwtService } from '@nestjs/jwt';
+import { AttendeeService } from '../attendees/attendees.service';
 const baseUrl = 'https://walletobjects.googleapis.com/walletobjects/v1';
 
 @Injectable()
 export class WalletService {
+  constructor(
+    private readonly attendeeService: AttendeeService,
+    private jwtService: JwtService,
+  ) {}
+
   private readonly logger = new Logger(WalletService.name);
   private readonly issuerId = process.env.GOOGLE_ISSUER_ID;
-  private readonly classId = `${this.issuerId}.codelab_class`;
+  private readonly classId = `${this.issuerId}.rp_2023`;
   //Defining the credentials JSON used to validate the Google Pass Provider
   private readonly credentials = {
     type: 'service_account',
-    project_id: 'qrp-test',
+    project_id: 'reflections-projections-23',
     private_key_id: `${process.env.GOOGLE_PRIV_KEY_ID}`,
     private_key: `${process.env.GOOGLE_PRIV_KEY}`,
     client_email: `${process.env.GOOGLE_CLIENT_EMAIL}`,
@@ -107,7 +115,7 @@ export class WalletService {
         {
           mainImage: {
             sourceUri: {
-              uri: 'https://images.squarespace-cdn.com/content/v1/5fa8e94ebfb041130bad0746/1605238318651-YMVY4FRLR6YGI5XRCY2M/RPanimation_00017.png?format=2500w',
+              uri: 'https://i.imgur.com/ISUExwl.png',
             },
             contentDescription: {
               defaultValue: {
@@ -190,7 +198,7 @@ export class WalletService {
       hexBackgroundColor: '#f44285',
       logo: {
         sourceUri: {
-          uri: 'https://media.licdn.com/dms/image/C560BAQFNRv6thlDIzA/company-logo_200_200/0/1651164180042?e=2147483647&v=beta&t=guziuskz3q2ZGqGl8QXfP7-1IHr6m1-FK_aq4p23skg',
+          uri: 'https://i.imgur.com/R4rCWTw.png',
         },
       },
       cardTitle: {
@@ -202,7 +210,7 @@ export class WalletService {
       subheader: {
         defaultValue: {
           language: 'en',
-          value: 'Attendee',
+          value: `${email}`,
         },
       },
       header: {
@@ -218,13 +226,13 @@ export class WalletService {
       },
       heroImage: {
         sourceUri: {
-          uri: 'https://images.squarespace-cdn.com/content/v1/5fa8e94ebfb041130bad0746/1605238318651-YMVY4FRLR6YGI5XRCY2M/RPanimation_00017.png?format=2500w',
+          uri: 'https://i.imgur.com/noyESjM.png',
         },
       },
       textModulesData: [
         {
           header: 'PASS TYPE',
-          body: 'attendee',
+          body: 'Attendee',
           id: 'contacts',
         },
       ],
@@ -254,5 +262,14 @@ export class WalletService {
     return await this.createPassObject(email, name, scanToken);
   }
 
-  getLoggedInUser() {}
+  async generateEventPass(attendeeEmail: string) {
+    //encode attendee email into JWT
+    const payload = { email: attendeeEmail };
+    const userAuthToken = await this.jwtService.signAsync(payload);
+    //Use email to fetch attendee email
+    const attendeeName = (
+      await this.attendeeService.findAttendeeByEmail(attendeeEmail)
+    ).name;
+    return await this.getGooglePass(attendeeEmail, attendeeName, userAuthToken);
+  }
 }

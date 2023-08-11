@@ -26,13 +26,14 @@ If not already created, make a `.env` file in project root with the following va
 
 #Including DATABASE_URL, SENDGRID_API_KEY, ENV, and JWT_SECRET as specified in the main README
 
-GOOGLE_ISSUER_ID=<google_wallet_api_issuer_id>
-GOOGLE_PRIV_KEY_ID=<google_service_acct_private_key_id>
-GOOGLE_PRIV_KEY=<google_service_acct_private_key>
-GOOGLE_CLIENT_EMAIL=<google_service_acct_client_email>
-GOOGLE_CLIENT_ID=<google_service_acct_client_id>
-GOOGLE_CLIENT_509_CERT_URL=<google_service_client_509_url>
+GOOGLE_ISSUER_ID="<google_wallet_api_issuer_id>"
+GOOGLE_PRIV_KEY_ID="<google_service_acct_private_key_id>"
+GOOGLE_PRIV_KEY="<google_service_acct_private_key>"
+GOOGLE_CLIENT_EMAIL="<google_service_acct_client_email>"
+GOOGLE_CLIENT_ID="<google_service_acct_client_id>"
+GOOGLE_CLIENT_509_CERT_URL="<google_service_client_509_url>"
 ```
+*Note: Make sure all the Google Wallet values are in double-quotes!*
 
 The Google Issuer ID can be found here in the [Google Pay and Wallet Passes Console](https://pay.google.com/business/console/passes)
 

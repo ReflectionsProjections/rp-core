@@ -21,13 +21,14 @@ DATABASE_URL=<mongodb_uri_here>
 SENDGRID_API_KEY=<sendgrid_api_key>
 ENV=<dev | test | prod ...>
 JWT_SECRET=<secure_jwt_secret>
-GOOGLE_ISSUER_ID=<google_wallet_api_issuer_id>
-GOOGLE_PRIV_KEY_ID=<google_service_acct_private_key_id>
-GOOGLE_PRIV_KEY=<google_service_acct_private_key>
-GOOGLE_CLIENT_EMAIL=<google_service_acct_client_email>
-GOOGLE_CLIENT_ID=<google_service_acct_client_id>
-GOOGLE_CLIENT_509_CERT_URL=<google_service_client_509_url>
+GOOGLE_ISSUER_ID="<google_wallet_api_issuer_id>"
+GOOGLE_PRIV_KEY_ID="<google_service_acct_private_key_id>"
+GOOGLE_PRIV_KEY="<google_service_acct_private_key>"
+GOOGLE_CLIENT_EMAIL="<google_service_acct_client_email>"
+GOOGLE_CLIENT_ID="<google_service_acct_client_id>"
+GOOGLE_CLIENT_509_CERT_URL="<google_service_client_509_url>"
 ```
+*Note: Make sure all the Google Wallet values are in double-quotes!*
 
 - Install dependencies
 
