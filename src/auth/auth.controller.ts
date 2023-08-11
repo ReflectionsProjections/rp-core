@@ -105,8 +105,6 @@ export class AuthController {
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(RoleLevel.Corporate)
   corporateAccessCheck(@Req() req: Request) {
-    // Attach additional user information as needed
-    // Lookup attendee based on their (unique) email
     return 'Success';
   }
 }
