@@ -1,35 +1,4 @@
-// import { Injectable, Inject } from '@nestjs/common';
-// import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
-// import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-
-// @Injectable()
-// export class S3ModuleService {
-//   private readonly bucket: string;
-
-//   constructor(@Inject('S3Client') private readonly s3Client: S3Client) {
-//     this.bucket = process.env.AWS_S3_BUCKET;
-//   }
-
-//   async getPresignedURL(attendeeID: string, attendeeName: string): Promise<string> {
-//     const key = `${attendeeID}_${attendeeName}`;
-
-//     const params = {
-//       Bucket: this.bucket,
-//       Key: key,
-//       ContentType: 'application/pdf'
-//     };
-
-//     try {
-//       const command = new PutObjectCommand(params);
-//       const url = await getSignedUrl(this.s3Client, command, { expiresIn: 300 });
-//       return url;
-//     } catch (error) {
-//       throw new Error('Failed to generate pre-signed URL');
-//     }
-//   }
-// }
-
-import { Injectable, Inject } from '@nestjs/common';
+import { Logger, Injectable, Inject } from '@nestjs/common';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import path from 'path';
 
@@ -38,6 +7,8 @@ export class S3Service {
   private readonly bucket: string;
   private readonly accessKeyId: string;
   private readonly secretAccessKey: string;
+
+  private readonly logger = new Logger(S3Service.name);
 
   constructor(@Inject('S3Client') private readonly s3Client: S3Client) {
     this.bucket = process.env.AWS_S3_BUCKET;
@@ -65,7 +36,7 @@ export class S3Service {
       const s3Response = await this.s3Client.send(new PutObjectCommand(params));
       return { success: true, message: 'File uploaded successfully', key };
     } catch (error) {
-      console.log(error);
+      this.logger.log('An error occurred:', error);
       throw new Error('Failed to upload file to S3');
     }
   }

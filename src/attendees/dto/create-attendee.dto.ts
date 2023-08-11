@@ -91,7 +91,7 @@ export class CreateAttendeeDto {
   jobTypeInterest: [{ type: string }];
 
   @IsOptional()
-  @IsUrl()
+  // @IsUrl() // for testing purposes
   @MaxLength(200)
   portfolioLink: string;
 

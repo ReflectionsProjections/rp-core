@@ -49,10 +49,8 @@ export class AttendeeService {
       interest_mech_puzzle: createAttendeeDto.mechPuzzle,
     };
     const newAttendee = new this.attendeeModel(attendee);
-    return newAttendee.save()
-    .then((createdAttendee) => {
-      return createdAttendee;
-    });
+    const result = await newAttendee.save();
+    return result;
   }
 
   findAll() {

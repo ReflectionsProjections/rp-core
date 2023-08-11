@@ -18,7 +18,7 @@ import { AuthGuard } from '../auth/auth.guard';
 import { UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Express } from 'express';
-import { S3Service } from 'src/s3/s3.service';
+import { S3Service } from '../s3/s3.service';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { Response } from 'express';
 
@@ -58,6 +58,8 @@ export class AttendeeController {
     @Res() res: Response,
     @Req() req: Request, 
   ) {
+
+    console.log("calling upload file");
     const bucketName: string = process.env.AWS_S3_BUCKET;
 
     const attendee = await this.attendeeService.findAttendeeByEmail(req['user'].email);
@@ -69,7 +71,7 @@ export class AttendeeController {
       console.log("File uploaded successfully");
       return { success: true, message: 'File uploaded successfully', key: uploadResult.key };
     } catch (error) {
-      throw new HttpException('Failed to upload file', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException('Failed to upload file', error);
     }
   }
 
