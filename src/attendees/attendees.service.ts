@@ -26,12 +26,15 @@ export class AttendeeService {
       name: createAttendeeDto.name,
       email: createAttendeeDto.email,
       //need to initialize studentInfo
-      
+
       studentInfo: {
         university,
-        graduation: createAttendeeDto.expectedGradTerm + ' ' + createAttendeeDto.expectedGradYear,
-        major: createAttendeeDto.major
-      } ,
+        graduation:
+          createAttendeeDto.expectedGradTerm +
+          ' ' +
+          createAttendeeDto.expectedGradYear,
+        major: createAttendeeDto.major,
+      },
       //occupation: createAttendeeDto.occupation,
       events: [],
       dietary_restrictions: createAttendeeDto.food,
@@ -59,7 +62,7 @@ export class AttendeeService {
     return this.attendeeModel.findById(id);
   }
 
-  findAttendeeByEmail(email: string) {
+  async findAttendeeByEmail(email: string): Promise<Attendee> {
     return this.attendeeModel.findOne({ email });
   }
 
