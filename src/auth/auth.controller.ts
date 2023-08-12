@@ -91,11 +91,8 @@ export class AuthController {
   @Get('/me')
   @UseGuards(AuthGuard)
   async getLoggedInUser(@Req() req: Request) {
-    // Attach additional user information as needed
-    // Lookup attendee based on their (unique) email
     const attendee = req['user'];
-    const passURL = await this.walletService.generateEventPass(attendee.email);
-    return { attendee, passURL };
+    return attendee;
   }
 
   @Get('/access/admin')
