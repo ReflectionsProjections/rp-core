@@ -8,6 +8,8 @@ import {
   Delete,
   NotFoundException,
   UseGuards,
+  Req,
+  BadRequestException,
 } from '@nestjs/common';
 import { AttendeeService } from './attendees.service';
 // import { EventsService } from './events.service';
@@ -15,12 +17,16 @@ import { CreateAttendeeDto } from './dto/create-attendee.dto';
 import { UpdateAttendeeDto } from './dto/update-attendee.dto';
 import { AuthGuard } from '../auth/auth.guard';
 import { WalletService } from '../wallet/wallet.service';
+import * as QRCode from 'qrcode';
+import { JwtService } from '@nestjs/jwt';
+import { Request } from 'express';
 
 @Controller('attendee')
 export class AttendeeController {
   constructor(
     private readonly attendeeService: AttendeeService,
     private walletService: WalletService,
+    private jwtService: JwtService,
   ) {}
 
   /**
@@ -52,6 +58,25 @@ export class AttendeeController {
   @Get()
   findAll() {
     return this.attendeeService.findAll();
+  }
+
+  /**
+   * Usage on the frontend:
+   * 1. Call /attendee/qr --> get data URL from response body
+   * 2. Use data url like so:
+   * <img src={dataURL} alt="Attendee QR Code Pass"/>
+   * @returns an image data URL
+   */
+  @Get('/qr')
+  @UseGuards(AuthGuard)
+  async getQRCode(@Req() req: Request) {
+    let email: string = req['user']?.email;
+    if (!email) {
+      throw new BadRequestException('User email could not be found');
+    }
+    const signed_payload = await this.jwtService.signAsync({ email });
+    const qr_data_url = await QRCode.toDataURL(signed_payload);
+    return qr_data_url;
   }
 
   @Get(':id')
