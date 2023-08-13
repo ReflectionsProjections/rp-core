@@ -59,7 +59,6 @@ export class AttendeeController {
     @Req() req: Request, 
   ) {
 
-    console.log("calling upload file");
     const bucketName: string = process.env.AWS_S3_BUCKET;
 
     const attendee = await this.attendeeService.findAttendeeByEmail(req['user'].email);
@@ -69,9 +68,9 @@ export class AttendeeController {
     try {
       const uploadResult = await this.s3ModuleService.uploadFile(file, bucketName, attendeeId, attendeeName);
       console.log("File uploaded successfully");
-      return { success: true, message: 'File uploaded successfully', key: uploadResult.key };
+      return res.json({ success: true, message: 'File uploaded successfully', key: uploadResult.key });
     } catch (error) {
-      throw new HttpException('Failed to upload file', error);
+      return res.status(500).json({ success: false, message: 'Failed to upload file', error: error.message });
     }
   }
 
