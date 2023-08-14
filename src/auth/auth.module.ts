@@ -4,7 +4,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AttendeesModule } from '../attendees/attendees.module';
 import { AttendeeService } from '../attendees/attendees.service';
 import { EmailModule } from '../email/email.module';
-import { EmailService } from '../email/email.service';
 import { RolesModule } from '../roles/roles.module';
 import { RolesService } from '../roles/roles.service';
 import { S3ModuleModule } from '../s3/s3.module';
@@ -27,7 +26,6 @@ import { Verification, VerificationSchema } from './verifications.schema';
   controllers: [AuthController],
   providers: [
     AuthService,
-    EmailService,
     AttendeeService,
     RolesService,
     S3Service,

@@ -22,17 +22,17 @@ import { CreateAttendeeDto } from './dto/create-attendee.dto';
 import { UpdateAttendeeDto } from './dto/update-attendee.dto';
 import { AuthGuard } from '../auth/auth.guard';
 import { WalletService } from '../wallet/wallet.service';
-import * as QRCode from 'qrcode';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
+import { EmailService } from '../email/email.service';
 
 @Controller('attendee')
 export class AttendeeController {
   constructor(
     private readonly attendeeService: AttendeeService,
     private readonly s3ModuleService: S3Service,
+    private readonly emailService: EmailService,
     private walletService: WalletService,
-    private jwtService: JwtService,
   ) {}
 
   /**
@@ -51,8 +51,19 @@ export class AttendeeController {
 
   @Post()
   @UseGuards(AuthGuard)
-  create(@Body() createAttendeeDto: CreateAttendeeDto) {
-    return this.attendeeService.create(createAttendeeDto);
+  async create(@Body() createAttendeeDto: CreateAttendeeDto) {
+    const attendee = await this.attendeeService.create(createAttendeeDto);
+    const email = attendee.email;
+    const firstName = attendee.name.split(' ')[0];
+    const walletLink = await this.walletService.generateEventPass(email);
+    const passUrl = await this.attendeeService.getQRPassImageDataURL(email);
+    await this.emailService.sendWelcomeEmail(
+      email,
+      walletLink,
+      passUrl,
+      firstName,
+    );
+    return 'Success';
   }
 
   @Post('upload')
@@ -106,9 +117,7 @@ export class AttendeeController {
     if (!email) {
       throw new BadRequestException('User email could not be found');
     }
-    const signed_payload = await this.jwtService.signAsync({ email });
-    const qr_data_url = await QRCode.toDataURL(signed_payload);
-    return qr_data_url;
+    return this.attendeeService.getQRPassImageDataURL(email);
   }
 
   @Get('/wallet/google')
