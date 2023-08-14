@@ -6,7 +6,7 @@
 
 Core backend infrastructure for Reflections | Projections, powered by Nest.js
 
-## About 
+## About
 
 RP Core serves key endpoints used by Reflections Projections to manage events, provide attendee insights and incentives, produce metrics on the conference and automate logistics for the conference. It is integrated with the R|P website (rp2023) and QR|P.
 
@@ -28,7 +28,8 @@ GOOGLE_CLIENT_EMAIL="<google_service_acct_client_email>"
 GOOGLE_CLIENT_ID="<google_service_acct_client_id>"
 GOOGLE_CLIENT_509_CERT_URL="<google_service_client_509_url>"
 ```
-*Note: Make sure all the Google Wallet values are in double-quotes!*
+
+_Note: Make sure all the Google Wallet values are in double-quotes!_
 
 - Install dependencies
 
@@ -70,4 +71,4 @@ Create a GitHub issue to for any bug reports or other requests
 
 ## License
 
-R|P Core is proprietary, closed source software as of June 2023. 
+R|P Core is proprietary, closed source software as of June 2023.

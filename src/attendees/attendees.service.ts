@@ -3,12 +3,12 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateAttendeeDto } from './dto/create-attendee.dto';
 import { UpdateAttendeeDto } from './dto/update-attendee.dto';
-import { Attendee, AttendeeDocument } from './attendees.schema';
+import { Attendee } from './attendees.schema';
 
 @Injectable()
 export class AttendeeService {
   constructor(
-    @InjectModel(Attendee.name) private attendeeModel: Model<AttendeeDocument>,
+    @InjectModel(Attendee.name) private attendeeModel: Model<Attendee>,
   ) {}
 
   async userEmailExists(email: string): Promise<boolean> {
@@ -20,18 +20,21 @@ export class AttendeeService {
     const university =
       createAttendeeDto.isUIUCStudent === 'yes'
         ? 'University of Illinois Urbana-Champaign'
-        : createAttendeeDto.collegeName;
+        : createAttendeeDto.collegeName || 'N/A';
 
     const attendee = {
       name: createAttendeeDto.name,
       email: createAttendeeDto.email,
       //need to initialize studentInfo
-      
+
       studentInfo: {
         university,
-        graduation: createAttendeeDto.expectedGradTerm + ' ' + createAttendeeDto.expectedGradYear,
-        major: createAttendeeDto.major
-      } ,
+        graduation:
+          createAttendeeDto.expectedGradTerm +
+          ' ' +
+          createAttendeeDto.expectedGradYear,
+        major: createAttendeeDto.major || 'N/A',
+      },
       //occupation: createAttendeeDto.occupation,
       events: [],
       dietary_restrictions: createAttendeeDto.food,

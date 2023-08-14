@@ -32,7 +32,6 @@ describe('WalletController', () => {
       controllers: [WalletController],
     }).compile();
 
-    
     controller = module.get<WalletController>(WalletController);
   });
 

@@ -15,9 +15,7 @@ import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('wallet')
 export class WalletController {
-  constructor(
-    private readonly walletService: WalletService,
-  ) {}
+  constructor(private readonly walletService: WalletService) {}
 
   @UseGuards(AuthGuard)
   @Get('/wallet-auth')

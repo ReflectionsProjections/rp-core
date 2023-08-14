@@ -28,7 +28,6 @@ describe('WalletService', () => {
           },
         },
       ],
-      
     }).compile();
 
     service = module.get<WalletService>(WalletService);

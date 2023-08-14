@@ -6,7 +6,7 @@ This document should provide a overview of the Google Wallet Endpoints and point
 
 ## Service Account Setup
 
-The Google Wallet Pass Type used in this instance is the [Event Pass](https://developers.google.com/wallet/tickets/events) 
+The Google Wallet Pass Type used in this instance is the [Event Pass](https://developers.google.com/wallet/tickets/events)
 
 Before using the Google Wallet API, the following prerequisites should be followed
 
@@ -33,7 +33,8 @@ GOOGLE_CLIENT_EMAIL="<google_service_acct_client_email>"
 GOOGLE_CLIENT_ID="<google_service_acct_client_id>"
 GOOGLE_CLIENT_509_CERT_URL="<google_service_client_509_url>"
 ```
-*Note: Make sure all the Google Wallet values are in double-quotes!*
+
+_Note: Make sure all the Google Wallet values are in double-quotes!_
 
 The Google Issuer ID can be found here in the [Google Pay and Wallet Passes Console](https://pay.google.com/business/console/passes)
 
@@ -50,7 +51,6 @@ To setup the above repository for reference, follow the steps in [this Codelab](
 ## Additional Information
 
 To learn more about the properties and fields that can be modified with these passes, use the [Wallet Pass Builder](https://developers.google.com/wallet/generic/resources/pass-builder) as a tool to customize the pass as needed.
-
 
 ## Resources
 
