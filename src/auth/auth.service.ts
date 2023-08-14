@@ -76,6 +76,7 @@ export class AuthService {
     }
 
     await this.emailService.sendVerificationEmail(email, passcode);
+    // console.log(passcode);
     this.logger.log('Successfully sent verification email');
     return { status: HttpStatus.OK, message: 'Success' };
   }
