@@ -75,13 +75,7 @@ export class AuthService {
       };
     }
 
-    await this.emailService.sendBasicEmail({
-      to: email,
-      subject: `${passcode} is your R|P code`,
-      text: `Your one-time code is ${passcode}. This is valid for the next 10 minutes.`,
-    });
-    // console.log(passcode);
-
+    await this.emailService.sendVerificationEmail(email, passcode);
     this.logger.log('Successfully sent verification email');
     return { status: HttpStatus.OK, message: 'Success' };
   }

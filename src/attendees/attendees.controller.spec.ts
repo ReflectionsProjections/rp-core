@@ -10,6 +10,13 @@ import { Attendee } from './attendees.schema';
 import { AttendeeService } from './attendees.service';
 import { S3Client } from '@aws-sdk/client-s3';
 import { AppModule } from '../app.module';
+import { WalletService } from '../wallet/wallet.service';
+import { JwtModule, JwtService } from '@nestjs/jwt';
+import { ExecutionContext } from '@nestjs/common';
+import { Request } from 'express';
+import { URL } from 'url';
+import * as mocks from 'node-mocks-http';
+import { expect, jest } from '@jest/globals';
 
 describe('AttendeeService', () => {
   let controller: AttendeeController;
@@ -32,11 +39,29 @@ describe('AttendeeService', () => {
           },
         },
         S3Service,
+        {
+          provide: WalletService,
+          useValue: {
+            get: jest.fn((key: string) => {}),
+          },
+        },
+        {
+          provide: JwtService,
+          useValue: {
+            signAsync: jest.fn((obj) => {
+              return JSON.stringify(obj);
+            }),
+          },
+        },
       ],
     })
       .overrideGuard(AuthGuard)
       .useValue({
-        canActivate: (_context) => true,
+        canActivate: (context: ExecutionContext) => {
+          const request: Request = context.switchToHttp().getRequest();
+          request['user'] = { email: 'test@rp.org' };
+          return true;
+        },
       })
       .compile();
 
@@ -45,5 +70,16 @@ describe('AttendeeService', () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+  });
+
+  it('getQRCode generates a data URL', async () => {
+    const req = mocks.createRequest();
+    req['user'] = { email: 'test@rp.org' };
+    expect(await controller.getQRCode(req)).toMatch(/data:/);
+  });
+
+  it('getQRCode throws exception when email is absent', async () => {
+    const req = mocks.createRequest();
+    expect(() => controller.getQRCode(req)).rejects.toThrow();
   });
 });

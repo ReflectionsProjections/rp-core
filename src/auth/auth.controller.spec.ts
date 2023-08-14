@@ -11,6 +11,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ExecutionContext } from '@nestjs/common';
 import { AttendeeService } from '../attendees/attendees.service';
 import { RolesService } from '../roles/roles.service';
+import { WalletService } from '../wallet/wallet.service';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -32,6 +33,12 @@ describe('AuthController', () => {
         },
         {
           provide: AttendeeService,
+          useValue: {
+            get: jest.fn((key: string) => {}),
+          },
+        },
+        {
+          provide: WalletService,
           useValue: {
             get: jest.fn((key: string) => {}),
           },

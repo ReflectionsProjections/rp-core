@@ -16,7 +16,6 @@ const s3Client = new S3Client(s3ClientConfig);
 
 @Module({
   imports: [forwardRef(() => AttendeesModule)], // Import AttendeesModule here
-  controllers: [AttendeeController],
   providers: [S3Service, { provide: 'S3Client', useValue: s3Client }],
 })
 export class S3ModuleModule {}

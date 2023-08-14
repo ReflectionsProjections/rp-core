@@ -6,6 +6,7 @@ import { AttendeeService } from './attendees.service';
 import { S3ModuleModule } from '../s3/s3.module';
 import { S3Service } from '../s3/s3.service';
 import { S3Client } from '@aws-sdk/client-s3';
+import { WalletService } from '../wallet/wallet.service';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { S3Client } from '@aws-sdk/client-s3';
       provide: 'S3Client',
       useClass: S3Client,
     },
+    WalletService,
   ],
   exports: [
     MongooseModule.forFeature([

@@ -16,18 +16,23 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Request } from 'express';
-import { AuthGuard } from '../auth/auth.guard';
 import { S3Service } from '../s3/s3.service';
 import { AttendeeService } from './attendees.service';
 import { CreateAttendeeDto } from './dto/create-attendee.dto';
 import { UpdateAttendeeDto } from './dto/update-attendee.dto';
+import { AuthGuard } from '../auth/auth.guard';
+import { WalletService } from '../wallet/wallet.service';
+import * as QRCode from 'qrcode';
+import { JwtService } from '@nestjs/jwt';
+import { Request } from 'express';
 
 @Controller('attendee')
 export class AttendeeController {
   constructor(
     private readonly attendeeService: AttendeeService,
     private readonly s3ModuleService: S3Service,
+    private walletService: WalletService,
+    private jwtService: JwtService,
   ) {}
 
   /**
@@ -47,10 +52,9 @@ export class AttendeeController {
   @Post()
   @UseGuards(AuthGuard)
   async create(@Body() createAttendeeDto: CreateAttendeeDto) {
-    const createdAttendee = await this.attendeeService.create(
-      createAttendeeDto,
-    );
-    return createdAttendee;
+    const attendee = await this.attendeeService.create(createAttendeeDto);
+    const passURL = await this.walletService.generateEventPass(attendee.email);
+    return { attendee, passURL };
   }
 
   @Post('upload')
@@ -88,6 +92,25 @@ export class AttendeeController {
   @Get()
   findAll() {
     return this.attendeeService.findAll();
+  }
+
+  /**
+   * Usage on the frontend:
+   * 1. Call /attendee/qr --> get data URL from response body
+   * 2. Use data url like so:
+   * <img src={dataURL} alt="Attendee QR Code Pass"/>
+   * @returns an image data URL
+   */
+  @Get('/qr')
+  @UseGuards(AuthGuard)
+  async getQRCode(@Req() req: Request) {
+    let email: string = req['user']?.email;
+    if (!email) {
+      throw new BadRequestException('User email could not be found');
+    }
+    const signed_payload = await this.jwtService.signAsync({ email });
+    const qr_data_url = await QRCode.toDataURL(signed_payload);
+    return qr_data_url;
   }
 
   @Get(':id')

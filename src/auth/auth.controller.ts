@@ -21,6 +21,7 @@ import { AttendeeService } from '../attendees/attendees.service';
 import { RolesGuard } from '../roles/roles.guard';
 import { Roles } from '../roles/roles.decorator';
 import { RoleLevel } from '../roles/roles.enum';
+import { WalletService } from '../wallet/wallet.service';
 
 @Controller('auth')
 export class AuthController {
@@ -28,6 +29,7 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly attendeeService: AttendeeService,
     private jwtService: JwtService,
+    private walletService: WalletService,
   ) {}
 
   @Post('/generate')
@@ -88,10 +90,9 @@ export class AuthController {
 
   @Get('/me')
   @UseGuards(AuthGuard)
-  getLoggedInUser(@Req() req: Request) {
-    // Attach additional user information as needed
-    // Lookup attendee based on their (unique) email
-    return req['user'];
+  async getLoggedInUser(@Req() req: Request) {
+    const attendee = req['user'];
+    return attendee;
   }
 
   @Get('/access/admin')
@@ -105,8 +106,6 @@ export class AuthController {
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(RoleLevel.Corporate)
   corporateAccessCheck(@Req() req: Request) {
-    // Attach additional user information as needed
-    // Lookup attendee based on their (unique) email
     return 'Success';
   }
 }
