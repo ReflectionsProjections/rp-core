@@ -51,10 +51,8 @@ export class AttendeeController {
 
   @Post()
   @UseGuards(AuthGuard)
-  async create(@Body() createAttendeeDto: CreateAttendeeDto) {
-    const attendee = await this.attendeeService.create(createAttendeeDto);
-    const passURL = await this.walletService.generateEventPass(attendee.email);
-    return { attendee, passURL };
+  create(@Body() createAttendeeDto: CreateAttendeeDto) {
+    return this.attendeeService.create(createAttendeeDto);
   }
 
   @Post('upload')
@@ -111,6 +109,16 @@ export class AttendeeController {
     const signed_payload = await this.jwtService.signAsync({ email });
     const qr_data_url = await QRCode.toDataURL(signed_payload);
     return qr_data_url;
+  }
+
+  @Get('/wallet/google')
+  @UseGuards(AuthGuard)
+  async getGoogleWalletUrl(@Req() req: Request) {
+    let email: string = req['user']?.email;
+    if (!email) {
+      throw new BadRequestException('User email could not be found');
+    }
+    return await this.walletService.generateEventPass(email);
   }
 
   @Get(':id')

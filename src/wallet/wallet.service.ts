@@ -265,7 +265,9 @@ export class WalletService {
   async generateEventPass(attendeeEmail: string) {
     //encode attendee email into JWT
     const payload = { email: attendeeEmail };
-    const userAuthToken = await this.jwtService.signAsync(payload);
+    const userAuthToken = await this.jwtService.signAsync(payload, {
+      expiresIn: '30d',
+    });
     //Use email to fetch attendee email
     const attendeeName = (
       await this.attendeeService.findAttendeeByEmail(attendeeEmail)
