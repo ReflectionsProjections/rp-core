@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { EmailService } from './email.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { HttpModule } from '@nestjs/axios';
 
 describe('EmailService', () => {
   let service: EmailService;
@@ -11,6 +12,7 @@ describe('EmailService', () => {
         ConfigModule.forRoot({
           isGlobal: true,
         }),
+        HttpModule,
       ],
       providers: [EmailService, ConfigService],
     }).compile();

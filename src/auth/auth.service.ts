@@ -20,7 +20,7 @@ export class AuthService {
   constructor(
     @InjectModel(Verification.name)
     private verificationModel: Model<Verification>,
-    private emailService: EmailService,
+    private readonly emailService: EmailService,
   ) {}
 
   /**

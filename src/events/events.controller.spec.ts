@@ -11,13 +11,15 @@ import { WalletService } from '../wallet/wallet.service';
 import { Event } from './event.schema';
 import { EventsController } from './events.controller';
 import { EventsService } from './events.service';
+import { EmailModule } from '../email/email.module';
+import { HttpModule } from '@nestjs/axios';
 
 describe('EventsController', () => {
   // TODO: Mock or Set up test database connection for testing transactions
   let controller: EventsController;
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
+      imports: [AppModule, HttpModule],
       controllers: [EventsController],
       providers: [
         EventsService,
