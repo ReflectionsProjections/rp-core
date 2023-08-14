@@ -1,34 +1,34 @@
 import {
-  Controller,
-  Get,
+  BadRequestException,
   Body,
+  Controller,
+  Delete,
+  Get,
+  HttpException,
+  HttpStatus,
+  NotFoundException,
+  Param,
   Patch,
   Post,
-  Param,
-  Delete,
-  NotFoundException,
-  UseGuards,
-  Res,
   Req,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Request } from 'express';
+import { AuthGuard } from '../auth/auth.guard';
+import { S3Service } from '../s3/s3.service';
 import { AttendeeService } from './attendees.service';
 import { CreateAttendeeDto } from './dto/create-attendee.dto';
 import { UpdateAttendeeDto } from './dto/update-attendee.dto';
-import { AuthGuard } from '../auth/auth.guard';
-import { UploadedFile, UseInterceptors } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { Express } from 'express';
-import { S3Service } from '../s3/s3.service';
-import { HttpException, HttpStatus } from '@nestjs/common';
-import { Response } from 'express';
 
 @Controller('attendee')
 export class AttendeeController {
-
   constructor(
     private readonly attendeeService: AttendeeService,
     private readonly s3ModuleService: S3Service,
-    ) {}
+  ) {}
 
   /**
    * This function checks if a user with a given email exists.
@@ -47,30 +47,41 @@ export class AttendeeController {
   @Post()
   @UseGuards(AuthGuard)
   async create(@Body() createAttendeeDto: CreateAttendeeDto) {
-    const createdAttendee = await this.attendeeService.create(createAttendeeDto);
+    const createdAttendee = await this.attendeeService.create(
+      createAttendeeDto,
+    );
     return createdAttendee;
   }
 
   @Post('upload')
   @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor('file'))
-  async uploadFile(@UploadedFile() file: Express.Multer.File, 
-    @Res() res: Response,
-    @Req() req: Request, 
+  async uploadFile(
+    @UploadedFile() file: Express.Multer.File,
+    @Req() req: Request,
   ) {
-
     const bucketName: string = process.env.AWS_S3_BUCKET;
+    const email = req['user'].email;
 
-    const attendee = await this.attendeeService.findAttendeeByEmail(req['user'].email);
+    if (!email) {
+      throw new BadRequestException('User email could not be determined');
+    }
+
+    const attendee = await this.attendeeService.findAttendeeByEmail(email);
     const attendeeId = attendee._id.toString();
     const attendeeName = attendee.name;
 
-    try {
-      const uploadResult = await this.s3ModuleService.uploadFile(file, bucketName, attendeeId, attendeeName);
-      console.log("File uploaded successfully");
-      return res.json({ success: true, message: 'File uploaded successfully', key: uploadResult.key });
-    } catch (error) {
-      return res.status(500).json({ success: false, message: 'Failed to upload file', error: error.message });
+    const result = await this.s3ModuleService.uploadFile(
+      file,
+      bucketName,
+      attendeeId,
+      attendeeName,
+    );
+
+    if (result.success) {
+      return 'File uploaded successfully';
+    } else {
+      throw new HttpException(result.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 

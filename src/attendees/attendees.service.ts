@@ -20,18 +20,21 @@ export class AttendeeService {
     const university =
       createAttendeeDto.isUIUCStudent === 'yes'
         ? 'University of Illinois Urbana-Champaign'
-        : createAttendeeDto.collegeName;
+        : createAttendeeDto.collegeName || 'N/A';
 
     const attendee = {
       name: createAttendeeDto.name,
       email: createAttendeeDto.email,
       //need to initialize studentInfo
-      
+
       studentInfo: {
         university,
-        graduation: createAttendeeDto.expectedGradTerm + ' ' + createAttendeeDto.expectedGradYear,
-        major: createAttendeeDto.major
-      } ,
+        graduation:
+          createAttendeeDto.expectedGradTerm +
+          ' ' +
+          createAttendeeDto.expectedGradYear,
+        major: createAttendeeDto.major || 'N/A',
+      },
       //occupation: createAttendeeDto.occupation,
       events: [],
       dietary_restrictions: createAttendeeDto.food,
@@ -62,7 +65,7 @@ export class AttendeeService {
   }
 
   findAttendeeByEmail(email: string) {
-    return this.attendeeModel.findOne({ email })
+    return this.attendeeModel.findOne({ email });
   }
 
   update(id: number, updateAttendeeDto: UpdateAttendeeDto) {

@@ -1,56 +1,65 @@
-import { ArrayMaxSize, IsArray, IsEmail, IsIn, IsNotEmpty, IsNumberString, IsOptional, IsPositive, IsString, IsUrl, MaxLength, isNotEmpty } from 'class-validator';
-
 import {
-  HydratedDocument,
-  Schema as MongooseSchema,
-  Types,
-  model,
-} from 'mongoose';
+  ArrayMaxSize,
+  IsArray,
+  IsEmail,
+  IsIn,
+  IsNotEmpty,
+  IsNumberString,
+  IsOptional,
+  IsPositive,
+  IsString,
+  IsUrl,
+  MaxLength,
+  MinLength,
+  ValidateIf,
+} from 'class-validator';
 
 export class CreateAttendeeDto {
   @IsNotEmpty()
   @IsString()
+  @MinLength(2)
   @MaxLength(100)
   name: string;
 
-  @IsNotEmpty()
   @IsEmail()
   @MaxLength(100)
   email: string;
 
   @IsNotEmpty()
   @IsString()
-  @IsIn(["yes", "no"])
+  @IsIn(['yes', 'no'])
   isCollegeStudent: string;
 
-  @IsOptional() //Can change to @IsNotEmpty() maybe?
   @IsString()
-  @IsIn(["yes", "no"])
+  @IsIn(['yes', 'no'])
   isUIUCStudent: string;
 
+  @ValidateIf((o) => o.isCollegeStudent === 'yes')
   @IsNotEmpty()
   @IsString()
   @MaxLength(50)
   major: string;
 
-  @IsOptional()
+  @ValidateIf((o) => o.isCollegeStudent === 'yes')
   @IsString()
   @MaxLength(50)
   majorOther: string;
 
+  @ValidateIf((o) => o.isCollegeStudent === 'yes' && o.isUIUCStudent === 'no')
   @IsNotEmpty()
   @MaxLength(100)
   collegeName: string;
 
-  @IsNotEmpty()
+  @ValidateIf((o) => o.isCollegeStudent === 'yes')
   @IsString()
-  @IsIn(["Fall", "Spring", "Summer"])
+  @IsIn(['Fall', 'Spring', 'Summer'])
   expectedGradTerm: string;
 
+  @ValidateIf((o) => o.isCollegeStudent === 'yes')
   @IsNotEmpty()
   @IsNumberString()
   expectedGradYear: string;
-  
+
   @IsOptional()
   @IsPositive()
   age: number | null;
@@ -74,7 +83,7 @@ export class CreateAttendeeDto {
 
   @IsOptional()
   @IsString()
-  @IsIn(["yes", "no", "preferNotToSay"])
+  @IsIn(['yes', 'no', 'preferNotToSay'])
   firstGen: string;
 
   @IsNotEmpty()
