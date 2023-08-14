@@ -95,11 +95,6 @@ export class AttendeeController {
     return this.attendeeService.findOne(id);
   }
 
-  @Get(':email')
-  findAttendeeByEmail(@Param('email') email: string) {
-    return this.attendeeService.findAttendeeByEmail(email);
-  }
-
   @Patch(':id')
   update(
     @Param('id') id: string,
