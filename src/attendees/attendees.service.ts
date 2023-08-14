@@ -51,9 +51,7 @@ export class AttendeeService {
       job_interest: createAttendeeDto.jobTypeInterest,
       interest_mech_puzzle: createAttendeeDto.mechPuzzle,
     };
-    const newAttendee = new this.attendeeModel(attendee);
-    const result = await newAttendee.save();
-    return result;
+    return await this.attendeeModel.create(attendee);
   }
 
   findAll() {

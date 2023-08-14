@@ -1,6 +1,6 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { S3ClientConfig, S3Client } from '@aws-sdk/client-s3';
-import { AttendeeController } from 'src/attendees/attendees.controller';
+import { AttendeeController } from '../attendees/attendees.controller';
 import { S3Service } from './s3.service';
 import { AttendeesModule } from '../attendees/attendees.module';
 
