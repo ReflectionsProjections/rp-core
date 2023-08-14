@@ -5,6 +5,7 @@ import { EmailService } from '../email/email.service';
 import { Attendee, AttendeeDocument } from './attendees.schema';
 import { AttendeeService } from './attendees.service';
 import { CreateAttendeeDto } from './dto/create-attendee.dto';
+import { JwtService } from '@nestjs/jwt';
 
 describe('AttendeeService', () => {
   let mockAttendeeModel: Model<AttendeeDocument>;
@@ -22,6 +23,14 @@ describe('AttendeeService', () => {
           provide: EmailService,
           useValue: {
             get: jest.fn((key: string) => {}),
+          },
+        },
+        {
+          provide: JwtService,
+          useValue: {
+            signAsync: jest.fn((obj) => {
+              return JSON.stringify(obj);
+            }),
           },
         },
       ],

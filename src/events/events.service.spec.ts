@@ -6,6 +6,7 @@ import { Attendee } from '../attendees/attendees.schema';
 import { AttendeeService } from '../attendees/attendees.service';
 import { Event } from './event.schema';
 import { EventsModule } from './events.module';
+import { HttpModule } from '@nestjs/axios';
 import { EventsService } from './events.service';
 
 describe('EventsService', () => {
@@ -13,7 +14,7 @@ describe('EventsService', () => {
   let service: EventsService;
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [AppModule, EventsModule],
+      imports: [AppModule, HttpModule, EventsModule],
       providers: [
         EventsService,
         {
