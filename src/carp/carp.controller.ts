@@ -14,7 +14,7 @@ import {
   import { AuthGuard } from '../auth/auth.guard';
   import { UploadedFile, UseInterceptors } from '@nestjs/common';
   import { FileInterceptor } from '@nestjs/platform-express';
-  import { S3Service } from 'src/s3/s3.service';
+  import { S3Service } from '../s3/s3.service';
   import { HttpException, HttpStatus } from '@nestjs/common';
   import { Response } from 'express';
   import { CarpService } from './carp.service';
