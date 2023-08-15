@@ -40,10 +40,10 @@ export class CreateAttendeeDto {
   @MaxLength(50)
   major: string;
 
-  @ValidateIf((o) => o.isCollegeStudent === 'yes')
+  @ValidateIf((o) => o.isCollegeStudent === 'yes' && o.major === 'N/A')
   @IsString()
   @MaxLength(50)
-  majorOther: string;
+  majorOther: string | null;
 
   @ValidateIf((o) => o.isCollegeStudent === 'yes' && o.isUIUCStudent === 'no')
   @IsNotEmpty()
