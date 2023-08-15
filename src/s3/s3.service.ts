@@ -1,78 +1,47 @@
-// import { Injectable, Inject } from '@nestjs/common';
-// import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
-// import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-
-// @Injectable()
-// export class S3ModuleService {
-//   private readonly bucket: string;
-
-//   constructor(@Inject('S3Client') private readonly s3Client: S3Client) {
-//     this.bucket = process.env.AWS_S3_BUCKET;
-//   }
-
-//   async getPresignedURL(attendeeID: string, attendeeName: string): Promise<string> {
-//     const key = `${attendeeID}_${attendeeName}`;
-
-//     const params = {
-//       Bucket: this.bucket,
-//       Key: key,
-//       ContentType: 'application/pdf'
-//     };
-
-//     try {
-//       const command = new PutObjectCommand(params);
-//       const url = await getSignedUrl(this.s3Client, command, { expiresIn: 300 });
-//       return url;
-//     } catch (error) {
-//       throw new Error('Failed to generate pre-signed URL');
-//     }
-//   }
-// }
-
-import { Injectable, Inject } from '@nestjs/common';
-import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
-import {
-  getSignedUrl,
-} from "@aws-sdk/s3-request-presigner";
+import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 
 @Injectable()
 export class S3Service {
-  private readonly bucket: string;
-  private readonly accessKeyId: string;
-  private readonly secretAccessKey: string;
+  private readonly logger = new Logger(S3Service.name);
 
-  constructor(@Inject('S3Client') private readonly s3Client: S3Client) {
-    this.bucket = process.env.AWS_S3_BUCKET;
-    this.accessKeyId = process.env.AWS_ACCESS_KEY_ID;
-    this.secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
+  constructor(@Inject('S3Client') private readonly s3Client: S3Client) {}
 
-    console.log('BUCKET: ' + this.bucket);
-    console.log('ACCESS: ' + this.accessKeyId);
-    console.log('SECRET: ' + this.secretAccessKey);
-  }
-
-  async uploadFile(file: Express.Multer.File, bucket: string, attendeeID: string) {
+  async uploadFile(
+    file: Express.Multer.File,
+    bucket: string,
+    attendeeID: string,
+    attendeeName: string,
+  ) {
     const { originalname, buffer, mimetype } = file;
 
-    const key = `${attendeeID}_${originalname}`;
+    const extension = await this.getExtensionFromFilename(originalname);
+
+    const key = `${attendeeID}_${attendeeName}${extension}`;
 
     const params = {
       Bucket: bucket,
       Key: key,
       Body: buffer,
-      ACL: 'public-read',
       ContentType: mimetype,
       ContentDisposition: 'inline',
     };
 
     try {
-      const s3Response = await this.s3Client.send(new PutObjectCommand(params));
-      console.log(s3Response);
+      await this.s3Client.send(new PutObjectCommand(params));
       return { success: true, message: 'File uploaded successfully', key };
     } catch (error) {
-      console.log(error);
-      throw new Error('Failed to upload file to S3');
+      this.logger.error('An error occurred:', error);
+      throw { success: false, message: error };
     }
+  }
+
+  async getExtensionFromFilename(filename: string): Promise<string> {
+    const lastDotIndex = filename.lastIndexOf('.');
+    if (lastDotIndex === -1) {
+      return '';
+    }
+    return filename.substring(lastDotIndex);
   }
 
   async getFileUrl(attendeeId: string, attendeeName: string) {
@@ -88,6 +57,6 @@ export class S3Service {
       throw new Error('Failed to get url');
     }
   }
+
+  
 }
-
-

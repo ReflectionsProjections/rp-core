@@ -1,35 +1,39 @@
 import {
-  Controller,
-  Get,
+  BadRequestException,
   Body,
+  Controller,
+  Delete,
+  Get,
+  HttpException,
+  HttpStatus,
+  NotFoundException,
+  Param,
   Patch,
   Post,
-  Param,
-  Delete,
-  NotFoundException,
-  UseGuards,
-  Res,
   Req,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { S3Service } from '../s3/s3.service';
 import { AttendeeService } from './attendees.service';
-// import { EventsService } from './events.service';
 import { CreateAttendeeDto } from './dto/create-attendee.dto';
 import { UpdateAttendeeDto } from './dto/update-attendee.dto';
 import { AuthGuard } from '../auth/auth.guard';
-import { UploadedFile, UseInterceptors } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { Express } from 'express';
-import { S3Service } from 'src/s3/s3.service';
-import { HttpException, HttpStatus } from '@nestjs/common';
-import { Response } from 'express';
+import { WalletService } from '../wallet/wallet.service';
+import { JwtService } from '@nestjs/jwt';
+import { Request } from 'express';
+import { EmailService } from '../email/email.service';
 
 @Controller('attendee')
 export class AttendeeController {
-
   constructor(
     private readonly attendeeService: AttendeeService,
     private readonly s3ModuleService: S3Service,
-    ) {}
+    private readonly emailService: EmailService,
+    private walletService: WalletService,
+  ) {}
 
   /**
    * This function checks if a user with a given email exists.
@@ -48,46 +52,82 @@ export class AttendeeController {
   @Post()
   @UseGuards(AuthGuard)
   async create(@Body() createAttendeeDto: CreateAttendeeDto) {
-    const createdAttendee = await this.attendeeService.create(createAttendeeDto);
-    const attendeeId = createdAttendee._id.toString();
-
-    // call upload using email
-
-    // or maybe, dont return anything???
-
-    console.log("New attendeeID: ", attendeeId);
-
-    return createdAttendee;
+    const attendee = await this.attendeeService.create(createAttendeeDto);
+    const email = attendee.email;
+    const firstName = attendee.name.split(' ')[0];
+    const walletLink = await this.walletService.generateEventPass(email);
+    const passUrl = await this.attendeeService.getQRPassImageDataURL(email);
+    await this.emailService.sendWelcomeEmail(
+      email,
+      walletLink,
+      passUrl,
+      firstName,
+    );
+    return 'Success';
   }
 
   @Post('upload')
+  @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor('file'))
-  async uploadFile(@UploadedFile() file: Express.Multer.File, 
-    // @Body('attendeeId') attendeeId: string, // not needed
-    // @Body('attendeeEmail') attendeeEmail: string,
-    @Res() res: Response,
-    @Req() req: Request, 
+  async uploadFile(
+    @UploadedFile() file: Express.Multer.File,
+    @Req() req: Request,
   ) {
     const bucketName: string = process.env.AWS_S3_BUCKET;
-    // const attendeeId = this.attendeeService.findAttendeeByEmail(attendeeEmail);
+    const email = req['user'].email;
 
-    const attendeeId = (await this.attendeeService.findAttendeeByEmail(req['user'].email))._id.toString();
+    if (!email) {
+      throw new BadRequestException('User email could not be determined');
+    }
 
-    // get attendeeID by lookup rather than by direct param
+    const attendee = await this.attendeeService.findAttendeeByEmail(email);
+    const attendeeId = attendee._id.toString();
+    const attendeeName = attendee.name;
 
-    try {
-      const uploadResult = await this.s3ModuleService.uploadFile(file, bucketName, attendeeId);
-      res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
-      console.log("File uploaded successfully");
-      return { success: true, message: 'File uploaded successfully', key: uploadResult.key };
-    } catch (error) {
-      throw new HttpException('Failed to upload file', HttpStatus.INTERNAL_SERVER_ERROR);
+    const result = await this.s3ModuleService.uploadFile(
+      file,
+      bucketName,
+      attendeeId,
+      attendeeName,
+    );
+
+    if (result.success) {
+      return 'File uploaded successfully';
+    } else {
+      throw new HttpException(result.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
   @Get()
   findAll() {
     return this.attendeeService.findAll();
+  }
+
+  /**
+   * Usage on the frontend:
+   * 1. Call /attendee/qr --> get data URL from response body
+   * 2. Use data url like so:
+   * <img src={dataURL} alt="Attendee QR Code Pass"/>
+   * @returns an image data URL
+   */
+  @Get('/qr')
+  @UseGuards(AuthGuard)
+  async getQRCode(@Req() req: Request) {
+    let email: string = req['user']?.email;
+    if (!email) {
+      throw new BadRequestException('User email could not be found');
+    }
+    return this.attendeeService.getQRPassImageDataURL(email);
+  }
+
+  @Get('/wallet/google')
+  @UseGuards(AuthGuard)
+  async getGoogleWalletUrl(@Req() req: Request) {
+    let email: string = req['user']?.email;
+    if (!email) {
+      throw new BadRequestException('User email could not be found');
+    }
+    return await this.walletService.generateEventPass(email);
   }
 
   @Get(':id')
