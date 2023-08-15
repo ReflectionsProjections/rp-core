@@ -66,6 +66,7 @@ export class EventsController {
     @Param('id', MongoIdPipe) id: string,
     @Body() registerAttendeeDto: RegisterAttendeeDto,
   ) {
+    const priority = false; //add function here
     const { status, message } = await this.eventsService.registerAttendance(
       id,
       registerAttendeeDto.id,
@@ -75,6 +76,6 @@ export class EventsController {
       throw new HttpException(message, status);
     }
 
-    return { status, message };
+    return { status, message, priority };
   }
 }
