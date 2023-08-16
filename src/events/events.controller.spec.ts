@@ -122,9 +122,10 @@ describe('EventsController', () => {
 
   it('registerAttendeeWithQR throws exception if jwt token cannot be verified', async () => {
     const token = 'definitely not a valid jwt token';
+    const eventId = new mongoose.Types.ObjectId().toString();
 
     await expect(
-      controller.registerAttendeeWithQR('64c6d679d29207cbff121edf', { token }),
+      controller.registerAttendeeWithQR(eventId, { token }),
     ).rejects.toThrow(BadRequestException);
   });
 

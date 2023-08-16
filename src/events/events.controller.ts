@@ -123,9 +123,6 @@ export class EventsController {
     @Param('eventId', MongoIdPipe) eventId: string,
     @Body() body: RegisterAttendeeQRDto,
   ) {
-    // Get email from QR test
-    console.log('token', process.env.JWT_SECRET);
-
     let email: string = null;
 
     try {
