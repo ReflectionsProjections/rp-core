@@ -11,5 +11,6 @@ export class RegisterAttendeeEmailDto {
 }
 
 export class RegisterAttendeeQRDto {
+  @IsString()
   token: string;
 }
