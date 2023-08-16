@@ -7,6 +7,7 @@ import { S3ModuleModule } from '../s3/s3.module';
 import { S3Service } from '../s3/s3.service';
 import { CarpController } from './carp.controller';
 import { CarpService } from './carp.service';
+import { AttendeesModule } from '../attendees/attendees.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { CarpService } from './carp.service';
       { name: Attendee.name, schema: AttendeeSchema },
     ]),
     S3ModuleModule,
+    AttendeesModule,
   ],
   controllers: [CarpController],
   providers: [CarpService,

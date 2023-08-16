@@ -19,10 +19,11 @@ export class CarpService {
     const attendee = await this.attendeeService.findAttendeeByEmail(email);
     const attendeeId = attendee._id.toString();
     const attendeeName = attendee.name;
+    const bucketName = process.env.AWS_S3_BUCKET;
 
     // TODO other args depending on filename structure
     // TODO implement this in s3 service
-    return this.s3Service.getFileUrl(attendeeId, attendeeName); 
+    return this.s3Service.getFileUrl(attendeeId, attendeeName, bucketName); 
 
 
   }

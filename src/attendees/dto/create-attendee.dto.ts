@@ -1,4 +1,3 @@
-import { IsEmail, IsNotEmpty, isNotEmpty } from 'class-validator';
 import {
   ArrayMaxSize,
   IsArray,

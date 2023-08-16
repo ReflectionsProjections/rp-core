@@ -1,5 +1,8 @@
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { PutObjectCommand, GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { Inject, Injectable, Logger } from '@nestjs/common';
+import {
+  getSignedUrl,
+} from "@aws-sdk/s3-request-presigner";
 
 @Injectable()
 export class S3Service {
@@ -44,11 +47,11 @@ export class S3Service {
     return filename.substring(lastDotIndex);
   }
 
-  async getFileUrl(attendeeId: string, attendeeName: string) {
+  async getFileUrl(attendeeId: string, attendeeName: string, bucket: string) {
     // TODO change key according to file naming
     const key = `${attendeeId}_${attendeeName}.pdf`;
     try{
-      const command = new GetObjectCommand({ Bucket: this.bucket, Key: key});
+      const command = new GetObjectCommand({ Bucket: bucket, Key: key});
       // Expires in 12 hours
       const url = getSignedUrl(this.s3Client, command, {expiresIn: 43200});
       return { id: attendeeId, url: url };
