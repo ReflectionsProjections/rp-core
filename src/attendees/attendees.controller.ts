@@ -79,7 +79,7 @@ export class AttendeeController {
     if (!email) {
       throw new BadRequestException('User email could not be determined');
     }
-
+    console.log(email);
     const attendee = await this.attendeeService.findAttendeeByEmail(email);
     const attendeeId = attendee._id.toString();
     const attendeeName = attendee.name;

@@ -50,12 +50,10 @@ export class S3Service {
   async getFileUrl(attendeeId: string, attendeeName: string, bucket: string) {
     // TODO change key according to file naming
     const key = `${attendeeId}_${attendeeName}.pdf`;
-    // TODO console log here to check if it's getting stuff correctly
-    console.log("Hello");
     try{
       const command = new GetObjectCommand({ Bucket: bucket, Key: key});
       // Expires in 12 hours
-      const url = getSignedUrl(this.s3Client, command, {expiresIn: 43200});
+      const url = await getSignedUrl(this.s3Client, command, {expiresIn: 43200});
       return { id: attendeeId, url: url };
     } catch (error) {
       console.log(error);

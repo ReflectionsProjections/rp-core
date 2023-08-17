@@ -40,7 +40,6 @@ import {
     // @UseGuards(AuthGuard, RolesGuard)
     // @Roles(RoleLevel.Corporate)
     async getResume(@Param('email') email:string) {
-        console.log(email);
         return this.carpService.getResume(email);
     }
 
