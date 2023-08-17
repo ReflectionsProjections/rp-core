@@ -26,6 +26,11 @@ export class Event {
   @Prop({
     required: true,
   })
+  end_time: Date;
+
+  @Prop({
+    required: true,
+  })
   duration: Number;
 
   @Prop({
