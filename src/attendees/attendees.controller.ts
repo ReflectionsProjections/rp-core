@@ -53,18 +53,16 @@ export class AttendeeController {
   @UseGuards(AuthGuard)
   async create(@Body() createAttendeeDto: CreateAttendeeDto) {
     const attendee = await this.attendeeService.create(createAttendeeDto);
-    //// COMMENTED OUT FOR TESTING PURPOSES ////
-    // const email = attendee.email;
-    // console.log(email);
-    // const firstName = attendee.name.split(' ')[0];
-    // const walletLink = await this.walletService.generateEventPass(email);
-    // const passUrl = await this.attendeeService.getQRPassImageDataURL(email);
-    // await this.emailService.sendWelcomeEmail(
-    //   email,
-    //   walletLink,
-    //   passUrl,
-    //   firstName,
-    // );
+    const email = attendee.email;
+    const firstName = attendee.name.split(' ')[0];
+    const walletLink = await this.walletService.generateEventPass(email);
+    const passUrl = await this.attendeeService.getQRPassImageDataURL(email);
+    await this.emailService.sendWelcomeEmail(
+      email,
+      walletLink,
+      passUrl,
+      firstName,
+    );
     return 'Success';
   }
 
@@ -86,15 +84,12 @@ export class AttendeeController {
     const attendeeId = attendee._id.toString();
     const attendeeName = attendee.name;
 
-    console.log(file.size);
-    console.log(file.mimetype);
-
     const maxSize = 1024 * 1024 * 10;
     if (file.size > maxSize) {
       throw new BadRequestException('File size exceeds the limit of 10MB.');
     }
 
-    const allowedMimeTypes = ['application/pdf', 'image/jpeg', 'image/png'];
+    const allowedMimeTypes = ['application/pdf', 'image/jpeg', 'image/png', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
     if (!allowedMimeTypes.includes(file.mimetype)) {
       console.log("Uploaded file type:", file.mimetype);
       throw new BadRequestException('Invalid file type. Please upload a PDF, JPEG, or PNG.');
