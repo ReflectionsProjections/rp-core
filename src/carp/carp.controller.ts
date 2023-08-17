@@ -18,6 +18,9 @@ import {
   import { HttpException, HttpStatus } from '@nestjs/common';
   import { Response } from 'express';
   import { CarpService } from './carp.service';
+  import { RolesGuard } from '../roles/roles.guard';
+  import { RoleLevel } from '../roles/roles.enum';
+  import { Roles } from '../roles/roles.decorator'; 
 
   @Controller('carp')
   export class CarpController {
@@ -34,8 +37,10 @@ import {
      */
   
     @Get('/resume/:email')
-    @UseGuards(AuthGuard)
+    // @UseGuards(AuthGuard, RolesGuard)
+    // @Roles(RoleLevel.Corporate)
     async getResume(@Param('email') email:string) {
+        console.log(email);
         return this.carpService.getResume(email);
     }
 

@@ -8,6 +8,8 @@ import { S3Service } from '../s3/s3.service';
 import { CarpController } from './carp.controller';
 import { CarpService } from './carp.service';
 import { AttendeesModule } from '../attendees/attendees.module';
+import { RolesModule } from '../roles/roles.module';
+
 
 @Module({
   imports: [
@@ -16,6 +18,7 @@ import { AttendeesModule } from '../attendees/attendees.module';
     ]),
     S3ModuleModule,
     AttendeesModule,
+    RolesModule,
   ],
   controllers: [CarpController],
   providers: [CarpService,
