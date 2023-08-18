@@ -35,15 +35,16 @@ export class AuthController {
   @Post('/generate')
   async generateVerificationPasscode(
     @Body() body: GeneratePasscodeDto,
-    @Query() query: { isLogin: string },
+    @Query() query: { isLogin: string; isRegister: string },
   ) {
     const isLogin = query?.isLogin === 'true';
+    const isRegister = query?.isRegister === 'true';
 
-    if (isLogin) {
-      const userExists = await this.attendeeService.userEmailExists(body.email);
-      if (!userExists) {
-        throw new NotFoundException('User with that email does not exist.');
-      }
+    const userExists = await this.attendeeService.userEmailExists(body.email);
+    if (!userExists && isLogin) {
+      throw new NotFoundException('User with that email does not exist.');
+    } else if (userExists && isRegister) {
+      throw new NotFoundException('User with that email already exists.');
     }
 
     const { status, message } =

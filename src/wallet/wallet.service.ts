@@ -155,9 +155,6 @@ export class WalletService {
         url: `${baseUrl}/genericClass/${this.classId}`,
         method: 'GET',
       });
-
-      console.log('Class already exists');
-      console.log(response);
     } catch (err) {
       if (err.response && err.response.status === 404) {
         // 404 Error indicates the class does not exist
