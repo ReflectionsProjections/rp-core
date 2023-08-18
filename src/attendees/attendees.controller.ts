@@ -89,7 +89,7 @@ export class AttendeeController {
       throw new BadRequestException('File size exceeds the limit of 10MB.');
     }
 
-    const allowedMimeTypes = ['application/pdf', 'image/jpeg', 'image/png', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    const allowedMimeTypes = ['application/pdf', 'image/jpeg', 'image/png'];
     if (!allowedMimeTypes.includes(file.mimetype)) {
       console.log("Uploaded file type:", file.mimetype);
       throw new BadRequestException('Invalid file type. Please upload a PDF, JPEG, or PNG.');
