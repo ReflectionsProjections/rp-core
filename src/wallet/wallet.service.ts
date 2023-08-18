@@ -73,6 +73,9 @@ export class WalletService {
             },
           ],
         },
+        dateTime: {
+          end: "2023-09-17T23:59:59.52Z"
+        },
         detailsTemplateOverride: {
           detailsItemInfos: [
             {
@@ -120,7 +123,7 @@ export class WalletService {
             contentDescription: {
               defaultValue: {
                 language: 'en-US',
-                value: 'R|P 2023 Banner',
+                value: 'R | P 2023 Banner',
               },
             },
           },
@@ -129,8 +132,8 @@ export class WalletService {
       ],
       textModulesData: [
         {
-          header: 'Make connections at R|P 2023',
-          body: "Attend conferences, make connections, and learn about technology at Reflections|Projections '23.",
+          header: 'Make connections at R | P 2023',
+          body: "Attend conferences, make connections, and learn about technology at Reflections | Projections '23.",
           id: 'event_overview',
         },
       ],
@@ -138,7 +141,7 @@ export class WalletService {
         uris: [
           {
             uri: 'https://www.reflectionsprojections.org/',
-            description: "Official R|P '23 Site",
+            description: "Official R | P '23 Site",
             id: 'official_site',
           },
         ],
@@ -204,7 +207,7 @@ export class WalletService {
       cardTitle: {
         defaultValue: {
           language: 'en',
-          value: 'Reflections|Projections 2023',
+          value: 'Reflections | Projections 2023',
         },
       },
       subheader: {
@@ -226,7 +229,7 @@ export class WalletService {
       },
       heroImage: {
         sourceUri: {
-          uri: 'https://i.imgur.com/noyESjM.png',
+          uri: 'https://i.imgur.com/dk8svPp.png',
         },
       },
       textModulesData: [
