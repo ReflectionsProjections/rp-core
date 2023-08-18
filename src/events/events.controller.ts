@@ -78,7 +78,6 @@ export class EventsController {
     @Param('eventId', MongoIdPipe) eventId: string,
     @Body() body: RegisterAttendeeDto,
   ) {
-    const priority = false; //add function here
     const { status, message } = await this.eventsService.registerAttendance(
       eventId,
       body.id,
@@ -88,7 +87,7 @@ export class EventsController {
       throw new HttpException(message, status);
     }
 
-    return { status, message };
+    return { status, message, priority: false };
   }
 
   @Put(':eventId/attendee/email')
@@ -114,7 +113,7 @@ export class EventsController {
       throw new HttpException(message, status);
     }
 
-    return { status, message };
+    return { status, message, priority: false };
   }
 
   @Put(':eventId/attendance/qr')
@@ -155,6 +154,6 @@ export class EventsController {
       throw new HttpException(message, status);
     }
 
-    return { status, message, priority };
+    return { status, message, priority: false };
   }
 }
