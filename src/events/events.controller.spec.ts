@@ -101,6 +101,7 @@ describe('EventsController', () => {
     const successResponse = {
       status: HttpStatus.ACCEPTED,
       message: 'attendee registered for event',
+      priority: false,
     };
 
     const registerAttendanceSpy = jest
@@ -158,6 +159,7 @@ describe('EventsController', () => {
     const successResponse = {
       status: HttpStatus.ACCEPTED,
       message: 'attendee registered for event',
+      priority: false,
     };
 
     const registerAttendanceSpy = jest
