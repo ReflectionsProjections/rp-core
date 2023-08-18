@@ -15,8 +15,8 @@ export class CarpService {
    * 
    * @param email Email address of the user
    */
-  async getResume(email: string) {
-    const attendee = await this.attendeeService.findAttendeeByEmail(email);
+  async getResume(id: string) {
+    const attendee = await this.attendeeService.findOne(id);
     const attendeeId = attendee._id.toString();
     const attendeeName = attendee.name;
     const bucketName = process.env.AWS_S3_BUCKET;

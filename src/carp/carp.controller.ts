@@ -36,11 +36,11 @@ import {
      * @param {string} email - Represents the email address of an attendee.
      */
   
-    @Get('/resume/:email')
+    @Get('/resume/:id')
     // @UseGuards(AuthGuard, RolesGuard)
     // @Roles(RoleLevel.Corporate)
-    async getResume(@Param('email') email:string) {
-        return this.carpService.getResume(email);
+    async getResume(@Param('id') id:string) {
+        return this.carpService.getResume(id);
     }
 
   } 
