@@ -84,6 +84,19 @@ export class AttendeeController {
     const attendeeId = attendee._id.toString();
     const attendeeName = attendee.name;
 
+    const maxSize = 1024 * 1024 * 10;
+    if (file.size > maxSize) {
+      throw new BadRequestException('File size exceeds the limit of 10MB.');
+    }
+
+    const allowedMimeTypes = ['application/pdf', 'image/jpeg', 'image/png'];
+    if (!allowedMimeTypes.includes(file.mimetype)) {
+      console.log('Uploaded file type:', file.mimetype);
+      throw new BadRequestException(
+        'Invalid file type. Please upload a PDF, JPEG, or PNG.',
+      );
+    }
+
     const result = await this.s3ModuleService.uploadFile(
       file,
       bucketName,
