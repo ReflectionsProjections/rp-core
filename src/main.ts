@@ -15,6 +15,7 @@ async function bootstrap() {
       'https://beta.reflectionsprojections.org',
     ],
     allowedHeaders: ['Content-Type', 'Set-Cookie'],
+    exposedHeaders: ['Access-Control-Allow-Origin'],
   });
   // TODO: Look into interference with dto validation
   app.useGlobalPipes(

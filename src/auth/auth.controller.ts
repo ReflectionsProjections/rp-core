@@ -21,6 +21,7 @@ import { AttendeeService } from '../attendees/attendees.service';
 import { RolesGuard } from '../roles/roles.guard';
 import { Roles } from '../roles/roles.decorator';
 import { RoleLevel } from '../roles/roles.enum';
+import { WalletService } from '../wallet/wallet.service';
 
 @Controller('auth')
 export class AuthController {
@@ -28,20 +29,22 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly attendeeService: AttendeeService,
     private jwtService: JwtService,
+    private walletService: WalletService,
   ) {}
 
   @Post('/generate')
   async generateVerificationPasscode(
     @Body() body: GeneratePasscodeDto,
-    @Query() query: { isLogin: string },
+    @Query() query: { isLogin: string; isRegister: string },
   ) {
     const isLogin = query?.isLogin === 'true';
+    const isRegister = query?.isRegister === 'true';
 
-    if (isLogin) {
-      const userExists = await this.attendeeService.userEmailExists(body.email);
-      if (!userExists) {
-        throw new NotFoundException('User with that email does not exist.');
-      }
+    const userExists = await this.attendeeService.userEmailExists(body.email);
+    if (!userExists && isLogin) {
+      throw new NotFoundException('User with that email does not exist.');
+    } else if (userExists && isRegister) {
+      throw new NotFoundException('User with that email already exists.');
     }
 
     const { status, message } =
@@ -113,8 +116,6 @@ export class AuthController {
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(RoleLevel.Corporate)
   corporateAccessCheck(@Req() req: Request) {
-    // Attach additional user information as needed
-    // Lookup attendee based on their (unique) email
     return 'Success';
   }
 

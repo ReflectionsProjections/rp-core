@@ -20,7 +20,7 @@ export class AuthService {
   constructor(
     @InjectModel(Verification.name)
     private verificationModel: Model<Verification>,
-    private emailService: EmailService,
+    private readonly emailService: EmailService,
   ) {}
 
   /**
@@ -74,8 +74,9 @@ export class AuthService {
         message: 'Could not create Verification Instance',
       };
     }
-    
+
     await this.emailService.sendVerificationEmail(email, passcode);
+    // console.log(passcode);
     this.logger.log('Successfully sent verification email');
     return { status: HttpStatus.OK, message: 'Success' };
   }

@@ -1,14 +1,17 @@
 import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import * as QRCode from 'qrcode';
+import { Attendee } from './attendees.schema';
 import { CreateAttendeeDto } from './dto/create-attendee.dto';
 import { UpdateAttendeeDto } from './dto/update-attendee.dto';
-import { Attendee, AttendeeDocument } from './attendees.schema';
 
 @Injectable()
 export class AttendeeService {
   constructor(
-    @InjectModel(Attendee.name) private attendeeModel: Model<AttendeeDocument>,
+    @InjectModel(Attendee.name) private attendeeModel: Model<Attendee>,
+    private readonly jwtService: JwtService,
   ) {}
 
   async userEmailExists(email: string): Promise<boolean> {
@@ -20,11 +23,11 @@ export class AttendeeService {
     const university =
       createAttendeeDto.isUIUCStudent === 'yes'
         ? 'University of Illinois Urbana-Champaign'
-        : createAttendeeDto.collegeName;
+        : createAttendeeDto.collegeName || 'N/A';
 
     const attendee = {
-      name: createAttendeeDto.name,
-      email: createAttendeeDto.email,
+      name: createAttendeeDto.name.trim(),
+      email: createAttendeeDto.email.trim(),
       //need to initialize studentInfo
 
       studentInfo: {
@@ -33,7 +36,7 @@ export class AttendeeService {
           createAttendeeDto.expectedGradTerm +
           ' ' +
           createAttendeeDto.expectedGradYear,
-        major: createAttendeeDto.major,
+        major: createAttendeeDto.major || 'N/A',
       },
       //occupation: createAttendeeDto.occupation,
       events: [],
@@ -79,5 +82,15 @@ export class AttendeeService {
       { _id: id },
       { $addToSet: { events: eventId } },
     );
+  }
+
+  async getQRPassImageDataURL(email: string): Promise<string> {
+    const signed_payload = await this.jwtService.signAsync(
+      { email },
+      {
+        expiresIn: '30d',
+      },
+    );
+    return QRCode.toDataURL(signed_payload);
   }
 }
