@@ -92,8 +92,17 @@ export class AuthController {
   @Get('/me')
   @UseGuards(AuthGuard)
   async getLoggedInUser(@Req() req: Request) {
-    const attendee = req['user'];
-    return attendee;
+    const user = req['user'];
+    const email = user?.email;
+    if (!email) {
+      return req['user'];
+    }
+    const attendee = await this.attendeeService.findAttendeeByEmail(email);
+    return {
+      ...user,
+      email,
+      fullName: attendee.name,
+    };
   }
 
   @Get('/access/admin')
@@ -108,5 +117,10 @@ export class AuthController {
   @Roles(RoleLevel.Corporate)
   corporateAccessCheck(@Req() req: Request) {
     return 'Success';
+  }
+
+  @Post('/logout')
+  logout(@Res({ passthrough: true }) res: Response) {
+    res.status(200).clearCookie('token').send('Success');
   }
 }
