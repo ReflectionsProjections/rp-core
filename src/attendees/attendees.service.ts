@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as QRCode from 'qrcode';
-import { Attendee } from './attendees.schema';
+import { Attendee, AttendeeDocument } from './attendees.schema';
 import { CreateAttendeeDto } from './dto/create-attendee.dto';
 import { UpdateAttendeeDto } from './dto/update-attendee.dto';
 
@@ -65,7 +65,7 @@ export class AttendeeService {
     return this.attendeeModel.findById(id);
   }
 
-  async findAttendeeByEmail(email: string): Promise<Attendee> {
+  async findAttendeeByEmail(email: string): Promise<AttendeeDocument> {
     return this.attendeeModel.findOne({ email });
   }
 
