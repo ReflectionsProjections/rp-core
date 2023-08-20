@@ -7,6 +7,7 @@ import {
   HttpException,
   HttpStatus,
   NotFoundException,
+  NotImplementedException,
   Param,
   Patch,
   Post,
@@ -25,6 +26,7 @@ import { WalletService } from '../wallet/wallet.service';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { EmailService } from '../email/email.service';
+import { AuthService } from '../auth/auth.service';
 
 @Controller('attendee')
 export class AttendeeController {
@@ -141,6 +143,11 @@ export class AttendeeController {
       throw new BadRequestException('User email could not be found');
     }
     return await this.walletService.generateEventPass(email);
+  }
+
+  @Get('preferences')
+  getUserPreferences() {
+    throw new NotImplementedException('Still working on this!');
   }
 
   @Get(':id')
