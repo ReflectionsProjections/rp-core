@@ -121,6 +121,16 @@ export class AuthController {
 
   @Post('/logout')
   logout(@Res({ passthrough: true }) res: Response) {
-    res.status(200).clearCookie('token').send('Success');
+    const development = process.env.ENV?.startsWith('dev');
+
+    res
+      .status(200)
+      .clearCookie('token', {
+        httpOnly: true,
+        secure: !development,
+        sameSite: development ? 'lax' : 'strict',
+        path: '/',
+      })
+      .send('Success');
   }
 }
