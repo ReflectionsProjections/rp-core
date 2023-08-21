@@ -36,7 +36,6 @@ export class AttendeeController {
     private readonly emailService: EmailService,
     private walletService: WalletService,
   ) {}
-
   /**
    * This function checks if a user with a given email exists.
    * Throws NotFoundException if they do not.
@@ -57,12 +56,12 @@ export class AttendeeController {
     @Body() createAttendeeDto: CreateAttendeeDto,
     @Req() req: Request,
   ) {
-    if (createAttendeeDto != req['user'].email) {
+    if (createAttendeeDto.email != req['user'].email) {
       throw new BadRequestException('Request email does not match dto email');
     }
     const attendee = await this.attendeeService.create(createAttendeeDto);
     const email = attendee.email;
-    const firstName = attendee.name.split(' ')[0];
+    const firstName = attendee.name.trim().split(' ')[0];
     const walletLink = await this.walletService.generateEventPass(email);
     const passUrl = await this.attendeeService.getQRPassImageDataURL(email);
     await this.emailService.sendWelcomeEmail(
@@ -71,6 +70,7 @@ export class AttendeeController {
       passUrl,
       firstName,
     );
+    await this.emailService.addContactToMarketingList(email, firstName);
     return 'Success';
   }
 
