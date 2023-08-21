@@ -92,14 +92,12 @@ export class AuthController {
   @Get('/me')
   @UseGuards(AuthGuard)
   async getLoggedInUser(@Req() req: Request) {
-    const user = req['user'];
-    const email = user?.email;
-    if (!email) {
+    const email = req['user'].email;
+    const attendee = await this.attendeeService.findAttendeeByEmail(email);
+    if (!attendee) {
       return req['user'];
     }
-    const attendee = await this.attendeeService.findAttendeeByEmail(email);
     return {
-      ...user,
       email,
       fullName: attendee.name,
     };

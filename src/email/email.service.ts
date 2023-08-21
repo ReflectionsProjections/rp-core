@@ -77,6 +77,39 @@ export class EmailService {
       });
   }
 
+  async addContactToMarketingList(email: string, firstName: string) {
+    this.httpService.axiosRef
+      .put(
+        'https://api.sendgrid.com/v3/marketing/contacts',
+        {
+          contacts: [
+            {
+              email,
+              first_name: firstName,
+            },
+          ],
+        },
+        {
+          method: 'PUT',
+          headers: {
+            Authorization: `Bearer ${this.configService.get(
+              'SENDGRID_API_KEY',
+            )}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      )
+      .then(() => {
+        this.logger.log(`Added ${email} to contact list`);
+      })
+      .catch((error) => {
+        if (error.response) {
+          this.logger.error(error.response.status);
+          this.logger.error(error.response.data);
+        }
+      });
+  }
+
   async sendVerificationEmail(to: string, code: string) {
     this.send({
       from: this.defaultFrom,
@@ -86,6 +119,7 @@ export class EmailService {
         code,
       },
     });
+    this.logger.log(`Sent verification email to ${to}`);
   }
 
   async sendBasicEmail({ to, subject, text }) {
@@ -103,7 +137,6 @@ export class EmailService {
 
   async send(mail: SendGrid.MailDataRequired) {
     const transport = await SendGrid.send(mail);
-    this.logger.log(`Sent email to ${mail.to}`);
     return transport;
   }
 }
