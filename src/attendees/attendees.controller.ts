@@ -53,7 +53,13 @@ export class AttendeeController {
 
   @Post()
   @UseGuards(AuthGuard)
-  async create(@Body() createAttendeeDto: CreateAttendeeDto) {
+  async create(
+    @Body() createAttendeeDto: CreateAttendeeDto,
+    @Req() req: Request,
+  ) {
+    if (createAttendeeDto != req['user'].email) {
+      throw new BadRequestException('Request email does not match dto email');
+    }
     const attendee = await this.attendeeService.create(createAttendeeDto);
     const email = attendee.email;
     const firstName = attendee.name.split(' ')[0];
