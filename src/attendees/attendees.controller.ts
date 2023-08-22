@@ -27,6 +27,9 @@ import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { EmailService } from '../email/email.service';
 import { AuthService } from '../auth/auth.service';
+import { Roles } from '../roles/roles.decorator';
+import { RoleLevel } from '../roles/roles.enum';
+import { RolesGuard } from '../roles/roles.guard';
 
 @Controller('attendee')
 export class AttendeeController {
@@ -120,6 +123,8 @@ export class AttendeeController {
   }
 
   @Get()
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(RoleLevel.Admin)
   findAll() {
     return this.attendeeService.findAll();
   }
@@ -157,11 +162,14 @@ export class AttendeeController {
   }
 
   @Get(':id')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(RoleLevel.Admin)
   findOne(@Param('id') id: string) {
     return this.attendeeService.findOne(id);
   }
 
   @Patch(':id')
+  @UseGuards(AuthGuard)
   update(
     @Param('id') id: string,
     @Body() updateAttendeeDto: UpdateAttendeeDto,
@@ -170,6 +178,8 @@ export class AttendeeController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(RoleLevel.Admin)
   remove(@Param('id') id: string) {
     return this.attendeeService.remove(id);
   }
