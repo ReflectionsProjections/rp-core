@@ -26,7 +26,7 @@ export class Event {
   @Prop({
     required: true,
   })
-  duration: Number;
+  end_time: Date;
 
   @Prop({
     required: true,
@@ -48,6 +48,16 @@ export class Event {
     default: false,
   })
   upgrade: boolean;
+
+  @Prop({
+    default: false,
+  })
+  downgrade: boolean;
+
+  @Prop({
+    required: false,
+  })
+  imageUrl: string;
 
   @Prop({
     default: false,
