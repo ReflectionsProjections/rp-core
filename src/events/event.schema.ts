@@ -30,11 +30,6 @@ export class Event {
 
   @Prop({
     required: true,
-  })
-  duration: Number;
-
-  @Prop({
-    required: true,
     default: [],
   })
   attendees: [{ type: MongooseSchema.Types.ObjectId; ref: 'Attendee' }];
@@ -53,6 +48,16 @@ export class Event {
     default: false,
   })
   upgrade: boolean;
+
+  @Prop({
+    default: false,
+  })
+  downgrade: boolean;
+
+  @Prop({
+    required: false,
+  })
+  imageUrl: string;
 
   @Prop({
     default: false,
