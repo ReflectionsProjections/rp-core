@@ -1,29 +1,29 @@
+import { S3Client } from '@aws-sdk/client-s3';
+import { expect, jest } from '@jest/globals';
+import { ExecutionContext } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
+import { Request } from 'express';
 import { Model } from 'mongoose';
+import * as mocks from 'node-mocks-http';
+import { AppModule } from '../app.module';
 import { AuthGuard } from '../auth/auth.guard';
 import { EmailService } from '../email/email.service';
+import { RolesModule } from '../roles/roles.module';
 import { S3ModuleModule } from '../s3/s3.module';
 import { S3Service } from '../s3/s3.service';
+import { WalletService } from '../wallet/wallet.service';
 import { AttendeeController } from './attendees.controller';
 import { Attendee } from './attendees.schema';
 import { AttendeeService } from './attendees.service';
-import { S3Client } from '@aws-sdk/client-s3';
-import { AppModule } from '../app.module';
-import { WalletService } from '../wallet/wallet.service';
-import { JwtModule, JwtService } from '@nestjs/jwt';
-import { ExecutionContext } from '@nestjs/common';
-import { Request } from 'express';
-import { URL } from 'url';
-import * as mocks from 'node-mocks-http';
-import { expect, jest } from '@jest/globals';
 
 describe('AttendeeService', () => {
   let controller: AttendeeController;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [AppModule, S3ModuleModule],
+      imports: [AppModule, S3ModuleModule, RolesModule],
       controllers: [AttendeeController],
       providers: [
         { provide: 'S3Client', useValue: new S3Client() },
