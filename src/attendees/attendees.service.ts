@@ -69,8 +69,20 @@ export class AttendeeService {
     return this.attendeeModel.findOne({ email });
   }
 
-  update(id: number, updateAttendeeDto: UpdateAttendeeDto) {
-    return `This action updates a #${id} event`;
+  async update(id: string, updateAttendeeDto: UpdateAttendeeDto) {
+    const { portfolioLink, jobTypeInterest } = updateAttendeeDto;
+  
+    const updateObject: Partial<AttendeeDocument> = {};
+    
+    if (portfolioLink !== undefined) {
+      updateObject.portfolio = portfolioLink;
+    }
+    
+    if (jobTypeInterest !== undefined) {
+      updateObject.job_interest = jobTypeInterest;
+    }
+  
+    return this.attendeeModel.findByIdAndUpdate(id, updateObject, { new: true });
   }
 
   remove(id: string) {
