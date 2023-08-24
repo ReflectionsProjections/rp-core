@@ -12,6 +12,7 @@ import {
   Patch,
   Post,
   Req,
+  Res,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -157,8 +158,23 @@ export class AttendeeController {
   }
 
   @Get('preferences')
-  getUserPreferences() {
-    throw new NotImplementedException('Still working on this!');
+  @UseGuards(AuthGuard)
+  async getUserPreferences(@Req() req: Request) {
+    const userEmail = req['user']?.email;
+
+    if (!userEmail) {
+        throw new BadRequestException('User email could not be found');
+    }
+
+    try {
+        const attendee = await this.attendeeService.findAttendeeByEmail(userEmail);
+        return {
+            jobTypeInterest: attendee.job_interest,
+            portfolioLink: attendee.portfolio,
+        };
+    } catch (error) {
+        throw new NotFoundException('User preferences not found');
+    }
   }
 
   @Get(':id')
@@ -168,13 +184,16 @@ export class AttendeeController {
     return this.attendeeService.findOne(id);
   }
 
-  @Patch(':id')
+  @Patch('preferences')
   @UseGuards(AuthGuard)
-  update(
-    @Param('id') id: string,
+  async update(
+    @Req() req: Request,
     @Body() updateAttendeeDto: UpdateAttendeeDto,
   ) {
-    return this.attendeeService.update(+id, updateAttendeeDto);
+    const email = req['user'].email;
+    const attendee = await this.attendeeService.findAttendeeByEmail(email);
+    const attendeeId = attendee._id.toString();
+    return this.attendeeService.update(attendeeId, updateAttendeeDto);
   }
 
   @Delete(':id')
