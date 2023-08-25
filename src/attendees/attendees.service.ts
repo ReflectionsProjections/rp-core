@@ -55,8 +55,7 @@ export class AttendeeService {
       interest_mech_puzzle: createAttendeeDto.mechPuzzle,
     };
     const newAttendee = new this.attendeeModel(attendee);
-    return newAttendee.save()
-    .then((createdAttendee) => {
+    return newAttendee.save().then((createdAttendee) => {
       console.log(createdAttendee._id); // Print the ID to the console
       return createdAttendee;
     });
@@ -76,18 +75,20 @@ export class AttendeeService {
 
   async update(id: string, updateAttendeeDto: UpdateAttendeeDto) {
     const { portfolioLink, jobTypeInterest } = updateAttendeeDto;
-  
+
     const updateObject: Partial<AttendeeDocument> = {};
-    
+
     if (portfolioLink !== undefined) {
       updateObject.portfolio = portfolioLink;
     }
-    
+
     if (jobTypeInterest !== undefined) {
       updateObject.job_interest = jobTypeInterest;
     }
-  
-    return this.attendeeModel.findByIdAndUpdate(id, updateObject, { new: true });
+
+    return this.attendeeModel.findByIdAndUpdate(id, updateObject, {
+      new: true,
+    });
   }
 
   remove(id: string) {

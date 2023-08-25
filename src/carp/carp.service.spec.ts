@@ -8,17 +8,17 @@ import { S3ModuleModule } from '../s3/s3.module';
 import { CarpModule } from './carp.module';
 import { AttendeesModule } from '../attendees/attendees.module';
 
-
 describe('CarpService', () => {
   let service: CarpService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [AppModule, S3ModuleModule, CarpModule, AttendeesModule],
-      providers: [{ provide: 'S3Client', useValue: new S3Client() }, 
-        CarpService, 
-        S3Service, 
-        AttendeeService
+      providers: [
+        { provide: 'S3Client', useValue: new S3Client() },
+        CarpService,
+        S3Service,
+        AttendeeService,
       ],
     }).compile();
 

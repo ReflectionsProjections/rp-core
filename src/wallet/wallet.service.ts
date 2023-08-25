@@ -74,7 +74,7 @@ export class WalletService {
           ],
         },
         dateTime: {
-          end: "2023-09-17T23:59:59.52Z"
+          end: '2023-09-17T23:59:59.52Z',
         },
         detailsTemplateOverride: {
           detailsItemInfos: [

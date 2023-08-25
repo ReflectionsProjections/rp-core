@@ -191,7 +191,7 @@ export class AttendeeController {
   findAttendeeByEmail(@Param('email') email: string) {
     return this.attendeeService.findAttendeeByEmail(email);
   }
-  
+
   @Patch('preferences')
   @UseGuards(AuthGuard)
   async update(

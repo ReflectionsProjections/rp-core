@@ -10,7 +10,6 @@ import { CarpService } from './carp.service';
 import { AttendeesModule } from '../attendees/attendees.module';
 import { RolesModule } from '../roles/roles.module';
 
-
 @Module({
   imports: [
     MongooseModule.forFeature([
@@ -21,13 +20,14 @@ import { RolesModule } from '../roles/roles.module';
     RolesModule,
   ],
   controllers: [CarpController],
-  providers: [CarpService,
+  providers: [
+    CarpService,
     AttendeeService,
     S3Service,
     {
       provide: 'S3Client',
       useClass: S3Client,
-    }
+    },
   ],
   exports: [CarpService],
 })

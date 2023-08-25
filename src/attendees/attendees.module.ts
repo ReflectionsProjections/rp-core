@@ -30,7 +30,9 @@ import { RolesModule } from '../roles/roles.module';
     WalletService,
   ],
   exports: [
-    MongooseModule.forFeature([{ name: Attendee.name, schema: AttendeeSchema }]),
+    MongooseModule.forFeature([
+      { name: Attendee.name, schema: AttendeeSchema },
+    ]),
     AttendeeService,
   ],
 })

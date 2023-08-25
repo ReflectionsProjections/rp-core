@@ -37,7 +37,6 @@ export class Attendee {
     major: string | null;
   };
 
-
   @Prop({
     required: true,
     default: [],
