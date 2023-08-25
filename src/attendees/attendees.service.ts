@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as QRCode from 'qrcode';
-import { Attendee } from './attendees.schema';
+import { Attendee, AttendeeDocument } from './attendees.schema';
 import { CreateAttendeeDto } from './dto/create-attendee.dto';
 import { UpdateAttendeeDto } from './dto/update-attendee.dto';
 
@@ -70,12 +70,24 @@ export class AttendeeService {
     return this.attendeeModel.findById(id);
   }
 
-  findAttendeeByEmail(email: string) {
+  async findAttendeeByEmail(email: string): Promise<AttendeeDocument> {
     return this.attendeeModel.findOne({ email });
   }
 
-  update(id: number, updateAttendeeDto: UpdateAttendeeDto) {
-    return `This action updates a #${id} event`;
+  async update(id: string, updateAttendeeDto: UpdateAttendeeDto) {
+    const { portfolioLink, jobTypeInterest } = updateAttendeeDto;
+  
+    const updateObject: Partial<AttendeeDocument> = {};
+    
+    if (portfolioLink !== undefined) {
+      updateObject.portfolio = portfolioLink;
+    }
+    
+    if (jobTypeInterest !== undefined) {
+      updateObject.job_interest = jobTypeInterest;
+    }
+  
+    return this.attendeeModel.findByIdAndUpdate(id, updateObject, { new: true });
   }
 
   remove(id: string) {

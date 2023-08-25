@@ -8,6 +8,7 @@ import { WalletService } from '../wallet/wallet.service';
 import { AttendeeController } from './attendees.controller';
 import { Attendee, AttendeeSchema } from './attendees.schema';
 import { AttendeeService } from './attendees.service';
+import { RolesModule } from '../roles/roles.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { AttendeeService } from './attendees.service';
     ]),
     forwardRef(() => S3ModuleModule),
     EmailModule,
+    RolesModule,
   ],
   controllers: [AttendeeController],
   providers: [

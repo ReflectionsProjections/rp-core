@@ -38,7 +38,7 @@ import { CarpModule } from './carp/carp.module';
     AttendeesModule,
     ThrottlerModule.forRoot({
       ttl: 60,
-      limit: 10,
+      limit: 20,
     }),
     CarpModule,
   ],

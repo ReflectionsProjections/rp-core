@@ -18,7 +18,9 @@ async function bootstrap() {
     credentials: true,
     origin: [
       'http://localhost:5173',
+      'http://localhost:4173',
       'https://beta.reflectionsprojections.org',
+      'https://reflectionsprojections.org',
     ],
     allowedHeaders: ['Content-Type', 'Set-Cookie'],
     exposedHeaders: ['Access-Control-Allow-Origin'],

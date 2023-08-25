@@ -43,7 +43,7 @@ export class CreateAttendeeDto {
   @ValidateIf((o) => o.isCollegeStudent === 'yes')
   @IsString()
   @MaxLength(50)
-  majorOther: string;
+  majorOther: string | null;
 
   @ValidateIf((o) => o.isCollegeStudent === 'yes' && o.isUIUCStudent === 'no')
   @IsNotEmpty()
@@ -79,12 +79,12 @@ export class CreateAttendeeDto {
 
   @IsOptional()
   @MaxLength(30)
-  raceOther: string;
+  raceOther: string | null;
 
   @IsOptional()
   @IsString()
   @IsIn(['yes', 'no', 'preferNotToSay'])
-  firstGen: string;
+  firstGen: string | null;
 
   @IsNotEmpty()
   @IsString()
@@ -122,5 +122,5 @@ export class CreateAttendeeDto {
   @IsOptional()
   @IsString()
   @MaxLength(30)
-  marketingOther: string;
+  marketingOther: string | null;
 }

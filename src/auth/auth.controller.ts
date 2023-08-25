@@ -35,15 +35,16 @@ export class AuthController {
   @Post('/generate')
   async generateVerificationPasscode(
     @Body() body: GeneratePasscodeDto,
-    @Query() query: { isLogin: string },
+    @Query() query: { isLogin: string; isRegister: string },
   ) {
     const isLogin = query?.isLogin === 'true';
+    const isRegister = query?.isRegister === 'true';
 
-    if (isLogin) {
-      const userExists = await this.attendeeService.userEmailExists(body.email);
-      if (!userExists) {
-        throw new NotFoundException('User with that email does not exist.');
-      }
+    const userExists = await this.attendeeService.userEmailExists(body.email);
+    if (!userExists && isLogin) {
+      throw new NotFoundException('User with that email does not exist.');
+    } else if (userExists && isRegister) {
+      throw new NotFoundException('User with that email already exists.');
     }
 
     const { status, message } =
@@ -91,8 +92,15 @@ export class AuthController {
   @Get('/me')
   @UseGuards(AuthGuard)
   async getLoggedInUser(@Req() req: Request) {
-    const attendee = req['user'];
-    return attendee;
+    const email = req['user'].email;
+    const attendee = await this.attendeeService.findAttendeeByEmail(email);
+    if (!attendee) {
+      return req['user'];
+    }
+    return {
+      email,
+      fullName: attendee.name,
+    };
   }
 
   @Get('/access/admin')
@@ -107,5 +115,20 @@ export class AuthController {
   @Roles(RoleLevel.Corporate)
   corporateAccessCheck(@Req() req: Request) {
     return 'Success';
+  }
+
+  @Post('/logout')
+  logout(@Res({ passthrough: true }) res: Response) {
+    const development = process.env.ENV?.startsWith('dev');
+
+    res
+      .status(200)
+      .clearCookie('token', {
+        httpOnly: true,
+        secure: !development,
+        sameSite: development ? 'lax' : 'strict',
+        path: '/',
+      })
+      .send('Success');
   }
 }
