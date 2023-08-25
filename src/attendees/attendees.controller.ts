@@ -163,17 +163,18 @@ export class AttendeeController {
     const userEmail = req['user']?.email;
 
     if (!userEmail) {
-        throw new BadRequestException('User email could not be found');
+      throw new BadRequestException('User email could not be found');
     }
 
     try {
-        const attendee = await this.attendeeService.findAttendeeByEmail(userEmail);
-        return {
-            jobTypeInterest: attendee.job_interest,
-            portfolioLink: attendee.portfolio,
-        };
+      const attendee = await this.attendeeService.findAttendeeByEmail(userEmail);
+      return {
+          jobTypeInterest: attendee.job_interest,
+          portfolioLink: attendee.portfolio,
+      };
     } catch (error) {
-        throw new NotFoundException('User preferences not found');
+      console.log("An error occurred:", error);
+      throw new NotFoundException('User preferences not found');
     }
   }
 
