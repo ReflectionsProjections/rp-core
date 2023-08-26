@@ -10,12 +10,13 @@ import { S3ModuleModule } from '../s3/s3.module';
 import { Attendee } from '../attendees/attendees.schema';
 import { AppModule } from '../app.module';
 import { S3Client } from '@aws-sdk/client-s3';
+import { RolesModule } from '../roles/roles.module';
 
 describe('CarpController', () => {
   let controller: CarpController;
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [AppModule, S3ModuleModule],
+      imports: [AppModule, S3ModuleModule, RolesModule],
       controllers: [CarpController],
       providers: [
         CarpService,

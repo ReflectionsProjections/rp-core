@@ -57,8 +57,8 @@ export class S3Service {
       });
       return { id: attendeeId, url: url };
     } catch (error) {
-      console.log(error);
-      throw new Error('Failed to get url');
+      this.logger.error('Could not get url with error:', error);
+      throw { success: false, message: error};
     }
   }
 }

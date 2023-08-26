@@ -25,19 +25,18 @@ import {
   @Controller('carp')
   export class CarpController {
     constructor(
-      private readonly s3ModuleService: S3Service,
+      private readonly s3Service: S3Service,
       private readonly carpService: CarpService,
     ) {}
   
     /**
      * This function returns a link to the user's resume.
      *
-     * @param {string} email - Represents the email address of an attendee.
+     * @param {string} id - Represents attendee id
      */
-  
     @Get('/resume/:id')
-    // @UseGuards(AuthGuard, RolesGuard)
-    // @Roles(RoleLevel.Corporate)
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles(RoleLevel.Corporate)
     async getResume(@Param('id') id: string) {
       return this.carpService.getResume(id);
     }
