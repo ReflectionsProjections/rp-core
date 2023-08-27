@@ -160,4 +160,9 @@ export class EventsController {
   schedule() {
     return this.eventsService.schedule();
   }
+
+  @Get('schedule/days')
+  schedule() {
+    return this.eventsService.schedule();
+  }
 }
