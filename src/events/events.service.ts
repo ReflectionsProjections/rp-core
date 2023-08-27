@@ -71,4 +71,28 @@ export class EventsService {
       message: 'attendee registered for event',
     };
   }
+
+  async schedule() {
+    try {
+      const all_events = await this.eventModel.find().cursor();
+      let twoDArray = [[], [], [], [], [], [], [], []];
+
+      for await (const doc of all_events) {
+        let num = doc.start_time.getDay();
+        if (!twoDArray[num].includes(doc)) twoDArray[num].push(doc);
+      }
+
+      return {
+        monday: twoDArray[1],
+        tuesday: twoDArray[2],
+        wednesday: twoDArray[3],
+        thursday: twoDArray[4],
+        friday: twoDArray[5],
+        saturday: twoDArray[6],
+        sunday: twoDArray[0],
+      };
+    } catch (error) {
+      console.error(error);
+    }
+  }
 }
