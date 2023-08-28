@@ -7,18 +7,21 @@ import { AppModule } from '../app.module';
 import { S3ModuleModule } from '../s3/s3.module';
 import { CarpModule } from './carp.module';
 import { AttendeesModule } from '../attendees/attendees.module';
+import { EmailService } from '../email/email.service';
+import { EmailModule } from '../email/email.module';
+import { ConfigModule } from '@nestjs/config';
+import { ConfigService } from 'aws-sdk';
 
 describe('CarpService', () => {
   let service: CarpService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [AppModule, S3ModuleModule, CarpModule, AttendeesModule],
+      imports: [],
       providers: [
-        { provide: 'S3Client', useValue: new S3Client() },
+        { provide: S3Service, useValue: {} },
+        { provide: AttendeeService, useValue: {} },
         CarpService,
-        S3Service,
-        AttendeeService,
       ],
     }).compile();
 

@@ -11,14 +11,7 @@ import { AttendeesModule } from '../attendees/attendees.module';
 import { RolesModule } from '../roles/roles.module';
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([
-      { name: Attendee.name, schema: AttendeeSchema },
-    ]),
-    S3ModuleModule,
-    AttendeesModule,
-    RolesModule,
-  ],
+  imports: [S3ModuleModule, AttendeesModule, RolesModule],
   controllers: [CarpController],
   providers: [
     CarpService,
