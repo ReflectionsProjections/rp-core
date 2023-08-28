@@ -37,7 +37,6 @@ export class Attendee {
     major: string | null;
   };
 
-
   @Prop({
     required: true,
     default: [],
@@ -75,6 +74,11 @@ export class Attendee {
 
   @Prop()
   interest_mech_puzzle: [{ type: string }];
+
+  @Prop({
+    default: null,
+  })
+  priority_expiry: Date;
 }
 
 export const AttendeeSchema = SchemaFactory.createForClass(Attendee);
