@@ -82,12 +82,15 @@ export class EventsService {
 
   async schedule() {
     try {
-      const all_events = await this.eventModel.find().cursor();
+      const all_events = await this.eventModel.find();
+      console.log(all_events);
       let twoDArray = [[], [], [], [], [], [], [], []];
 
-      for await (const doc of all_events) {
-        let num = doc.start_time.getDay();
-        if (!twoDArray[num].includes(doc)) twoDArray[num].push(doc);
+      for await (const event_item of all_events) {
+        let num = event_item.start_time.getDay();
+        event_item.attendees = [{ type: null, ref: null }];
+        if (!twoDArray[num].includes(event_item) && event_item.visible != false)
+          twoDArray[num].push(event_item);
       }
 
       return {
