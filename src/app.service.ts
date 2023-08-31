@@ -9,8 +9,9 @@ export class AppService {
    * v1.1.0 -> Endpoints supporting preferences page
    * v1.1.1 -> Add endpoint for fetching schedule data
    * v1.1.2 -> Add carp endpoints for serving resumes
+   * v1.1.3 -> Adding priority expiry to attendees
    */
   getVersion(): string {
-    return 'v1.1.2';
+    return 'v1.1.3';
   }
 }
