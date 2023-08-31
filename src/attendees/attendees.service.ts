@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as QRCode from 'qrcode';
 import { Attendee, AttendeeDocument } from './attendees.schema';
+import { EventDocument } from '../events/event.schema';
 import { CreateAttendeeDto } from './dto/create-attendee.dto';
 import { UpdateAttendeeDto } from './dto/update-attendee.dto';
 
@@ -71,28 +72,40 @@ export class AttendeeService {
 
   async update(id: string, updateAttendeeDto: UpdateAttendeeDto) {
     const { portfolioLink, jobTypeInterest } = updateAttendeeDto;
-  
+
     const updateObject: Partial<AttendeeDocument> = {};
-    
+
     if (portfolioLink !== undefined) {
       updateObject.portfolio = portfolioLink;
     }
-    
+
     if (jobTypeInterest !== undefined) {
       updateObject.job_interest = jobTypeInterest;
     }
-  
-    return this.attendeeModel.findByIdAndUpdate(id, updateObject, { new: true });
+
+    return this.attendeeModel.findByIdAndUpdate(id, updateObject, {
+      new: true,
+    });
   }
 
   remove(id: string) {
     return `This action removes a #${id} event`;
   }
 
-  addEventAttendance(id: string, eventId: string) {
+  addEventAttendance(id: string, event: EventDocument) {
     return this.attendeeModel.updateOne(
       { _id: id },
-      { $addToSet: { events: eventId } },
+      {
+        $addToSet: { events: event.id },
+        $set:
+          event.upgrade || event.downgrade
+            ? {
+                priority_expiry: event.upgrade
+                  ? new Date(Date.now() + 24 * 60 * 60 * 1000)
+                  : null,
+              }
+            : {},
+      },
     );
   }
 

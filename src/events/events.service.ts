@@ -47,7 +47,8 @@ export class EventsService {
 
     try {
       await session.withTransaction(async () => {
-        if (!(await this.eventModel.findOne({ _id: id })))
+        const event = await this.eventModel.findOne({ _id: id });
+        if (!event)
           return {
             status: HttpStatus.BAD_REQUEST,
             message: 'event id does not exist',
@@ -59,7 +60,7 @@ export class EventsService {
           };
         await this.addAttendee(id, attendeeId).session(session);
         await this.attendeeService
-          .addEventAttendance(attendeeId, id)
+          .addEventAttendance(attendeeId, event)
           .session(session);
       });
     } finally {
