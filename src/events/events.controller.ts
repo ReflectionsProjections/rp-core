@@ -72,22 +72,18 @@ export class EventsController {
   }
 
   @Put(':eventId/attendee')
-  @UseGuards(AuthGuard, RolesGuard)
-  @Roles(RoleLevel.Admin)
   async registerAttendeeWithId(
     @Param('eventId', MongoIdPipe) eventId: string,
     @Body() body: RegisterAttendeeDto,
   ) {
-    const { status, message } = await this.eventsService.registerAttendance(
-      eventId,
-      body.id,
-    );
+    const { status, message, priority } =
+      await this.eventsService.registerAttendance(eventId, body.id);
 
     if (status != HttpStatus.ACCEPTED) {
       throw new HttpException(message, status);
     }
 
-    return { status, message, priority: false };
+    return { status, message, priority };
   }
 
   @Put(':eventId/attendee/email')
@@ -104,16 +100,17 @@ export class EventsController {
       );
     }
 
-    const { status, message } = await this.eventsService.registerAttendance(
-      eventId,
-      attendee._id.toString(),
-    );
+    const { status, message, priority } =
+      await this.eventsService.registerAttendance(
+        eventId,
+        attendee._id.toString(),
+      );
 
     if (status != HttpStatus.ACCEPTED) {
       throw new HttpException(message, status);
     }
 
-    return { status, message, priority: false };
+    return { status, message, priority };
   }
 
   @Put(':eventId/attendance/qr')
@@ -145,16 +142,17 @@ export class EventsController {
       );
     }
 
-    const { status, message } = await this.eventsService.registerAttendance(
-      eventId,
-      attendee._id.toString(),
-    );
+    const { status, message, priority } =
+      await this.eventsService.registerAttendance(
+        eventId,
+        attendee._id.toString(),
+      );
 
     if (status != HttpStatus.ACCEPTED) {
       throw new HttpException(message, status);
     }
 
-    return { status, message, priority: false };
+    return { status, message, priority };
   }
 
   @Get('schedule/days')

@@ -44,20 +44,25 @@ export class EventsService {
 
   async registerAttendance(id: string, attendeeId: string) {
     const session = await this.connection.startSession();
+    let priority;
 
     try {
       await session.withTransaction(async () => {
-        const event = await this.eventModel.findOne({ _id: id });
+        const event: EventDocument = await this.eventModel.findOne({ _id: id });
         if (!event)
           return {
             status: HttpStatus.BAD_REQUEST,
             message: 'event id does not exist',
           };
-        if (!(await this.attendeeService.findOne(attendeeId)))
+        const attendee = await this.attendeeService.findOne(attendeeId);
+        if (!attendee)
           return {
             status: HttpStatus.BAD_REQUEST,
             message: 'attendee id does not exist',
           };
+        priority =
+          attendee.priority_expiry != null &&
+          new Date(attendee.priority_expiry).getTime() >= Date.now();
         await this.addAttendee(id, attendeeId).session(session);
         await this.attendeeService
           .addEventAttendance(attendeeId, event)
@@ -70,6 +75,7 @@ export class EventsService {
     return {
       status: HttpStatus.ACCEPTED,
       message: 'attendee registered for event',
+      priority,
     };
   }
 
