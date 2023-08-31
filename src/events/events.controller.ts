@@ -156,4 +156,9 @@ export class EventsController {
 
     return { status, message, priority: false };
   }
+
+  @Get('schedule/days')
+  schedule() {
+    return this.eventsService.schedule();
+  }
 }

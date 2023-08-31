@@ -13,6 +13,7 @@ import { EmailModule } from './email/email.module';
 import { EventsModule } from './events/events.module';
 import { S3ModuleModule } from './s3/s3.module';
 import { WalletModule } from './wallet/wallet.module';
+import { CarpModule } from './carp/carp.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { WalletModule } from './wallet/wallet.module';
       ttl: 60,
       limit: 20,
     }),
+    CarpModule,
   ],
   controllers: [AppController],
   providers: [
