@@ -100,6 +100,9 @@ export class AuthController {
     return {
       email,
       fullName: attendee.name,
+      priority:
+        attendee.priority_expiry != null &&
+        new Date(attendee.priority_expiry).getTime() >= Date.now(),
     };
   }
 
