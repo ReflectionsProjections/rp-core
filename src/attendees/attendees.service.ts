@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as QRCode from 'qrcode';
+import * as dayjs from 'dayjs';
 import { Attendee, AttendeeDocument } from './attendees.schema';
 import { EventDocument } from '../events/event.schema';
 import { CreateAttendeeDto } from './dto/create-attendee.dto';
@@ -101,7 +102,7 @@ export class AttendeeService {
           event.upgrade || event.downgrade
             ? {
                 priority_expiry: event.upgrade
-                  ? new Date(Date.now() + 24 * 60 * 60 * 1000)
+                  ? dayjs().add(1, 'day').toDate()
                   : null,
               }
             : {},

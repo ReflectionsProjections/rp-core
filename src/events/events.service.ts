@@ -1,6 +1,7 @@
 import { HttpException, Injectable, Inject, HttpStatus } from '@nestjs/common';
 import { InjectModel, InjectConnection } from '@nestjs/mongoose';
 import { Model, Connection } from 'mongoose';
+import * as dayjs from 'dayjs';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { Event, EventDocument } from './event.schema';
@@ -62,7 +63,7 @@ export class EventsService {
           };
         priority =
           attendee.priority_expiry != null &&
-          new Date(attendee.priority_expiry).getTime() >= Date.now();
+          !dayjs(attendee.priority_expiry).isBefore(dayjs());
         await this.addAttendee(id, attendeeId).session(session);
         await this.attendeeService
           .addEventAttendance(attendeeId, event)

@@ -16,6 +16,7 @@ import { GeneratePasscodeDto } from './dto/generate-passcode.dto';
 import { VerifyPasscodeDto } from './dto/verify-passcode.dto';
 import { Response, Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
+import * as dayjs from 'dayjs';
 import { AuthGuard } from './auth.guard';
 import { AttendeeService } from '../attendees/attendees.service';
 import { RolesGuard } from '../roles/roles.guard';
@@ -102,7 +103,7 @@ export class AuthController {
       fullName: attendee.name,
       priority:
         attendee.priority_expiry != null &&
-        new Date(attendee.priority_expiry).getTime() >= Date.now(),
+        !dayjs(attendee.priority_expiry).isBefore(dayjs()),
     };
   }
 

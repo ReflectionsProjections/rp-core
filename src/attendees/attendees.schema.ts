@@ -6,6 +6,7 @@ import {
   model,
 } from 'mongoose';
 import { EventSchema } from '../events/event.schema';
+import dayjs from 'dayjs';
 
 export type AttendeeDocument = HydratedDocument<Attendee>;
 
