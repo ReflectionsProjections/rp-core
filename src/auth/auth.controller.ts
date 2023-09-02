@@ -85,6 +85,7 @@ export class AuthController {
         httpOnly: true,
         secure: !development,
         sameSite: development ? 'lax' : 'strict',
+        expires: dayjs().add(3, 'month').toDate(),
         path: '/',
       })
       .send(message);

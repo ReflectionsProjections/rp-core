@@ -11,8 +11,9 @@ export class AppService {
    * v1.1.2 -> Add carp endpoints for serving resumes
    * v1.1.3 -> Adding priority expiry to attendees
    * v1.1.4 -> Return metadata from attendance endpoints
+   * v1.1.4 -> Make cookie persistent by adding expiration date
    */
   getVersion(): string {
-    return 'v1.1.4';
+    return 'v1.1.5';
   }
 }
