@@ -82,6 +82,7 @@ export class EventsController {
     if (status != HttpStatus.ACCEPTED) {
       throw new HttpException(message, status);
     }
+    //TODO add email and name
 
     return { status, message, priority };
   }
@@ -110,7 +111,7 @@ export class EventsController {
       throw new HttpException(message, status);
     }
 
-    return { status, message, priority };
+    return { status, message, priority, email: body.email, name: attendee.name };
   }
 
   @Put(':eventId/attendance/qr')
@@ -152,7 +153,7 @@ export class EventsController {
       throw new HttpException(message, status);
     }
 
-    return { status, message, priority };
+    return { status, message, priority, email: email, name: attendee.name };
   }
 
   @Get('schedule/days')
