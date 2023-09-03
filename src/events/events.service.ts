@@ -6,6 +6,10 @@ import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { Event, EventDocument } from './event.schema';
 import { AttendeeService } from '../attendees/attendees.service';
+import { constants } from '../constants';
+
+import * as dayjs from 'dayjs';
+// dayjs.extend('dayjs/plugin/IsBetween')
 
 @Injectable()
 export class EventsService {
@@ -83,13 +87,17 @@ export class EventsService {
   async schedule() {
     try {
       const all_events = await this.eventModel.find();
-      console.log(all_events);
       let twoDArray = [[], [], [], [], [], [], [], []];
 
       for await (const event_item of all_events) {
         let num = event_item.start_time.getDay();
         event_item.attendees = [{ type: null, ref: null }];
-        if (!twoDArray[num].includes(event_item) && event_item.visible != false)
+        if (
+          !twoDArray[num].includes(event_item) &&
+          event_item.visible != false &&
+          dayjs(event_item.start_time).isBefore(constants.end_date) &&
+          dayjs(event_item.start_time).isAfter(constants.start_date)
+        )
           twoDArray[num].push(event_item);
       }
 
