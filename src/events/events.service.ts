@@ -106,14 +106,11 @@ export class EventsService {
       ]);
       let eventsByDay = [[], [], [], [], [], [], [], []];
 
-      console.log(allEvents);
       const dayFilteredEvents = allEvents.filter(
         (event) =>
           dayjs(event.start_time).isBefore(constants.end_date) &&
           dayjs(event.start_time).isAfter(constants.start_date),
       );
-
-      console.log(dayFilteredEvents);
 
       for (const event of dayFilteredEvents) {
         let num = event.start_time.getDay();
