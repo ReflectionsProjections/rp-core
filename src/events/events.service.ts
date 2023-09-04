@@ -94,7 +94,7 @@ export class EventsService {
         event_item.attendees = [{ type: null, ref: null }];
         if (
           !twoDArray[num].includes(event_item) &&
-          event_item.visible != false &&
+          event_item.visible &&
           dayjs(event_item.start_time).isBefore(constants.end_date) &&
           dayjs(event_item.start_time).isAfter(constants.start_date)
         )
