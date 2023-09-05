@@ -6,6 +6,7 @@ import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { Event, EventDocument } from './event.schema';
 import { AttendeeService } from '../attendees/attendees.service';
+import { constants } from '../constants';
 
 @Injectable()
 export class EventsService {
@@ -21,7 +22,20 @@ export class EventsService {
   }
 
   findAll() {
-    return this.eventModel.find();
+    return this.eventModel.aggregate([
+      {
+        $addFields: {
+          attendeeCount: {
+            $size: '$attendees',
+          },
+        },
+      },
+      {
+        $project: {
+          attendees: 0,
+        },
+      },
+    ]);
   }
 
   findOne(id: string) {
@@ -82,22 +96,45 @@ export class EventsService {
 
   async schedule() {
     try {
-      const all_events = await this.eventModel.find().cursor();
-      let twoDArray = [[], [], [], [], [], [], [], []];
+      // const all_events = await this.eventModel.find();
+      const allEvents = await this.eventModel.aggregate([
+        {
+          $match: {
+            visible: true,
+          },
+        },
+        {
+          $project: {
+            attendees: 0,
+          },
+        },
+        {
+          $sort: {
+            start_time: 1,
+          },
+        },
+      ]);
+      let eventsByDay = [[], [], [], [], [], [], [], []];
 
-      for await (const doc of all_events) {
-        let num = doc.start_time.getDay();
-        if (!twoDArray[num].includes(doc)) twoDArray[num].push(doc);
+      const dayFilteredEvents = allEvents.filter(
+        (event) =>
+          dayjs(event.start_time).isBefore(constants.end_date) &&
+          dayjs(event.start_time).isAfter(constants.start_date),
+      );
+
+      for (const event of dayFilteredEvents) {
+        let num = event.start_time.getDay();
+        eventsByDay[num].push(event);
       }
 
       return {
-        monday: twoDArray[1],
-        tuesday: twoDArray[2],
-        wednesday: twoDArray[3],
-        thursday: twoDArray[4],
-        friday: twoDArray[5],
-        saturday: twoDArray[6],
-        sunday: twoDArray[0],
+        monday: eventsByDay[1],
+        tuesday: eventsByDay[2],
+        wednesday: eventsByDay[3],
+        thursday: eventsByDay[4],
+        friday: eventsByDay[5],
+        saturday: eventsByDay[6],
+        sunday: eventsByDay[0],
       };
     } catch (error) {
       console.error(error);
