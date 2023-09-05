@@ -130,7 +130,7 @@ export class EventsService {
       });
 
       for (const event of dayFilteredEvents) {
-        let num = event.start_time.getDay();
+        let num = dayjs(event.start_time).tz('America/Chicago').day();
         eventsByDay[num].push(event);
       }
 
