@@ -2,6 +2,11 @@ import { HttpException, Injectable, Inject, HttpStatus } from '@nestjs/common';
 import { InjectModel, InjectConnection } from '@nestjs/mongoose';
 import { Model, Connection } from 'mongoose';
 import * as dayjs from 'dayjs';
+import * as timezone from 'dayjs/plugin/timezone';
+import * as utc from 'dayjs/plugin/utc';
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.tz.setDefault('America/Chicago');
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { Event, EventDocument } from './event.schema';
@@ -116,11 +121,13 @@ export class EventsService {
       ]);
       let eventsByDay = [[], [], [], [], [], [], [], []];
 
-      const dayFilteredEvents = allEvents.filter(
-        (event) =>
-          dayjs(event.start_time).isBefore(constants.end_date) &&
-          dayjs(event.start_time).isAfter(constants.start_date),
-      );
+      const dayFilteredEvents = allEvents.filter((event) => {
+        const date = dayjs(event.start_time).tz('America/Chicago');
+        return (
+          date.isBefore(constants.end_date) &&
+          date.isAfter(constants.start_date)
+        );
+      });
 
       for (const event of dayFilteredEvents) {
         let num = event.start_time.getDay();
