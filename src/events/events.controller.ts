@@ -12,6 +12,7 @@ import {
   Put,
   NotFoundException,
   BadRequestException,
+  UseInterceptors,
 } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
@@ -28,6 +29,7 @@ import { RolesGuard } from '../roles/roles.guard';
 import { AuthGuard } from '../auth/auth.guard';
 import { AttendeeService } from '../attendees/attendees.service';
 import { JwtService } from '@nestjs/jwt';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @Controller('events')
 export class EventsController {
@@ -165,6 +167,7 @@ export class EventsController {
   }
 
   @Get('schedule/days')
+  @UseInterceptors(CacheInterceptor)
   schedule() {
     return this.eventsService.schedule();
   }
