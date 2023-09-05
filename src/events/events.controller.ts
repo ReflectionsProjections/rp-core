@@ -45,6 +45,8 @@ export class EventsController {
   }
 
   @Get()
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(RoleLevel.Admin)
   findAll() {
     return this.eventsService.findAll();
   }
@@ -111,7 +113,13 @@ export class EventsController {
       throw new HttpException(message, status);
     }
 
-    return { status, message, priority, email: body.email, name: attendee.name };
+    return {
+      status,
+      message,
+      priority,
+      email: body.email,
+      name: attendee.name,
+    };
   }
 
   @Put(':eventId/attendance/qr')
@@ -154,11 +162,6 @@ export class EventsController {
     }
 
     return { status, message, priority, email: email, name: attendee.name };
-  }
-
-  @Get('schedule/days')
-  schedule() {
-    return this.eventsService.schedule();
   }
 
   @Get('schedule/days')

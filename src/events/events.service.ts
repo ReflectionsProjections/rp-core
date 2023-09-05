@@ -8,9 +8,6 @@ import { Event, EventDocument } from './event.schema';
 import { AttendeeService } from '../attendees/attendees.service';
 import { constants } from '../constants';
 
-import * as dayjs from 'dayjs';
-// dayjs.extend('dayjs/plugin/IsBetween')
-
 @Injectable()
 export class EventsService {
   constructor(
@@ -25,7 +22,20 @@ export class EventsService {
   }
 
   findAll() {
-    return this.eventModel.find();
+    return this.eventModel.aggregate([
+      {
+        $addFields: {
+          attendeeCount: {
+            $size: '$attendees',
+          },
+        },
+      },
+      {
+        $project: {
+          attendees: 0,
+        },
+      },
+    ]);
   }
 
   findOne(id: string) {
