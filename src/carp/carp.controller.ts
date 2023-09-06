@@ -36,8 +36,9 @@ export class CarpController {
   async getFilteredAttendees(@Query() filters: CarpFilterDto) {
     const majors = filters.majors;
     const years = filters.years;
-    const jobs = filters.jobs
-    return this.carpService.getFilteredAttendees(majors, years, jobs);
+    const jobs = filters.jobs;
+    const page = filters.page;
+    return this.carpService.getFilteredAttendees(majors, years, jobs, page);
   }
 
   /**
