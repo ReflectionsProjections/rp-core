@@ -5,6 +5,7 @@ import { RoleLevel } from '../roles/roles.enum';
 import { RolesGuard } from '../roles/roles.guard';
 import { S3Service } from '../s3/s3.service';
 import { CarpService } from './carp.service';
+import { CarpFilterDto } from './dto/carp-filter.dto';
 
 @Controller('carp')
 export class CarpController {
@@ -23,7 +24,7 @@ export class CarpController {
   }
 
   /**
-   * This function returns a filtered list of attendess.
+   * This function returns a filtered list of attendees.
    * 
    * @param filters Filters can be passed as query params 
    * 'majors', 'years', and 'jobs'. Multiple filters within each param should be
@@ -32,12 +33,11 @@ export class CarpController {
   @Get('/filter')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(RoleLevel.Corporate)
-  async getFilters(@Query() filters: any) {
+  async getFilteredAttendees(@Query() filters: CarpFilterDto) {
     const majors = filters.majors;
     const years = filters.years;
     const jobs = filters.jobs
-    return NotImplementedException;
-    // return this.carpService.getFilters(majors, years, jobs);
+    return this.carpService.getFilteredAttendees(majors, years, jobs);
   }
 
   /**
@@ -50,7 +50,7 @@ export class CarpController {
   @Get('/download')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(RoleLevel.Corporate)
-  async getAllResumes(@Query() filters: any) {
+  async getAllResumes(@Query() filters: CarpFilterDto) {
     const majors = filters.majors;
     const years = filters.years;
     const jobs = filters.jobs
