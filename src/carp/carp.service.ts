@@ -54,7 +54,7 @@ export class CarpService {
 
       if (jobInterestFilters.length != 0 && 
         !attendee.job_interest.some(job => 
-          jobInterestFilters.includes(job.type))) {
+          jobInterestFilters.includes(job))) {
         showAttendee = false;
       }
 
@@ -91,14 +91,15 @@ export class CarpService {
    */
   async getFilteredAttendees(majors: string, years: string, jobs: string, page: number) {
     const attendees = await this.attendeeService.findAll();
-    const majorFilters = majors.split('+');
-    const gradYearFilters = years.split('+');
-    const jobInterestFilters = jobs.split('+');
 
     // Check no filters
-    if (majors == null && years == null && jobs == null) {
+    if (majors == "" && years == "" && jobs == "") {
       return await this.handlePagination(attendees, page);
     } else {
+      const majorFilters = majors ? majors.split(',') : [];
+      const gradYearFilters = years ? years.split(',') : [];
+      const jobInterestFilters = jobs ? jobs.split(',') : [];
+  
       let filteredAttendees = await this.filterAttendees(attendees, 
                                                 majorFilters, 
                                                 gradYearFilters, 

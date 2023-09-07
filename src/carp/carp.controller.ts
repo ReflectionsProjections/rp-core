@@ -31,13 +31,16 @@ export class CarpController {
    * delimited by '+'
    */
   @Get('/filter')
-  @UseGuards(AuthGuard, RolesGuard)
-  @Roles(RoleLevel.Corporate)
+  // @UseGuards(AuthGuard, RolesGuard)
+  // @Roles(RoleLevel.Corporate)
   async getFilteredAttendees(@Query() filters: CarpFilterDto) {
-    const majors = filters.majors;
+    // TODO decode all if they're URI
+    console.log(filters);
+    const majors = decodeURIComponent(filters.majors);
     const years = filters.years;
     const jobs = filters.jobs;
-    const page = filters.page;
+    const page = parseInt(filters.page);
+
     return this.carpService.getFilteredAttendees(majors, years, jobs, page);
   }
 
@@ -52,9 +55,10 @@ export class CarpController {
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(RoleLevel.Corporate)
   async getAllResumes(@Query() filters: CarpFilterDto) {
-    const majors = filters.majors;
+    // TODO decode all if they're URI
+    const majors = decodeURIComponent(filters.majors);
     const years = filters.years;
-    const jobs = filters.jobs
+    const jobs = filters.jobs;
     return NotImplementedException;
     // return this.carpService.getAllResumes(majors, years, jobs);
   }
