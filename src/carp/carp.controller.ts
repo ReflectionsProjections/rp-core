@@ -31,8 +31,8 @@ export class CarpController {
    * delimited by '+'
    */
   @Get('/filter')
-  // @UseGuards(AuthGuard, RolesGuard)
-  // @Roles(RoleLevel.Corporate)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(RoleLevel.Corporate)
   async getFilteredAttendees(@Query() filters: CarpFilterDto) {
     // TODO decode all if they're URI
     console.log(filters);
