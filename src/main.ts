@@ -14,6 +14,8 @@ async function bootstrap() {
       'http://localhost:5173',
       'http://localhost:4173',
       'https://beta.reflectionsprojections.org',
+      'https://qrp-beta.reflectionsprojections.org',
+      'https://qrp.reflectionsprojections.org',
       'https://black.reflectionsprojections.org',
       'https://reflectionsprojections.org',
     ],
