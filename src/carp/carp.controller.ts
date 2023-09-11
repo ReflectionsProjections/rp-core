@@ -60,8 +60,8 @@ export class CarpController {
   async getAllResumes(@Query() filters: CarpFilterDto) {
     // TODO decode all if they're URI
     const majors = decodeURIComponent(filters.majors);
-    const years = filters.years;
-    const jobs = filters.jobs;
+    const years = decodeURIComponent(filters.years);
+    const jobs = decodeURIComponent(filters.jobs);
     return NotImplementedException;
     // return this.carpService.getAllResumes(majors, years, jobs);
   }
