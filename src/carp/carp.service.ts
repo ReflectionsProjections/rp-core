@@ -52,16 +52,15 @@ export class CarpService {
         showAttendee = false;
       }
 
-      if (jobInterestFilters.length != 0 && 
-        !attendee.job_interest.some(job => 
+      if (jobInterestFilters.length != 0 && !attendee.job_interest.some(job => 
           jobInterestFilters.includes(job))) {
         showAttendee = false;
       }
 
-			if (showAttendee) {
-				filteredAttendees.push(attendee);
-			}
-		}
+      if (showAttendee) {
+        filteredAttendees.push(attendee);
+      }
+    }
 
     return filteredAttendees;
   }

@@ -37,11 +37,9 @@ export class CarpController {
   @Roles(RoleLevel.Corporate)
   @SkipThrottle()
   async getFilteredAttendees(@Query() filters: CarpFilterDto) {
-    // TODO decode all if they're URI
-    console.log(filters);
     const majors = decodeURIComponent(filters.majors);
-    const years = filters.years;
-    const jobs = filters.jobs;
+    const years = decodeURIComponent(filters.years);
+    const jobs = decodeURIComponent(filters.jobs);
     const page = parseInt(filters.page);
 
     return this.carpService.getFilteredAttendees(majors, years, jobs, page);
@@ -58,7 +56,6 @@ export class CarpController {
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(RoleLevel.Corporate)
   async getAllResumes(@Query() filters: CarpFilterDto) {
-    // TODO decode all if they're URI
     const majors = decodeURIComponent(filters.majors);
     const years = decodeURIComponent(filters.years);
     const jobs = decodeURIComponent(filters.jobs);
