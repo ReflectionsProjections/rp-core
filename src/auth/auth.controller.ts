@@ -16,6 +16,7 @@ import { GeneratePasscodeDto } from './dto/generate-passcode.dto';
 import { VerifyPasscodeDto } from './dto/verify-passcode.dto';
 import { Response, Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
+import * as dayjs from 'dayjs';
 import { AuthGuard } from './auth.guard';
 import { AttendeeService } from '../attendees/attendees.service';
 import { RolesGuard } from '../roles/roles.guard';
@@ -84,6 +85,7 @@ export class AuthController {
         httpOnly: true,
         secure: !development,
         sameSite: development ? 'lax' : 'strict',
+        expires: dayjs().add(3, 'month').toDate(),
         path: '/',
       })
       .send(message);
@@ -100,6 +102,9 @@ export class AuthController {
     return {
       email,
       fullName: attendee.name,
+      priority:
+        attendee.priority_expiry != null &&
+        !dayjs(attendee.priority_expiry).isBefore(dayjs()),
     };
   }
 

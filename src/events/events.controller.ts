@@ -12,6 +12,7 @@ import {
   Put,
   NotFoundException,
   BadRequestException,
+  UseInterceptors,
 } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
@@ -28,6 +29,7 @@ import { RolesGuard } from '../roles/roles.guard';
 import { AuthGuard } from '../auth/auth.guard';
 import { AttendeeService } from '../attendees/attendees.service';
 import { JwtService } from '@nestjs/jwt';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @Controller('events')
 export class EventsController {
@@ -45,6 +47,8 @@ export class EventsController {
   }
 
   @Get()
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(RoleLevel.Admin)
   findAll() {
     return this.eventsService.findAll();
   }
@@ -72,22 +76,19 @@ export class EventsController {
   }
 
   @Put(':eventId/attendee')
-  @UseGuards(AuthGuard, RolesGuard)
-  @Roles(RoleLevel.Admin)
   async registerAttendeeWithId(
     @Param('eventId', MongoIdPipe) eventId: string,
     @Body() body: RegisterAttendeeDto,
   ) {
-    const { status, message } = await this.eventsService.registerAttendance(
-      eventId,
-      body.id,
-    );
+    const { status, message, priority } =
+      await this.eventsService.registerAttendance(eventId, body.id);
 
     if (status != HttpStatus.ACCEPTED) {
       throw new HttpException(message, status);
     }
+    //TODO add email and name
 
-    return { status, message, priority: false };
+    return { status, message, priority };
   }
 
   @Put(':eventId/attendee/email')
@@ -104,16 +105,23 @@ export class EventsController {
       );
     }
 
-    const { status, message } = await this.eventsService.registerAttendance(
-      eventId,
-      attendee._id.toString(),
-    );
+    const { status, message, priority } =
+      await this.eventsService.registerAttendance(
+        eventId,
+        attendee._id.toString(),
+      );
 
     if (status != HttpStatus.ACCEPTED) {
       throw new HttpException(message, status);
     }
 
-    return { status, message, priority: false };
+    return {
+      status,
+      message,
+      priority,
+      email: body.email,
+      name: attendee.name,
+    };
   }
 
   @Put(':eventId/attendance/qr')
@@ -145,19 +153,21 @@ export class EventsController {
       );
     }
 
-    const { status, message } = await this.eventsService.registerAttendance(
-      eventId,
-      attendee._id.toString(),
-    );
+    const { status, message, priority } =
+      await this.eventsService.registerAttendance(
+        eventId,
+        attendee._id.toString(),
+      );
 
     if (status != HttpStatus.ACCEPTED) {
       throw new HttpException(message, status);
     }
 
-    return { status, message, priority: false };
+    return { status, message, priority, email: email, name: attendee.name };
   }
 
   @Get('schedule/days')
+  @UseInterceptors(CacheInterceptor)
   schedule() {
     return this.eventsService.schedule();
   }

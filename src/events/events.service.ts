@@ -1,10 +1,17 @@
 import { HttpException, Injectable, Inject, HttpStatus } from '@nestjs/common';
 import { InjectModel, InjectConnection } from '@nestjs/mongoose';
 import { Model, Connection } from 'mongoose';
+import * as dayjs from 'dayjs';
+import * as timezone from 'dayjs/plugin/timezone';
+import * as utc from 'dayjs/plugin/utc';
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.tz.setDefault('America/Chicago');
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { Event, EventDocument } from './event.schema';
 import { AttendeeService } from '../attendees/attendees.service';
+import { constants } from '../constants';
 
 @Injectable()
 export class EventsService {
@@ -20,7 +27,20 @@ export class EventsService {
   }
 
   findAll() {
-    return this.eventModel.find();
+    return this.eventModel.aggregate([
+      {
+        $addFields: {
+          attendeeCount: {
+            $size: '$attendees',
+          },
+        },
+      },
+      {
+        $project: {
+          attendees: 0,
+        },
+      },
+    ]);
   }
 
   findOne(id: string) {
@@ -44,22 +64,28 @@ export class EventsService {
 
   async registerAttendance(id: string, attendeeId: string) {
     const session = await this.connection.startSession();
+    let priority;
 
     try {
       await session.withTransaction(async () => {
-        if (!(await this.eventModel.findOne({ _id: id })))
+        const event: EventDocument = await this.eventModel.findOne({ _id: id });
+        if (!event)
           return {
             status: HttpStatus.BAD_REQUEST,
             message: 'event id does not exist',
           };
-        if (!(await this.attendeeService.findOne(attendeeId)))
+        const attendee = await this.attendeeService.findOne(attendeeId);
+        if (!attendee)
           return {
             status: HttpStatus.BAD_REQUEST,
             message: 'attendee id does not exist',
           };
+        priority =
+          attendee.priority_expiry != null &&
+          !dayjs(attendee.priority_expiry).isBefore(dayjs());
         await this.addAttendee(id, attendeeId).session(session);
         await this.attendeeService
-          .addEventAttendance(attendeeId, id)
+          .addEventAttendance(attendeeId, event)
           .session(session);
       });
     } finally {
@@ -69,27 +95,53 @@ export class EventsService {
     return {
       status: HttpStatus.ACCEPTED,
       message: 'attendee registered for event',
+      priority,
     };
   }
 
   async schedule() {
     try {
-      const all_events = await this.eventModel.find().cursor();
-      let twoDArray = [[], [], [], [], [], [], [], []];
+      // const all_events = await this.eventModel.find();
+      const allEvents = await this.eventModel.aggregate([
+        {
+          $match: {
+            visible: true,
+          },
+        },
+        {
+          $project: {
+            attendees: 0,
+          },
+        },
+        {
+          $sort: {
+            start_time: 1,
+          },
+        },
+      ]);
+      let eventsByDay = [[], [], [], [], [], [], [], []];
 
-      for await (const doc of all_events) {
-        let num = doc.start_time.getDay();
-        if (!twoDArray[num].includes(doc)) twoDArray[num].push(doc);
+      const dayFilteredEvents = allEvents.filter((event) => {
+        const date = dayjs(event.start_time).tz('America/Chicago');
+        return (
+          date.isBefore(constants.end_date) &&
+          date.isAfter(constants.start_date)
+        );
+      });
+
+      for (const event of dayFilteredEvents) {
+        let num = dayjs(event.start_time).tz('America/Chicago').day();
+        eventsByDay[num].push(event);
       }
 
       return {
-        monday: twoDArray[1],
-        tuesday: twoDArray[2],
-        wednesday: twoDArray[3],
-        thursday: twoDArray[4],
-        friday: twoDArray[5],
-        saturday: twoDArray[6],
-        sunday: twoDArray[0],
+        monday: eventsByDay[1],
+        tuesday: eventsByDay[2],
+        wednesday: eventsByDay[3],
+        thursday: eventsByDay[4],
+        friday: eventsByDay[5],
+        saturday: eventsByDay[6],
+        sunday: eventsByDay[0],
       };
     } catch (error) {
       console.error(error);

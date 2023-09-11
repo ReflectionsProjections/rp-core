@@ -6,6 +6,7 @@ import {
   model,
 } from 'mongoose';
 import { EventSchema } from '../events/event.schema';
+import dayjs from 'dayjs';
 
 export type AttendeeDocument = HydratedDocument<Attendee>;
 
@@ -36,7 +37,6 @@ export class Attendee {
     graduation: string | null;
     major: string | null;
   };
-
 
   @Prop({
     required: true,
@@ -75,6 +75,11 @@ export class Attendee {
 
   @Prop()
   interest_mech_puzzle: [{ type: string }];
+
+  @Prop({
+    default: null,
+  })
+  priority_expiry: Date;
 }
 
 export const AttendeeSchema = SchemaFactory.createForClass(Attendee);
