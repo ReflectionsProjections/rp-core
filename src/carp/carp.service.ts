@@ -43,7 +43,7 @@ export class CarpService {
 		for (const attendee of attendees) {
       let showAttendee: Boolean = true;
       if (majorFilters.length != 0 && 
-        !majorFilters.includes(attendee.studentInfo.major)) {
+        !majorFilters.some(majorFilter => attendee.studentInfo.major.includes(majorFilter))) {
         showAttendee = false;
       }
   
