@@ -16,8 +16,9 @@ export class AppService {
    * v1.2.0 -> Ready carp for release
    * v1.2.1 -> Add has_resume field to attendees collection
    * v1.2.2 -> Return prior_check_in from QRP endpoints
+   * v1.2.3 -> Carp only shows attendees with resumes
    */
   getVersion(): string {
-    return 'v1.2.2';
+    return 'v1.2.3';
   }
 }
