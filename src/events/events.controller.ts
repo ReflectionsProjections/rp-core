@@ -80,7 +80,7 @@ export class EventsController {
     @Param('eventId', MongoIdPipe) eventId: string,
     @Body() body: RegisterAttendeeDto,
   ) {
-    const { status, message, priority } =
+    const { status, message, priority, prior_check_in } =
       await this.eventsService.registerAttendance(eventId, body.id);
 
     if (status != HttpStatus.ACCEPTED) {
@@ -88,7 +88,7 @@ export class EventsController {
     }
     //TODO add email and name
 
-    return { status, message, priority };
+    return { status, message, priority, prior_check_in };
   }
 
   @Put(':eventId/attendee/email')
@@ -105,7 +105,7 @@ export class EventsController {
       );
     }
 
-    const { status, message, priority } =
+    const { status, message, priority, prior_check_in } =
       await this.eventsService.registerAttendance(
         eventId,
         attendee._id.toString(),
@@ -121,6 +121,7 @@ export class EventsController {
       priority,
       email: body.email,
       name: attendee.name,
+      prior_check_in,
     };
   }
 
@@ -153,7 +154,7 @@ export class EventsController {
       );
     }
 
-    const { status, message, priority } =
+    const { status, message, priority, prior_check_in } =
       await this.eventsService.registerAttendance(
         eventId,
         attendee._id.toString(),
@@ -163,7 +164,14 @@ export class EventsController {
       throw new HttpException(message, status);
     }
 
-    return { status, message, priority, email: email, name: attendee.name };
+    return {
+      status,
+      message,
+      priority,
+      email: email,
+      name: attendee.name,
+      prior_check_in,
+    };
   }
 
   @Get('schedule/days')

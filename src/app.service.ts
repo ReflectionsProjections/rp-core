@@ -15,8 +15,9 @@ export class AppService {
    * v1.1.6 -> Add endpoint for conference schedule
    * v1.2.0 -> Ready carp for release
    * v1.2.1 -> Add has_resume field to attendees collection
+   * v1.2.2 -> Return prior_check_in from QRP endpoints
    */
   getVersion(): string {
-    return 'v1.2.1';
+    return 'v1.2.2';
   }
 }
