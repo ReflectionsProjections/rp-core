@@ -1,13 +1,20 @@
-import { PutObjectCommand, GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import {
+  PutObjectCommand,
+  GetObjectCommand,
+  S3Client,
+} from '@aws-sdk/client-s3';
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-
+import { AttendeeService } from '../attendees/attendees.service';
 
 @Injectable()
 export class S3Service {
   private readonly logger = new Logger(S3Service.name);
 
-  constructor(@Inject('S3Client') private readonly s3Client: S3Client) {}
+  constructor(
+    @Inject('S3Client') private readonly s3Client: S3Client,
+    private readonly attendeeService: AttendeeService,
+  ) {}
 
   async uploadFile(
     file: Express.Multer.File,
@@ -31,6 +38,7 @@ export class S3Service {
 
     try {
       await this.s3Client.send(new PutObjectCommand(params));
+      await this.attendeeService.setResumeUploaded(attendeeID);
       return { success: true, message: 'File uploaded successfully', key };
     } catch (error) {
       this.logger.error('An error occurred:', error);
@@ -58,7 +66,7 @@ export class S3Service {
       return { id: attendeeId, url: url };
     } catch (error) {
       this.logger.error('Could not get url with error:', error);
-      throw { success: false, message: error};
+      throw { success: false, message: error };
     }
   }
 }

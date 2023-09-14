@@ -14,8 +14,9 @@ export class AppService {
    * v1.1.5 -> Make cookie persistent by adding expiration date
    * v1.1.6 -> Add endpoint for conference schedule
    * v1.2.0 -> Ready carp for release
+   * v1.2.1 -> Add has_resume field to attendees collection
    */
   getVersion(): string {
-    return 'v1.2.0';
+    return 'v1.2.1';
   }
 }

@@ -55,6 +55,7 @@ export class AttendeeService {
       portfolio: createAttendeeDto.portfolioLink,
       job_interest: createAttendeeDto.jobTypeInterest,
       interest_mech_puzzle: createAttendeeDto.mechPuzzle,
+      has_resume: false,
     };
     return await this.attendeeModel.create(attendee);
   }
@@ -87,6 +88,16 @@ export class AttendeeService {
     return this.attendeeModel.findByIdAndUpdate(id, updateObject, {
       new: true,
     });
+  }
+
+  async setResumeUploaded(id: string) {
+    return this.attendeeModel.findByIdAndUpdate(
+      id,
+      { has_resume: true },
+      {
+        new: true,
+      },
+    );
   }
 
   remove(id: string) {

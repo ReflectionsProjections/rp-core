@@ -80,6 +80,11 @@ export class Attendee {
     default: null,
   })
   priority_expiry: Date;
+
+  @Prop({
+    default: false,
+  })
+  has_resume: boolean;
 }
 
 export const AttendeeSchema = SchemaFactory.createForClass(Attendee);
