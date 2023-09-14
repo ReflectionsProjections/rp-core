@@ -108,7 +108,7 @@ export class CarpService {
     jobs: string,
     page: number,
   ) {
-    const attendees = await this.attendeeService.findAll();
+    const attendees = await this.attendeeService.findAttendeesWithResumes();
 
     // Check no filters
     if (majors == '' && years == '' && jobs == '') {

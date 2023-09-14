@@ -130,4 +130,8 @@ export class AttendeeService {
     );
     return QRCode.toDataURL(signed_payload);
   }
+
+  async findAttendeesWithResumes() {
+    return this.attendeeModel.find({has_resume: true});
+  }
 }
