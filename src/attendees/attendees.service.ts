@@ -76,4 +76,66 @@ export class AttendeeService {
       { $addToSet: { events: eventId } },
     );
   }
+
+  selectWinners(winnersCount: number) {
+    return this.attendeeModel.aggregate([
+      {
+        '$unwind': {
+          'path': '$events', 
+          'preserveNullAndEmptyArrays': false
+        }
+      }, {
+        '$addFields': {
+          'eventsId': {
+            '$toObjectId': '$events'
+          }
+        }
+      }, {
+        '$lookup': {
+          'from': 'events', 
+          'localField': 'eventsId', 
+          'foreignField': '_id', 
+          'as': 'eventsData'
+        }
+      }, {
+        '$unwind': {
+          'path': '$eventsData', 
+          'preserveNullAndEmptyArrays': false
+        }
+      }, {
+        '$match': {
+          'eventsData.upgrade': true
+        }
+      }, {
+        '$group': {
+          '_id': '$_id', 
+          'name': {
+            '$first': '$name'
+          }, 
+          'email': {
+            '$first': '$email'
+          }, 
+          'events': {
+            '$count': {}
+          }
+        }
+      }, {
+        '$addFields': {
+          'weight': {
+            '$multiply': [
+              '$events', {
+                '$rand': {}
+              }
+            ]
+          }
+        }
+      }, {
+        '$sort': {
+          'weight': -1
+        }
+      }, {
+        '$limit': numWinners
+      }
+    ]);
+  }
 }
