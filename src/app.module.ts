@@ -10,6 +10,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { AttendeesModule } from './attendees/attendees.module';
+import { LotteryModule } from './lottery/lottery.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { AttendeesModule } from './attendees/attendees.module';
       ttl: 60,
       limit: 10,
     }),
+    LotteryModule,
   ],
   controllers: [AppController],
   providers: [

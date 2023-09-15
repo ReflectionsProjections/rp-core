@@ -42,6 +42,7 @@ export class EventsService {
     );
   }
 
+
   async registerAttendance(id: string, attendeeId: string) {
     const session = await this.connection.startSession();
 

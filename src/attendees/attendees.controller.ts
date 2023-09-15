@@ -34,7 +34,7 @@ export class AttendeeController {
   }
 
   @Post()
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   create(@Body() createAttendeeDto: CreateAttendeeDto) {
     return this.attendeeService.create(createAttendeeDto);
   }

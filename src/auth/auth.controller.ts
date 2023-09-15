@@ -84,7 +84,7 @@ export class AuthController {
   }
 
   @Get('/me')
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   getLoggedInUser(@Req() req: Request) {
     // Attach additional user information as needed
     // Lookup attendee based on their (unique) email
