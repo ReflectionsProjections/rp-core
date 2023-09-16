@@ -2,13 +2,13 @@ import { HttpException, Injectable, Inject, HttpStatus } from '@nestjs/common';
 import { InjectModel, InjectConnection } from '@nestjs/mongoose';
 import { Model, Connection } from 'mongoose';
 import { Event, EventDocument } from '../events/event.schema';
-import { AttendeeService } from '../attendees/attendees.service';
+// import { AttendeeService } from '../attendees/attendees.service';
 
 @Injectable()
 export class LotteryService {
     constructor(
         @InjectModel(Event.name) private eventModel: Model<EventDocument>,
-        @Inject(AttendeeService) private attendeeService: AttendeeService,
+        // @Inject(AttendeeService) private attendeeService: AttendeeService,
         @InjectConnection() private connection: Connection,
       ) {}
 

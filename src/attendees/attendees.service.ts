@@ -134,7 +134,7 @@ export class AttendeeService {
           'weight': -1
         }
       }, {
-        '$limit': numWinners
+        '$limit': winnersCount
       }
     ]);
   }

@@ -61,4 +61,9 @@ export class AttendeeController {
   remove(@Param('id') id: string) {
     return this.attendeeService.remove(id);
   }
+
+  @Get('/lottery')
+  selectWinners(@Param('winnersCount') winnersCount: number) {
+    return this.attendeeService.selectWinners(winnersCount);
+  }
 }
