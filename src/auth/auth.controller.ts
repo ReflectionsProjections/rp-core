@@ -16,8 +16,13 @@ import { GeneratePasscodeDto } from './dto/generate-passcode.dto';
 import { VerifyPasscodeDto } from './dto/verify-passcode.dto';
 import { Response, Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
+import * as dayjs from 'dayjs';
 import { AuthGuard } from './auth.guard';
-import { AttendeeService } from 'src/attendees/attendees.service';
+import { AttendeeService } from '../attendees/attendees.service';
+import { RolesGuard } from '../roles/roles.guard';
+import { Roles } from '../roles/roles.decorator';
+import { RoleLevel } from '../roles/roles.enum';
+import { WalletService } from '../wallet/wallet.service';
 
 @Controller('auth')
 export class AuthController {
@@ -25,20 +30,22 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly attendeeService: AttendeeService,
     private jwtService: JwtService,
+    private walletService: WalletService,
   ) {}
 
   @Post('/generate')
   async generateVerificationPasscode(
     @Body() body: GeneratePasscodeDto,
-    @Query() query: { isLogin: string },
+    @Query() query: { isLogin: string; isRegister: string },
   ) {
     const isLogin = query?.isLogin === 'true';
+    const isRegister = query?.isRegister === 'true';
 
-    if (isLogin) {
-      const userExists = await this.attendeeService.userEmailExists(body.email);
-      if (!userExists) {
-        throw new NotFoundException('User with that email does not exist.');
-      }
+    const userExists = await this.attendeeService.userEmailExists(body.email);
+    if (!userExists && isLogin) {
+      throw new NotFoundException('User with that email does not exist.');
+    } else if (userExists && isRegister) {
+      throw new NotFoundException('User with that email already exists.');
     }
 
     const { status, message } =
@@ -78,16 +85,55 @@ export class AuthController {
         httpOnly: true,
         secure: !development,
         sameSite: development ? 'lax' : 'strict',
+        expires: dayjs().add(3, 'month').toDate(),
         path: '/',
       })
       .send(message);
   }
 
   @Get('/me')
-  // @UseGuards(AuthGuard)
-  getLoggedInUser(@Req() req: Request) {
-    // Attach additional user information as needed
-    // Lookup attendee based on their (unique) email
-    return req['user'];
+  @UseGuards(AuthGuard)
+  async getLoggedInUser(@Req() req: Request) {
+    const email = req['user'].email;
+    const attendee = await this.attendeeService.findAttendeeByEmail(email);
+    if (!attendee) {
+      return req['user'];
+    }
+    return {
+      email,
+      fullName: attendee.name,
+      priority:
+        attendee.priority_expiry != null &&
+        !dayjs(attendee.priority_expiry).isBefore(dayjs()),
+    };
+  }
+
+  @Get('/access/admin')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(RoleLevel.Admin)
+  staffAccessCheck(@Req() req: Request) {
+    return 'Success';
+  }
+
+  @Get('/access/corporate')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(RoleLevel.Corporate)
+  corporateAccessCheck(@Req() req: Request) {
+    return 'Success';
+  }
+
+  @Post('/logout')
+  logout(@Res({ passthrough: true }) res: Response) {
+    const development = process.env.ENV?.startsWith('dev');
+
+    res
+      .status(200)
+      .clearCookie('token', {
+        httpOnly: true,
+        secure: !development,
+        sameSite: development ? 'lax' : 'strict',
+        path: '/',
+      })
+      .send('Success');
   }
 }

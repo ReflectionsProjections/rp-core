@@ -1,16 +1,19 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtModule } from '@nestjs/jwt';
+import { MongooseModule } from '@nestjs/mongoose';
+import { MulterModule } from '@nestjs/platform-express'; // Import MulterModule
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ConfigModule } from '@nestjs/config';
-import { MongooseModule } from '@nestjs/mongoose';
-import { EventsModule } from './events/events.module';
-import { EmailModule } from './email/email.module';
-import { AuthModule } from './auth/auth.module';
-import { JwtModule } from '@nestjs/jwt';
-import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
-import { APP_GUARD } from '@nestjs/core';
 import { AttendeesModule } from './attendees/attendees.module';
-import { LotteryModule } from './lottery/lottery.module';
+import { AuthModule } from './auth/auth.module';
+import { EmailModule } from './email/email.module';
+import { EventsModule } from './events/events.module';
+import { S3ModuleModule } from './s3/s3.module';
+import { WalletModule } from './wallet/wallet.module';
+import { CarpModule } from './carp/carp.module';
 
 @Module({
   imports: [
@@ -18,6 +21,9 @@ import { LotteryModule } from './lottery/lottery.module';
       isGlobal: true,
     }),
     MongooseModule.forRoot(process.env.DATABASE_URL),
+    MulterModule.register({
+      dest: './uploads',
+    }),
     EventsModule,
     AttendeesModule,
     JwtModule.register({
@@ -27,12 +33,14 @@ import { LotteryModule } from './lottery/lottery.module';
     }),
     EmailModule,
     AuthModule,
+    S3ModuleModule,
+    WalletModule,
     AttendeesModule,
     ThrottlerModule.forRoot({
       ttl: 60,
-      limit: 10,
+      limit: 20,
     }),
-    LotteryModule,
+    CarpModule,
   ],
   controllers: [AppController],
   providers: [

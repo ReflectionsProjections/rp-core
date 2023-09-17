@@ -10,27 +10,45 @@ import {
   HttpStatus,
   HttpException,
   Put,
+  NotFoundException,
+  BadRequestException,
+  UseInterceptors,
 } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
-import { RegisterAttendeeDto } from './dto/register-attendee.dto';
+import {
+  RegisterAttendeeDto,
+  RegisterAttendeeEmailDto,
+  RegisterAttendeeQRDto,
+} from './dto/register-attendee.dto';
 import { MongoIdPipe } from '../mongo-id/mongo-id.pipe';
 import { RoleLevel } from '../roles/roles.enum';
 import { Roles } from '../roles/roles.decorator';
 import { RolesGuard } from '../roles/roles.guard';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from '../auth/auth.guard';
+import { AttendeeService } from '../attendees/attendees.service';
+import { JwtService } from '@nestjs/jwt';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @Controller('events')
 export class EventsController {
-  constructor(private readonly eventsService: EventsService) {}
+  constructor(
+    private readonly eventsService: EventsService,
+    private readonly attendeeService: AttendeeService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   @Post()
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(RoleLevel.Admin)
   create(@Body() createEventDto: CreateEventDto) {
     return this.eventsService.create(createEventDto);
   }
 
   @Get()
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(RoleLevel.Admin)
   findAll() {
     return this.eventsService.findAll();
   }
@@ -51,24 +69,114 @@ export class EventsController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(RoleLevel.Admin)
   remove(@Param('id', MongoIdPipe) id: string) {
     return this.eventsService.remove(id);
   }
 
-  @Put(':id/attendee')
-  async registerAttendee(
-    @Param('id', MongoIdPipe) id: string,
-    @Body() registerAttendeeDto: RegisterAttendeeDto,
+  @Put(':eventId/attendee')
+  async registerAttendeeWithId(
+    @Param('eventId', MongoIdPipe) eventId: string,
+    @Body() body: RegisterAttendeeDto,
   ) {
-    const { status, message } = await this.eventsService.registerAttendance(
-      id,
-      registerAttendeeDto.id,
-    );
+    const { status, message, priority, prior_check_in } =
+      await this.eventsService.registerAttendance(eventId, body.id);
+
+    if (status != HttpStatus.ACCEPTED) {
+      throw new HttpException(message, status);
+    }
+    //TODO add email and name
+
+    return { status, message, priority, prior_check_in };
+  }
+
+  @Put(':eventId/attendee/email')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(RoleLevel.Admin)
+  async registerAttendeeWithEmail(
+    @Param('eventId', MongoIdPipe) eventId: string,
+    @Body() body: RegisterAttendeeEmailDto,
+  ) {
+    const attendee = await this.attendeeService.findAttendeeByEmail(body.email);
+    if (!attendee) {
+      throw new NotFoundException(
+        `Could not find an attendee with email ${body.email}`,
+      );
+    }
+
+    const { status, message, priority, prior_check_in } =
+      await this.eventsService.registerAttendance(
+        eventId,
+        attendee._id.toString(),
+      );
 
     if (status != HttpStatus.ACCEPTED) {
       throw new HttpException(message, status);
     }
 
-    return { status, message };
+    return {
+      status,
+      message,
+      priority,
+      email: body.email,
+      name: attendee.name,
+      prior_check_in,
+    };
+  }
+
+  @Put(':eventId/attendance/qr')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(RoleLevel.Admin)
+  async registerAttendeeWithQR(
+    @Param('eventId', MongoIdPipe) eventId: string,
+    @Body() body: RegisterAttendeeQRDto,
+  ) {
+    let email: string = null;
+
+    try {
+      const payload = await this.jwtService.verifyAsync(body.token, {
+        secret: process.env.JWT_SECRET,
+      });
+      email = payload.email;
+    } catch {
+      throw new BadRequestException('Could not decode the provided token');
+    }
+
+    if (!email || email.length == 0) {
+      throw new BadRequestException('Token does not contain a valid email');
+    }
+
+    const attendee = await this.attendeeService.findAttendeeByEmail(email);
+    if (!attendee) {
+      throw new NotFoundException(
+        `Could not find an attendee with email ${email}`,
+      );
+    }
+
+    const { status, message, priority, prior_check_in } =
+      await this.eventsService.registerAttendance(
+        eventId,
+        attendee._id.toString(),
+      );
+
+    if (status != HttpStatus.ACCEPTED) {
+      throw new HttpException(message, status);
+    }
+
+    return {
+      status,
+      message,
+      priority,
+      email: email,
+      name: attendee.name,
+      prior_check_in,
+    };
+  }
+
+  @Get('schedule/days')
+  @UseInterceptors(CacheInterceptor)
+  schedule() {
+    return this.eventsService.schedule();
   }
 }

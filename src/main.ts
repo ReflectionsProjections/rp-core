@@ -10,11 +10,25 @@ async function bootstrap() {
   app.use(cookieParser());
   app.enableCors({
     credentials: true,
-    origin: ['http://localhost:5173', 'http://dev.reflectionsprojections.org'],
+    origin: [
+      'http://localhost:5173',
+      'http://localhost:4173',
+      'https://beta.reflectionsprojections.org',
+      'https://qrp-beta.reflectionsprojections.org',
+      'https://qrp.reflectionsprojections.org',
+      'https://black.reflectionsprojections.org',
+      'https://reflectionsprojections.org',
+    ],
     allowedHeaders: ['Content-Type', 'Set-Cookie'],
+    exposedHeaders: ['Access-Control-Allow-Origin'],
   });
   // TODO: Look into interference with dto validation
-  // app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+    }),
+  );
   await app.listen(3000);
 }
 bootstrap();
