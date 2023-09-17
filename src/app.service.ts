@@ -18,8 +18,9 @@ export class AppService {
    * v1.2.2 -> Return prior_check_in from QRP endpoints
    * v1.2.3 -> Carp only shows attendees with resumes
    * v1.2.4 -> Add saturday events to schedule
+   * v1.2.5 -> Remove rate limiting from endpoints
    */
   getVersion(): string {
-    return 'v1.2.4';
+    return 'v1.2.5';
   }
 }

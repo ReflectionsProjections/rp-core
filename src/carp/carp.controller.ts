@@ -6,7 +6,6 @@ import { RolesGuard } from '../roles/roles.guard';
 import { S3Service } from '../s3/s3.service';
 import { CarpService } from './carp.service';
 import { CarpFilterDto } from './dto/carp-filter.dto';
-import { SkipThrottle } from '@nestjs/throttler';
 
 @Controller('carp')
 export class CarpController {
@@ -20,7 +19,6 @@ export class CarpController {
   @Get('/resume/:id')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(RoleLevel.Corporate)
-  @SkipThrottle()
   async getResume(@Param('id') id: string) {
     return this.carpService.getResume(id);
   }
@@ -35,7 +33,6 @@ export class CarpController {
   @Get('/filter')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(RoleLevel.Corporate)
-  @SkipThrottle()
   async getFilteredAttendees(@Query() filters: CarpFilterDto) {
     const majors = decodeURIComponent(filters.majors);
     const years = decodeURIComponent(filters.years);
