@@ -13,6 +13,7 @@ import { AttendeeService } from './attendees.service';
 // import { EventsService } from './events.service';
 import { CreateAttendeeDto } from './dto/create-attendee.dto';
 import { UpdateAttendeeDto } from './dto/update-attendee.dto';
+import { GenerateLotteryDto } from './dto/generate-lottery.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('attendee')
@@ -44,6 +45,13 @@ export class AttendeeController {
     return this.attendeeService.findAll();
   }
 
+  @Get('/lottery')
+  selectWinners(
+    @Body() generateLotteryDto: GenerateLotteryDto
+  ) {
+    return this.attendeeService.selectWinners(generateLotteryDto);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.attendeeService.findOne(id);
@@ -60,10 +68,5 @@ export class AttendeeController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.attendeeService.remove(id);
-  }
-
-  @Get('/lottery')
-  selectWinners(@Param('winnersCount') winnersCount: number) {
-    return this.attendeeService.selectWinners(winnersCount);
   }
 }

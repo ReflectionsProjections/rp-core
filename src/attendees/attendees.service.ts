@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateAttendeeDto } from './dto/create-attendee.dto';
 import { UpdateAttendeeDto } from './dto/update-attendee.dto';
+import { GenerateLotteryDto } from './dto/generate-lottery.dto';
 import { Attendee, AttendeeDocument } from './attendees.schema';
 
 @Injectable()
@@ -77,7 +78,7 @@ export class AttendeeService {
     );
   }
 
-  selectWinners(winnersCount: number) {
+  selectWinners(generateLotteryDto: GenerateLotteryDto) {
     return this.attendeeModel.aggregate([
       {
         '$unwind': {
@@ -104,7 +105,13 @@ export class AttendeeService {
         }
       }, {
         '$match': {
-          'eventsData.upgrade': true
+          'eventsData.upgrade': true,
+          $expr: {
+            $eq: [
+              { $dayOfYear: "$eventsData.start_time" },
+              { $dayOfYear: new Date(generateLotteryDto.date) }
+            ]
+          }
         }
       }, {
         '$group': {
@@ -134,7 +141,7 @@ export class AttendeeService {
           'weight': -1
         }
       }, {
-        '$limit': winnersCount
+        '$limit': generateLotteryDto.numWinners
       }
     ]);
   }
