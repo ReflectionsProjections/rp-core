@@ -17,8 +17,9 @@ export class AppService {
    * v1.2.1 -> Add has_resume field to attendees collection
    * v1.2.2 -> Return prior_check_in from QRP endpoints
    * v1.2.3 -> Carp only shows attendees with resumes
+   * v1.2.4 -> Add saturday events to schedule
    */
   getVersion(): string {
-    return 'v1.2.3';
+    return 'v1.2.4';
   }
 }
