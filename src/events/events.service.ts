@@ -62,7 +62,6 @@ export class EventsService {
     );
   }
 
-
   async registerAttendance(id: string, attendeeId: string) {
     const attendee = await this.attendeeService.findOne(attendeeId);
     if (!attendee) {
