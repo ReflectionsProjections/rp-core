@@ -2,18 +2,17 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import * as dayjs from 'dayjs';
-import { Model } from 'mongoose';
-import * as QRCode from 'qrcode';
 import * as timezone from 'dayjs/plugin/timezone';
 import * as utc from 'dayjs/plugin/utc';
+import { Model } from 'mongoose';
+import * as QRCode from 'qrcode';
+import { EventDocument } from '../events/event.schema';
+import { Attendee, AttendeeDocument } from './attendees.schema';
+import { CreateAttendeeDto } from './dto/create-attendee.dto';
+import { UpdateAttendeeDto } from './dto/update-attendee.dto';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.tz.setDefault('America/Chicago');
-import { Attendee, AttendeeDocument } from './attendees.schema';
-import { EventDocument } from '../events/event.schema';
-import { CreateAttendeeDto } from './dto/create-attendee.dto';
-import { GenerateLotteryDto } from './dto/generate-lottery.dto';
-import { UpdateAttendeeDto } from './dto/update-attendee.dto';
 
 @Injectable()
 export class AttendeeService {
@@ -141,7 +140,7 @@ export class AttendeeService {
     return this.attendeeModel.find({ has_resume: true });
   }
 
-  selectWinners(generateLotteryDto: GenerateLotteryDto) {
+  selectWinners(numWinners: number, date: string) {
     return this.attendeeModel.aggregate([
       {
         $unwind: {
@@ -176,7 +175,7 @@ export class AttendeeService {
           $expr: {
             $eq: [
               { $dayOfYear: '$eventsData.start_time' },
-              { $dayOfYear: new Date(generateLotteryDto.date) },
+              { $dayOfYear: new Date(date) },
             ],
           },
         },
@@ -213,7 +212,7 @@ export class AttendeeService {
         },
       },
       {
-        $limit: generateLotteryDto.numWinners,
+        $limit: numWinners,
       },
     ]);
   }

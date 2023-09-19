@@ -7,31 +7,27 @@ import {
   HttpException,
   HttpStatus,
   NotFoundException,
-  NotImplementedException,
   Param,
   Patch,
   Post,
+  Query,
   Req,
-  Res,
   UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { S3Service } from '../s3/s3.service';
-import { AttendeeService } from './attendees.service';
-import { CreateAttendeeDto } from './dto/create-attendee.dto';
-import { UpdateAttendeeDto } from './dto/update-attendee.dto';
-import { GenerateLotteryDto } from './dto/generate-lottery.dto';
-import { AuthGuard } from 'src/auth/auth.guard';
-import { WalletService } from '../wallet/wallet.service';
-import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
+import { AuthGuard } from 'src/auth/auth.guard';
 import { EmailService } from '../email/email.service';
-import { AuthService } from '../auth/auth.service';
 import { Roles } from '../roles/roles.decorator';
 import { RoleLevel } from '../roles/roles.enum';
 import { RolesGuard } from '../roles/roles.guard';
+import { S3Service } from '../s3/s3.service';
+import { WalletService } from '../wallet/wallet.service';
+import { AttendeeService } from './attendees.service';
+import { CreateAttendeeDto } from './dto/create-attendee.dto';
+import { UpdateAttendeeDto } from './dto/update-attendee.dto';
 
 @Controller('attendee')
 export class AttendeeController {
@@ -134,8 +130,13 @@ export class AttendeeController {
   @Get('/lottery')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(RoleLevel.Admin)
-  selectWinners(@Body() generateLotteryDto: GenerateLotteryDto) {
-    return this.attendeeService.selectWinners(generateLotteryDto);
+  selectWinners(
+    @Query('numWinners') numWinners: number,
+    @Query('date') date: string,
+  ) {
+    // TODO Better validation on query params
+    date = date.replace('-', ' ');
+    return this.attendeeService.selectWinners(numWinners, date);
   }
   /**
    * Usage on the frontend:
