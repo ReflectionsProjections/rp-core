@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import * as dayjs from 'dayjs';
+import * as customParseFormat from 'dayjs/plugin/customParseFormat';
 import * as timezone from 'dayjs/plugin/timezone';
 import * as utc from 'dayjs/plugin/utc';
 import { Model } from 'mongoose';
@@ -10,6 +11,7 @@ import { EventDocument } from '../events/event.schema';
 import { Attendee, AttendeeDocument } from './attendees.schema';
 import { CreateAttendeeDto } from './dto/create-attendee.dto';
 import { UpdateAttendeeDto } from './dto/update-attendee.dto';
+dayjs.extend(customParseFormat);
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.tz.setDefault('America/Chicago');
@@ -18,6 +20,7 @@ dayjs.tz.setDefault('America/Chicago');
 export class AttendeeService {
   constructor(
     @InjectModel(Attendee.name) private attendeeModel: Model<Attendee>,
+    @InjectModel(Event.name) private eventModel: Model<EventDocument>,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -140,7 +143,29 @@ export class AttendeeService {
     return this.attendeeModel.find({ has_resume: true });
   }
 
-  selectWinners(numWinners: number, date: string) {
+  async selectWinners(numWinners: number, date: string) {
+    const lotteryDate = dayjs(date, 'MM-DD-YYYY', true);
+    if (!lotteryDate.isValid()) {
+      throw new BadRequestException('Date must follow the format: MM-DD-YYYY');
+    }
+
+    const events = await this.eventModel.find(
+      {
+        visible: true,
+        upgrade: true,
+      },
+      {
+        _id: 1,
+      },
+    );
+
+    const dayFilteredEvents = events.filter((event) => {
+      const eventDay = dayjs(event.start_time).tz('America/Chicago');
+      return lotteryDate.isSame(eventDay, 'day');
+    });
+
+    const eventIds = dayFilteredEvents.map((e) => e._id.toString());
+
     return this.attendeeModel.aggregate([
       {
         $unwind: {
@@ -149,34 +174,9 @@ export class AttendeeService {
         },
       },
       {
-        $addFields: {
-          eventsId: {
-            $toObjectId: '$events',
-          },
-        },
-      },
-      {
-        $lookup: {
-          from: 'events',
-          localField: 'eventsId',
-          foreignField: '_id',
-          as: 'eventsData',
-        },
-      },
-      {
-        $unwind: {
-          path: '$eventsData',
-          preserveNullAndEmptyArrays: false,
-        },
-      },
-      {
         $match: {
-          'eventsData.upgrade': true,
-          $expr: {
-            $eq: [
-              { $dayOfYear: '$eventsData.start_time' },
-              { $dayOfYear: new Date(date) },
-            ],
+          events: {
+            $in: eventIds,
           },
         },
       },

@@ -135,7 +135,6 @@ export class AttendeeController {
     @Query('date') date: string,
   ) {
     // TODO Better validation on query params
-    date = date.replace('-', ' ');
     return this.attendeeService.selectWinners(numWinners, date);
   }
   /**
