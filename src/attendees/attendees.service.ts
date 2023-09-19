@@ -144,7 +144,7 @@ export class AttendeeService {
   }
 
   async selectWinners(numWinners: number, date: string) {
-    const lotteryDate = dayjs(date, 'MM-DD-YYYY', true);
+    const lotteryDate = dayjs(date, 'MM-DD-YYYY', true).tz('America/Chicago');
     if (!lotteryDate.isValid()) {
       throw new BadRequestException('Date must follow the format: MM-DD-YYYY');
     }
@@ -156,6 +156,7 @@ export class AttendeeService {
       },
       {
         _id: 1,
+        name: 1,
       },
     );
 
@@ -166,7 +167,7 @@ export class AttendeeService {
 
     const eventIds = dayFilteredEvents.map((e) => e._id.toString());
 
-    return this.attendeeModel.aggregate([
+    const winners = await this.attendeeModel.aggregate([
       {
         $unwind: {
           path: '$events',
@@ -212,8 +213,18 @@ export class AttendeeService {
         },
       },
       {
+        $project: {
+          name: 1,
+          email: 1,
+        },
+      },
+      {
         $limit: numWinners,
       },
     ]);
+    return {
+      winners,
+      eventsConsidered: dayFilteredEvents.map((e) => e.name),
+    };
   }
 }
