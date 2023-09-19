@@ -4,6 +4,11 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as QRCode from 'qrcode';
 import * as dayjs from 'dayjs';
+import * as timezone from 'dayjs/plugin/timezone';
+import * as utc from 'dayjs/plugin/utc';
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.tz.setDefault('America/Chicago');
 import { Attendee, AttendeeDocument } from './attendees.schema';
 import { EventDocument } from '../events/event.schema';
 import { CreateAttendeeDto } from './dto/create-attendee.dto';
@@ -132,6 +137,6 @@ export class AttendeeService {
   }
 
   async findAttendeesWithResumes() {
-    return this.attendeeModel.find({has_resume: true});
+    return this.attendeeModel.find({ has_resume: true });
   }
 }
