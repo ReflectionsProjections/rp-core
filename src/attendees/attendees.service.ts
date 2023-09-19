@@ -144,7 +144,8 @@ export class AttendeeService {
   }
 
   async selectWinners(numWinners: number, date: string) {
-    const lotteryDate = dayjs(date, 'MM-DD-YYYY', true).tz('America/Chicago');
+    // TODO: Remove black magic
+    const lotteryDate = dayjs(date, 'MM-DD-YYYY', true).tz('America/Chicago').add(12, 'hours');
     if (!lotteryDate.isValid()) {
       throw new BadRequestException('Date must follow the format: MM-DD-YYYY');
     }
@@ -162,7 +163,7 @@ export class AttendeeService {
     );
 
     const dayFilteredEvents = events.filter((event) => {
-      const eventDay = dayjs(event.start_time).tz('America/Chicago');
+      const eventDay = dayjs(event.start_time).tz('America/Chicago');     
       return lotteryDate.isSame(eventDay, 'day');
     });
 
