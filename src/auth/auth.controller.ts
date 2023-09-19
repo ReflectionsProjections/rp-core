@@ -104,7 +104,7 @@ export class AuthController {
       fullName: attendee.name,
       priority:
         attendee.priority_expiry != null &&
-        !dayjs(attendee.priority_expiry).isBefore(dayjs()),
+        dayjs(attendee.priority_expiry).isAfter(dayjs()),
     };
   }
 

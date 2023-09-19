@@ -72,7 +72,7 @@ export class EventsService {
     }
     let priority =
       attendee.priority_expiry != null &&
-      dayjs(attendee.priority_expiry).isBefore(dayjs());
+      dayjs(attendee.priority_expiry).isAfter(dayjs());
 
     if (attendee.events.some((e) => (e as unknown) == id)) {
       return {
