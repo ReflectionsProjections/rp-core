@@ -20,8 +20,9 @@ export class AppService {
    * v1.2.4 -> Add saturday events to schedule
    * v1.2.5 -> Remove rate limiting from endpoints
    * v1.2.6 -> Add Lottery endpoint
+   * v1.2.7 -> Fix lottery bias for earlier events
    */
   getVersion(): string {
-    return 'v1.2.6';
+    return 'v1.2.7';
   }
 }
