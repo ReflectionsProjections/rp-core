@@ -157,6 +157,7 @@ export class AttendeeService {
       {
         _id: 1,
         name: 1,
+        start_time: 1,
       },
     );
 
