@@ -132,9 +132,9 @@ export class AttendeeController {
   }
 
   @Get('/lottery')
-  selectWinners(
-    @Body() generateLotteryDto: GenerateLotteryDto
-  ) {
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(RoleLevel.Admin)
+  selectWinners(@Body() generateLotteryDto: GenerateLotteryDto) {
     return this.attendeeService.selectWinners(generateLotteryDto);
   }
   /**
@@ -174,13 +174,15 @@ export class AttendeeController {
     }
 
     try {
-      const attendee = await this.attendeeService.findAttendeeByEmail(userEmail);
+      const attendee = await this.attendeeService.findAttendeeByEmail(
+        userEmail,
+      );
       return {
-          jobTypeInterest: attendee.job_interest,
-          portfolioLink: attendee.portfolio,
+        jobTypeInterest: attendee.job_interest,
+        portfolioLink: attendee.portfolio,
       };
     } catch (error) {
-      console.log("An error occurred:", error);
+      console.log('An error occurred:', error);
       throw new NotFoundException('User preferences not found');
     }
   }
