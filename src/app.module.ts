@@ -1,10 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MulterModule } from '@nestjs/platform-express'; // Import MulterModule
-import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AttendeesModule } from './attendees/attendees.module';
@@ -36,19 +34,9 @@ import { CarpModule } from './carp/carp.module';
     S3ModuleModule,
     WalletModule,
     AttendeesModule,
-    ThrottlerModule.forRoot({
-      ttl: 60,
-      limit: 20,
-    }),
     CarpModule,
   ],
   controllers: [AppController],
-  providers: [
-    AppService,
-    {
-      provide: APP_GUARD,
-      useClass: ThrottlerGuard,
-    },
-  ],
+  providers: [AppService],
 })
 export class AppModule {}
