@@ -22,7 +22,8 @@ import { S3Service } from '../s3/s3.service';
 import { AttendeeService } from './attendees.service';
 import { CreateAttendeeDto } from './dto/create-attendee.dto';
 import { UpdateAttendeeDto } from './dto/update-attendee.dto';
-import { AuthGuard } from '../auth/auth.guard';
+import { GenerateLotteryDto } from './dto/generate-lottery.dto';
+import { AuthGuard } from 'src/auth/auth.guard';
 import { WalletService } from '../wallet/wallet.service';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
@@ -130,6 +131,12 @@ export class AttendeeController {
     return this.attendeeService.findAll();
   }
 
+  @Get('/lottery')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(RoleLevel.Admin)
+  selectWinners(@Body() generateLotteryDto: GenerateLotteryDto) {
+    return this.attendeeService.selectWinners(generateLotteryDto);
+  }
   /**
    * Usage on the frontend:
    * 1. Call /attendee/qr --> get data URL from response body
@@ -167,13 +174,15 @@ export class AttendeeController {
     }
 
     try {
-      const attendee = await this.attendeeService.findAttendeeByEmail(userEmail);
+      const attendee = await this.attendeeService.findAttendeeByEmail(
+        userEmail,
+      );
       return {
-          jobTypeInterest: attendee.job_interest,
-          portfolioLink: attendee.portfolio,
+        jobTypeInterest: attendee.job_interest,
+        portfolioLink: attendee.portfolio,
       };
     } catch (error) {
-      console.log("An error occurred:", error);
+      console.log('An error occurred:', error);
       throw new NotFoundException('User preferences not found');
     }
   }

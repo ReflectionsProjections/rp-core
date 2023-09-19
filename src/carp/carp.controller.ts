@@ -1,4 +1,11 @@
-import { Controller, Get, NotImplementedException, Param, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  NotImplementedException,
+  Param,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '../auth/auth.guard';
 import { Roles } from '../roles/roles.decorator';
 import { RoleLevel } from '../roles/roles.enum';
@@ -25,8 +32,8 @@ export class CarpController {
 
   /**
    * This function returns a filtered list of attendees.
-   * 
-   * @param filters Filters can be passed as query params 
+   *
+   * @param filters Filters can be passed as query params
    * 'majors', 'years', and 'jobs'. Multiple filters within each param should be
    * delimited by '+'
    */
@@ -43,9 +50,9 @@ export class CarpController {
   }
 
   /**
-   * This function returns a list of all S3 URLs for the filters. 
-   * 
-   * @param filters Filters can be passed as query params 
+   * This function returns a list of all S3 URLs for the filters.
+   *
+   * @param filters Filters can be passed as query params
    * 'majors', 'years', and 'jobs'. Multiple filters within each param should be
    * delimited by '+'
    */
@@ -59,5 +66,4 @@ export class CarpController {
     return NotImplementedException;
     // return this.carpService.getAllResumes(majors, years, jobs);
   }
-  
 }

@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
+import * as dayjs from 'dayjs';
 import { Model } from 'mongoose';
 import * as QRCode from 'qrcode';
-import * as dayjs from 'dayjs';
 import * as timezone from 'dayjs/plugin/timezone';
 import * as utc from 'dayjs/plugin/utc';
 dayjs.extend(utc);
@@ -12,6 +12,7 @@ dayjs.tz.setDefault('America/Chicago');
 import { Attendee, AttendeeDocument } from './attendees.schema';
 import { EventDocument } from '../events/event.schema';
 import { CreateAttendeeDto } from './dto/create-attendee.dto';
+import { GenerateLotteryDto } from './dto/generate-lottery.dto';
 import { UpdateAttendeeDto } from './dto/update-attendee.dto';
 
 @Injectable()
@@ -138,5 +139,82 @@ export class AttendeeService {
 
   async findAttendeesWithResumes() {
     return this.attendeeModel.find({ has_resume: true });
+  }
+
+  selectWinners(generateLotteryDto: GenerateLotteryDto) {
+    return this.attendeeModel.aggregate([
+      {
+        $unwind: {
+          path: '$events',
+          preserveNullAndEmptyArrays: false,
+        },
+      },
+      {
+        $addFields: {
+          eventsId: {
+            $toObjectId: '$events',
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: 'events',
+          localField: 'eventsId',
+          foreignField: '_id',
+          as: 'eventsData',
+        },
+      },
+      {
+        $unwind: {
+          path: '$eventsData',
+          preserveNullAndEmptyArrays: false,
+        },
+      },
+      {
+        $match: {
+          'eventsData.upgrade': true,
+          $expr: {
+            $eq: [
+              { $dayOfYear: '$eventsData.start_time' },
+              { $dayOfYear: new Date(generateLotteryDto.date) },
+            ],
+          },
+        },
+      },
+      {
+        $group: {
+          _id: '$_id',
+          name: {
+            $first: '$name',
+          },
+          email: {
+            $first: '$email',
+          },
+          events: {
+            $count: {},
+          },
+        },
+      },
+      {
+        $addFields: {
+          weight: {
+            $multiply: [
+              '$events',
+              {
+                $rand: {},
+              },
+            ],
+          },
+        },
+      },
+      {
+        $sort: {
+          weight: -1,
+        },
+      },
+      {
+        $limit: generateLotteryDto.numWinners,
+      },
+    ]);
   }
 }
