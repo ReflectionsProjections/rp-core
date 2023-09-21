@@ -21,8 +21,9 @@ export class AppService {
    * v1.2.5 -> Remove rate limiting from endpoints
    * v1.2.6 -> Add Lottery endpoint
    * v1.2.7 -> Fix lottery bias for earlier events
+   * v1.2.8 -> Add permalink endpoint for carp resume access
    */
   getVersion(): string {
-    return 'v1.2.7';
+    return 'v1.2.8';
   }
 }

@@ -1,9 +1,13 @@
 import {
   Controller,
   Get,
+  InternalServerErrorException,
   NotImplementedException,
   Param,
   Query,
+  Redirect,
+  Res,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '../auth/auth.guard';
@@ -13,10 +17,15 @@ import { RolesGuard } from '../roles/roles.guard';
 import { S3Service } from '../s3/s3.service';
 import { CarpService } from './carp.service';
 import { CarpFilterDto } from './dto/carp-filter.dto';
+import { ConfigService } from '@nestjs/config';
+import { Response } from 'express';
 
 @Controller('carp')
 export class CarpController {
-  constructor(private readonly carpService: CarpService) {}
+  constructor(
+    private readonly carpService: CarpService,
+    private readonly configService: ConfigService,
+  ) {}
 
   /**
    * This function returns a link to the user's resume.
@@ -28,6 +37,25 @@ export class CarpController {
   @Roles(RoleLevel.Corporate)
   async getResume(@Param('id') id: string) {
     return this.carpService.getResume(id);
+  }
+
+  /**
+   * This function returns a link to the user's resume.
+   *
+   * @param {string} id - Represents attendee id
+   */
+  @Get('/resume/permalink/:id')
+  async doResumeRedirect(
+    @Param('id') id: string,
+    @Query('secret') secret: string,
+    @Res() res: Response,
+  ) {
+    const SECRET = this.configService.get('CARP_SECRET');
+    if (!secret || secret !== SECRET) {
+      throw new UnauthorizedException();
+    }
+    const url = await this.carpService.getResume(id);
+    res.redirect(url.url);
   }
 
   /**
