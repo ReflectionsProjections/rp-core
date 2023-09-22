@@ -30,7 +30,14 @@ export class CarpController {
   ) {}
 
   @Get('/resume/csv')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(RoleLevel.Corporate)
   async getResumeCsv(@Res({ passthrough: true }) res: Response) {
+    // TODO: Technical Debt
+    // This file can be generated via a CRON job that runs daily and stores the resulting file in S3.
+    // Subsequent downloads can serve this pre-computed file.
+    // https://docs.nestjs.com/techniques/task-scheduling
+
     const records = await this.attendeeService.getResumeBookRecords();
     const csvFile = await json2csv(records);
 
@@ -43,6 +50,8 @@ export class CarpController {
       'Content-Type': 'text/csv',
       'Content-Disposition': 'attachment; filename="rp2023-resumes.csv"',
     });
+    res.status(200);
+    res.statusMessage = 'File will be downloaded soon.';
     return new StreamableFile(s);
   }
 
