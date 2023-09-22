@@ -235,13 +235,18 @@ export class AttendeeService {
   }
 
   async getResumeBookRecords() {
+    const API_URL =
+      this.configService.get('ENV') == 'prod'
+        ? 'https://api.reflectionsprojections.org'
+        : 'http://localhost:3000';
+
     return await this.attendeeModel.aggregate([
       { $match: { has_resume: true } },
       {
         $addFields: {
           resume_link: {
             $concat: [
-              'localhost:3000/carp/resume/permalink/',
+              `${API_URL}/carp/resume/permalink/`,
               { $toString: '$_id' },
               `?secret=${this.configService.get('CARP_SECRET')}`,
             ],
