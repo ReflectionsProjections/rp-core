@@ -1,31 +1,59 @@
 import {
   Controller,
   Get,
-  InternalServerErrorException,
   NotImplementedException,
   Param,
   Query,
-  Redirect,
   Res,
+  StreamableFile,
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { Response } from 'express';
+import { json2csv } from 'json-2-csv';
+import { Readable } from 'stream';
+import { AttendeeService } from '../attendees/attendees.service';
 import { AuthGuard } from '../auth/auth.guard';
 import { Roles } from '../roles/roles.decorator';
 import { RoleLevel } from '../roles/roles.enum';
 import { RolesGuard } from '../roles/roles.guard';
-import { S3Service } from '../s3/s3.service';
 import { CarpService } from './carp.service';
 import { CarpFilterDto } from './dto/carp-filter.dto';
-import { ConfigService } from '@nestjs/config';
-import { Response } from 'express';
 
 @Controller('carp')
 export class CarpController {
   constructor(
     private readonly carpService: CarpService,
     private readonly configService: ConfigService,
+    private readonly attendeeService: AttendeeService,
   ) {}
+
+  @Get('/resume/csv')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(RoleLevel.Corporate)
+  async getResumeCsv(@Res({ passthrough: true }) res: Response) {
+    // TODO: Technical Debt
+    // This file can be generated via a CRON job that runs daily and stores the resulting file in S3.
+    // Subsequent downloads can serve this pre-computed file.
+    // https://docs.nestjs.com/techniques/task-scheduling
+
+    const records = await this.attendeeService.getResumeBookRecords();
+    const csvFile = await json2csv(records);
+
+    const s = new Readable();
+    s._read = () => {};
+    s.push(csvFile);
+    s.push(null);
+
+    res.set({
+      'Content-Type': 'text/csv',
+      'Content-Disposition': 'attachment; filename="rp2023-resumes.csv"',
+    });
+    res.status(200);
+    res.statusMessage = 'File will be downloaded soon.';
+    return new StreamableFile(s);
+  }
 
   /**
    * This function returns a link to the user's resume.

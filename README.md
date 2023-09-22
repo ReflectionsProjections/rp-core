@@ -20,7 +20,8 @@ RP Core serves key endpoints used by Reflections Projections to manage events, p
 DATABASE_URL=<mongodb_uri_here>
 SENDGRID_API_KEY=<sendgrid_api_key>
 ENV=<dev | test | prod ...>
-JWT_SECRET=<secure_jwt_secret>
+JWT_SECRET=<randomly_generated_secret>
+CARP_SECRET=<randomly_generated_secret>
 GOOGLE_ISSUER_ID="<google_wallet_api_issuer_id>"
 GOOGLE_PRIV_KEY_ID="<google_service_acct_private_key_id>"
 GOOGLE_PRIV_KEY="<google_service_acct_private_key>"
