@@ -46,6 +46,7 @@
     "dotenv": "^16.3.1",
     "google-auth-library": "^9.0.0",
     "helmet": "^7.0.0",
+    "json-2-csv": "^4.1.0",
     "luxon": "^3.3.0",
     "mongoose": "^7.3.4",
     "node-jsonwebtoken": "^0.0.1",

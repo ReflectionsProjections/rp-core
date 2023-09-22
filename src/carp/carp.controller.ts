@@ -1,31 +1,50 @@
 import {
   Controller,
   Get,
-  InternalServerErrorException,
   NotImplementedException,
   Param,
   Query,
-  Redirect,
   Res,
+  StreamableFile,
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { Response } from 'express';
+import { json2csv } from 'json-2-csv';
+import { Readable } from 'stream';
+import { AttendeeService } from '../attendees/attendees.service';
 import { AuthGuard } from '../auth/auth.guard';
 import { Roles } from '../roles/roles.decorator';
 import { RoleLevel } from '../roles/roles.enum';
 import { RolesGuard } from '../roles/roles.guard';
-import { S3Service } from '../s3/s3.service';
 import { CarpService } from './carp.service';
 import { CarpFilterDto } from './dto/carp-filter.dto';
-import { ConfigService } from '@nestjs/config';
-import { Response } from 'express';
 
 @Controller('carp')
 export class CarpController {
   constructor(
     private readonly carpService: CarpService,
     private readonly configService: ConfigService,
+    private readonly attendeeService: AttendeeService,
   ) {}
+
+  @Get('/resume/csv')
+  async getResumeCsv(@Res({ passthrough: true }) res: Response) {
+    const records = await this.attendeeService.getResumeBookRecords();
+    const csvFile = await json2csv(records);
+
+    const s = new Readable();
+    s._read = () => {};
+    s.push(csvFile);
+    s.push(null);
+
+    res.set({
+      'Content-Type': 'text/csv',
+      'Content-Disposition': 'attachment; filename="rp2023-resumes.csv"',
+    });
+    return new StreamableFile(s);
+  }
 
   /**
    * This function returns a link to the user's resume.

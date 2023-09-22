@@ -11,6 +11,7 @@ import { EventDocument } from '../events/event.schema';
 import { Attendee, AttendeeDocument } from './attendees.schema';
 import { CreateAttendeeDto } from './dto/create-attendee.dto';
 import { UpdateAttendeeDto } from './dto/update-attendee.dto';
+import { ConfigService } from '@nestjs/config';
 dayjs.extend(customParseFormat);
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -22,6 +23,7 @@ export class AttendeeService {
     @InjectModel(Attendee.name) private attendeeModel: Model<Attendee>,
     @InjectModel(Event.name) private eventModel: Model<EventDocument>,
     private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
 
   async userEmailExists(email: string): Promise<boolean> {
@@ -230,5 +232,56 @@ export class AttendeeService {
       winners,
       eventsConsidered: dayFilteredEvents.map((e) => e.name),
     };
+  }
+
+  async getResumeBookRecords() {
+    return await this.attendeeModel.aggregate([
+      { $match: { has_resume: true } },
+      {
+        $addFields: {
+          resume_link: {
+            $concat: [
+              'localhost:3000/carp/resume/permalink/',
+              { $toString: '$_id' },
+              `?secret=${this.configService.get('CARP_SECRET')}`,
+            ],
+          },
+          job_interest: {
+            $reduce: {
+              input: '$job_interest',
+              initialValue: '',
+              in: {
+                $concat: [
+                  '$$value',
+                  {
+                    $cond: {
+                      if: {
+                        $eq: ['$$value', ''],
+                      },
+                      then: '',
+                      else: ',',
+                    },
+                  },
+                  '$$this',
+                ],
+              },
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          name: 1,
+          email: 1,
+          job_interest: 1,
+          portfolio: 1,
+          major: '$studentInfo.major',
+          graduation: '$studentInfo.graduation',
+          university: '$studentInfo.university',
+          resume_link: 1,
+        },
+      },
+    ]);
   }
 }
